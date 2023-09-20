@@ -18,7 +18,28 @@ function App() {
       .catch(error => {
         console.error(error);
       });
-  }, []);
+    }, []);
+    
+  const newData = () => {
+    axios.post('/api/newData')
+      .then(response => {
+        setData(response.data);
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+  const updateData = () => {
+    axios.post('/api/updateData')
+      .then(response => {
+        setData(response.data);
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
 
   return (
     <div className="App">
@@ -32,10 +53,12 @@ function App() {
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
-        >
+          >
           Learn React
         </a>
       </header>
+      <button onClick={newData}>TEST NEW DATA</button>
+      <button onClick={updateData}>TEST UPDATE DATA</button>
     </div>
   );
 }
