@@ -2,16 +2,27 @@ import React from 'react';
 import { Card, CardContent, Typography, Button, IconButton, Link, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Iconify from '../components/iconify';
-import Logo from '../assets/logo512.png'
+import Logo from '../assets/roadrunner-logo.png'
+
+
+const Container = styled('div')({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+});
 
 const StyledCard = styled(Card)({
   maxWidth: 400,
   margin: 'auto',
-  marginTop: 'calc(50vh - 150px)',
+  //marginTop: 'calc(50vh - 150px)',
+  //paddingTop:'calc(50vh - 150px)',
   padding: 20,
   textAlign: 'center',
-  borderRadius:10
+  borderRadius:10,
 });
+
+
 
 const StyledButton = styled(Button)({
    marginBottom:10,
@@ -23,9 +34,11 @@ export default function LoginPage() {
   };
 
   return (
+    <div style={{backgroundColor:'#00455A', height:'100vh'}}>
+      <Container>
     <StyledCard>
       <CardContent>
-      <img src={Logo} alt="Logo" width={80}/>
+      <img src={Logo} alt="Logo" width={300}/>
       <br></br>
         <StyledButton>
         <Button variant="outlined" startIcon={<Iconify icon="eva:google-fill" color="#DF3E30" width={30} height={30} />}>
@@ -33,10 +46,12 @@ export default function LoginPage() {
         </Button>
         </StyledButton>
         <br></br>
-        <Typography component={Link} to="/register" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
-            Don&apos;t have an account?
-          </Typography>
+            <Typography component="a" href="https://accounts.google.com/signup/v2/createaccount?theme=glif&flowName=GlifWebSignIn&flowEntry=SignUp" target="_blank" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
+              Don&apos;t have an account?
+            </Typography>
       </CardContent>
     </StyledCard>
+    </Container>
+    </div>
   );
 }

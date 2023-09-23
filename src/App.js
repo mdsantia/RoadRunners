@@ -5,10 +5,14 @@ import LoginPage from './pages/LoginPage';
 import VehicleForm from './pages/VehicleForm';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import HomePage from './pages/HomePage';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
-function App() {
+function App({children}) {
   const [data, setData] = useState({});
+
 
   useEffect(() => {
     axios.get('/api/data')
@@ -43,8 +47,10 @@ function App() {
   }
 
   return (
+    
     <div className="App">
       <LoginPage/>
+      <HomePage></HomePage>
       {/* <VehicleForm/> */}
       <button onClick={newData}>TEST NEW DATA</button>
       <button onClick={updateData}>TEST UPDATE DATA</button>
