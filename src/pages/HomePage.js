@@ -17,7 +17,7 @@ const Container = styled('div')({
 });
 
 const StyledCard = styled(Card)({
-  width:900,
+  width:800,
   margin: 'auto',
   padding: 20,
   textAlign: 'center',
@@ -55,7 +55,7 @@ export default function HomePage() {
                   <TextField id="standard-basic" label="Destination" variant="standard" />
               </StyledCard>
 
-                
+
 
     </Container>
     </div>
