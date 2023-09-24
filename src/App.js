@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Route,Switch} from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
+import VehicleForm from './pages/VehicleForm';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import HomePage from './pages/HomePage';
@@ -48,7 +49,9 @@ function App({children}) {
   return (
     
     <div className="App">
+      <LoginPage/>
       <HomePage></HomePage>
+      {/* <VehicleForm/> */}
       <button onClick={newData}>TEST NEW DATA</button>
       <button onClick={updateData}>TEST UPDATE DATA</button>
     </div>
