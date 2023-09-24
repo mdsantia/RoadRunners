@@ -19,13 +19,13 @@ const StyledCard = styled(Card)({
   //paddingTop:'calc(50vh - 150px)',
   padding: 20,
   textAlign: 'center',
-  borderRadius:10,
+  borderRadius: 10,
 });
 
 
 
 const StyledButton = styled(Button)({
-   marginBottom:10,
+  marginBottom: 10,
 })
 
 export default function LoginPage() {
@@ -34,24 +34,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{backgroundColor:'#00455A', height:'100vh'}}>
+    <div style={{ backgroundColor: '#00455A', height: '100vh' }}>
       <Container>
-    <StyledCard>
-      <CardContent>
-      <img src={Logo} alt="Logo" width={300}/>
-      <br></br>
-        <StyledButton>
-        <Button variant="outlined" startIcon={<Iconify icon="eva:google-fill" color="#DF3E30" width={30} height={30} />}>
-          Sign in with Google
-        </Button>
-        </StyledButton>
-        <br></br>
+        <StyledCard>
+          <CardContent>
+            <img src={Logo} alt="Logo" width={300} />
+            <br></br>
+            <StyledButton>
+              <Button variant="outlined" startIcon={<Iconify icon="eva:google-fill" color="#DF3E30" width={30} height={30} />}>
+                Sign in with Google
+              </Button>
+            </StyledButton>
+            <br></br>
             <Typography component="a" href="https://accounts.google.com/signup/v2/createaccount?theme=glif&flowName=GlifWebSignIn&flowEntry=SignUp" target="_blank" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
               Don&apos;t have an account?
             </Typography>
-      </CardContent>
-    </StyledCard>
-    </Container>
+          </CardContent>
+        </StyledCard>
+      </Container>
     </div>
   );
 }
