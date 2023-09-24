@@ -8,6 +8,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import image from '../assets/login-bg.jpg'
+import Logo from '../assets/roadrunner-logo.png'
 
 
 
@@ -16,29 +18,28 @@ const Container = styled('div')({
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
+  flexDirection:'column'
 });
 
 const StyledCard = styled(Card)({
   width:800,
   margin: 'auto',
   padding: 14,
+  marginTop:150,
   textAlign: 'center',
   borderRadius:60,
 });
 
-const backgroundCard = styled(Card)({
-    width:900,
-    margin: 'auto',
-    padding: 20,
-    textAlign: 'center',
-    borderRadius:60,
+
+
+
+const ImageCard = styled(Card)({
+    maxWidth:2000,
+    width:1200,
+    padding: 5,
+    height:500,
+    borderRadius:15,
   });
-
-
-const fieldCard = styled(Card)({
-    paddingRight:10,
-})
-
 
 const StyledButton = styled(Button)({
    marginBottom:10,
@@ -50,6 +51,8 @@ export default function HomePage() {
   return (
     <div style={{backgroundColor:'#00455A', height:'100vh'}}>
       <Container>
+      <img src={Logo} style={{justifyContent:'left'}}alt="Logo" width={300}/>
+            <ImageCard>
               <StyledCard>
                   <TextField id="standard-basic" label="Starting Location" variant="standard" />
                   <TextField id="standard-basic" label="Start Date" variant="standard" />
@@ -59,9 +62,7 @@ export default function HomePage() {
                       <SearchIcon fontsize="large"/>
                   </IconButton>
               </StyledCard>
-
-
-
+              </ImageCard>
     </Container>
     </div>
   );
