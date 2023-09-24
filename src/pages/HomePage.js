@@ -6,6 +6,8 @@ import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 
@@ -19,7 +21,7 @@ const Container = styled('div')({
 const StyledCard = styled(Card)({
   width:800,
   margin: 'auto',
-  padding: 20,
+  padding: 14,
   textAlign: 'center',
   borderRadius:60,
 });
@@ -53,6 +55,9 @@ export default function HomePage() {
                   <TextField id="standard-basic" label="Start Date" variant="standard" />
                   <TextField id="standard-basic" label="End Date" variant="standard" />
                   <TextField id="standard-basic" label="Destination" variant="standard" />
+                  <IconButton aria-label="delete" style={{marginTop:'10px', marginLeft:'20px', backgroundColor:'#e0c404', color:'white'}}> 
+                      <SearchIcon fontsize="large"/>
+                  </IconButton>
               </StyledCard>
 
 

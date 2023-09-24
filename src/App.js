@@ -49,7 +49,7 @@ function App({children}) {
   return (
     
     <div className="App">
-      <LoginPage/>
+      {/* <LoginPage/> */}
       <HomePage></HomePage>
       {/* <VehicleForm/> */}
       <button onClick={newData}>TEST NEW DATA</button>
