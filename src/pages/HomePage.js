@@ -49,7 +49,7 @@ export default function HomePage() {
     <div style={{backgroundColor:'#00455A', height:'100vh'}}>
       <Container>
       <img src={Logo} alt="Logo" width={300} style={{ position: 'absolute', top: '6px', left: '20px' }} />
-            <ImageCard style={{backgroundImage:{image}}}>
+            <ImageCard style={{}}>
               <StyledCard>
                   <TextField id="standard-basic" label="Starting Location" variant="standard" />
                   <TextField id="standard-basic" label="Start Date" variant="standard" />
