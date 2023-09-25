@@ -6,8 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import image from '../assets/login-bg.jpg'
 import Logo from '../assets/roadrunner-logo-clear.png'
 import Fab from '@mui/material/Fab';
-
-
+import axios from 'axios'
 
 const Container = styled('div')({
   display: 'flex',
@@ -43,11 +42,23 @@ const StyledButton = styled(Button)({
    marginBottom:10,
 })
 
+const newUser = () => {
+  axios.post('http://localhost:5010/api/user/newUser')
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
 export default function HomePage() {
 
   return (
     <div style={{backgroundColor:'#00455A', height:'100vh'}}>
       <Container>
+        <Button onClick={() => { newUser() }}
+        variant="contained" style={{backgroundColor:'#e0c404', color:'white', marginBottom:'20px'}}> Create user </Button>
       <img src={Logo} alt="Logo" width={300} style={{ position: 'absolute', top: '6px', left: '20px' }} />
             <ImageCard style={{}}>
               <StyledCard>
