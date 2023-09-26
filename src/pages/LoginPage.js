@@ -3,22 +3,24 @@ import { Card, CardContent, Typography, Button, IconButton, Link, Stack } from '
 import { styled } from '@mui/material/styles';
 import Iconify from '../components/iconify';
 import Logo from '../assets/roadrunner-logo.png'
+import image from '../assets/login-bg.jpg'
 
 const Container = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
+  backgroundImage: `url(${image})`, 
+  backgroundSize: 'cover',
 });
 
 const StyledCard = styled(Card)({
   maxWidth: 400,
   margin: 'auto',
-  //marginTop: 'calc(50vh - 150px)',
-  //paddingTop:'calc(50vh - 150px)',
   padding: 20,
   textAlign: 'center',
   borderRadius: 10,
+  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
 });
 
 
@@ -33,7 +35,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ backgroundColor: '#00455A', height: '100vh' }}>
+    <div style={{ backgroundColor: 'white', height: '100vh' }}>
       <Container>
         <StyledCard>
           <CardContent>
