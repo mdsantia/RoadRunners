@@ -10,7 +10,7 @@ const Container = styled('div')({
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
-  backgroundImage: `url(${image})`, 
+  backgroundImage: `url(${image})`,
   backgroundSize: 'cover',
 });
 

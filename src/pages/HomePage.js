@@ -1,19 +1,22 @@
 import React from 'react';
-import { Card, Button } from '@mui/material';
+import { Card, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import image from '../assets/login-bg.jpg'
 import axios from 'axios'
-import Navigation from '../components/Navigation';
 import CreateTrip from '../components/CreateTrip'
+import TopBar from '../components/TopBar';
+import TextRotator from '../components/TextRotator';
 
 
 const Container = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '100vh',
+  height: '80vh',
   flexDirection: 'column'
 });
+
+
 
 const ImageCard = styled(Card)({
   position: 'relative',
@@ -22,8 +25,8 @@ const ImageCard = styled(Card)({
   padding: 5,
   height: 500,
   borderRadius: 15,
-  backgroundImage: `url(${image})`, 
-  backgroundSize: 'cover', 
+  backgroundImage: `url(${image})`,
+  backgroundSize: 'cover',
 });
 
 
@@ -43,13 +46,15 @@ const newUser = () => {
 
 export default function HomePage() {
 
+
   return (
     <div style={{ backgroundColor: 'white', height: '100vh' }}>
+      <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}
           variant="contained" style={{ backgroundColor: '#e0c404', color: 'white', marginBottom: '20px' }}> Create user </Button> */}
-        <Navigation></Navigation>
         <ImageCard>
+          <TextRotator></TextRotator>
           <CreateTrip></CreateTrip>
         </ImageCard>
       </Container>
