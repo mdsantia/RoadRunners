@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Button, IconButton, Link, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Iconify from '../components/iconify';
-import Logo from '../assets/roadrunner-logo.png'
+import Logo from '../assets/roadrunner-updated-logo.png'
 import image from '../assets/login-bg.jpg'
 
 const Container = styled('div')({
@@ -15,7 +15,7 @@ const Container = styled('div')({
 });
 
 const StyledCard = styled(Card)({
-  maxWidth: 400,
+  maxWidth: 500,
   margin: 'auto',
   padding: 20,
   textAlign: 'center',
@@ -39,7 +39,7 @@ export default function LoginPage() {
       <Container>
         <StyledCard>
           <CardContent>
-            <img src={Logo} alt="Logo" width={300} />
+            <img src={Logo} alt="Logo" width={400} />
             <br></br>
             <StyledButton>
               <Button variant="outlined" startIcon={<Iconify icon="eva:google-fill" color="#DF3E30" width={30} height={30} />}>

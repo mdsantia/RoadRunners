@@ -24,7 +24,7 @@ const ImageCard = styled(Card)({
   width: 1200,
   padding: 5,
   height: 500,
-  borderRadius: 15,
+  borderRadius: 25,
   backgroundImage: `url(${image})`,
   backgroundSize: 'cover',
 });

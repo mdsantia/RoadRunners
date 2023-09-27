@@ -14,8 +14,8 @@ const TextRotator = () => {
           case 'roadtrip':
             return 'vacation';
           case 'vacation':
-            return 'spring break';
-          case 'spring break':
+            return 'spring-break';
+          case 'spring-break':
             return 'adventure';
           default:
             return 'adventure';
