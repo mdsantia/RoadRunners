@@ -9,6 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import LoginPage from './pages/LoginPage';
 import VehicleForm from './pages/VehicleForm';
 import HomePage from './pages/HomePage';
+import UserProfile from './pages/UserProfile';
 
 
 
@@ -18,7 +19,8 @@ function App() {
       <Routes> 
         <Route exact path="/" element={<HomePage />} />
         <Route exact path="/login" element={<LoginPage />} />
-        <Route exact path="/vehicle" element={<VehicleForm />} />
+        <Route exact path="/vehicleForm" element={<VehicleForm />} />
+        <Route exact path="/profile" element={<UserProfile />} />
       </Routes>
     </div>
   );
