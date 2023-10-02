@@ -5,6 +5,7 @@ import image from '../assets/login-bg.jpg'
 import axios from 'axios'
 import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
+import VehicleForm from '../pages/VehicleForm';
 
 
 const Container = styled('div')({
@@ -48,6 +49,7 @@ export default function HomePage() {
 
   return (
     <div style={{ backgroundColor: 'white', height: '100vh' }}>
+      <VehicleForm></VehicleForm>
       <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}
