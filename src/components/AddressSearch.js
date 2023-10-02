@@ -25,11 +25,17 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-export default function AddressSearch({label}) {
+export default function AddressSearch({label, onInputChange}) {
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
+
+  const handleInputChange = (newInputValue) => {
+    if(newInputValue != null){
+      onInputChange(newInputValue.description);
+    }
+  }
 
   if (typeof window !== 'undefined' && !loaded.current) {
     if (!document.querySelector('#google-maps')) {
@@ -105,6 +111,7 @@ export default function AddressSearch({label}) {
       onChange={(event, newValue) => {
         setOptions(newValue ? [newValue, ...options] : options);
         setValue(newValue);
+        handleInputChange(newValue);
       }}
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);

@@ -25,19 +25,22 @@ const StyledCard = styled(Card)({
 
 export default function HomePage() {
 
-  const [value, setValue] = useState(null);
+  const [startLocation, setStartLocation] = useState(null);
+  const [endLocation, setEndLocation] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   return (
     <StyledCard>
       <Stack direction="row" spacing={2}>
-        <AddressSearch label="Start Location"></AddressSearch>
+        <AddressSearch label="Start Location" onInputChange={(value) => setStartLocation(value)}></AddressSearch>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker label="Start Date" />
+          <DatePicker label="Start Date" onChange={(value) => setStartDate(value.format())} />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker label="End Date" />
+        <DatePicker label="End Date" onChange={(value) => setEndDate(value.format())} />
         </LocalizationProvider>
-        <AddressSearch label="End Location"></AddressSearch>
+        <AddressSearch label="End Location" onInputChange={(value) => setEndLocation(value)}></AddressSearch>
         <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }}>
           <SearchIcon />
         </Fab>
