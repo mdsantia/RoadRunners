@@ -10,6 +10,8 @@ import Stack from '@mui/material/Stack';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
 
 
 const StyledCard = styled(Card)({
@@ -29,6 +31,29 @@ export default function HomePage() {
   const [endLocation, setEndLocation] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit= (event) => {
+      //call controller method to create trip
+      //redirect to dashboard on success
+      if(startLocation != null && endLocation != null && startDate != null && endDate != null){
+        console.log("redirecting");
+        navigate('/dashboard');
+      } else{
+        console.log("invalid");
+        setShouldDisplayWarning(true);
+      }
+  }
+
+  const RenderComponent = () => {
+    if (shouldDisplayWarning) {
+      console.log("display error");
+      return <Alert severity="error">This is an error alert — check it out!</Alert>;
+    } else {
+      return null;
+    }
+  };
 
   return (
     <StyledCard>
@@ -41,10 +66,15 @@ export default function HomePage() {
         <DatePicker label="End Date" onChange={(value) => setEndDate(value.format())} />
         </LocalizationProvider>
         <AddressSearch label="End Location" onInputChange={(value) => setEndLocation(value)}></AddressSearch>
-        <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }}>
+        <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }} onClick={handleSubmit}>
           <SearchIcon />
         </Fab>
+      </Stack>
+      <Stack>
+      {RenderComponent}
       </Stack>
     </StyledCard>
   );
 }
+
+
