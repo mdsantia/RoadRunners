@@ -30,14 +30,14 @@ export default function HomePage() {
   return (
     <StyledCard>
       <Stack direction="row" spacing={2}>
-        <AddressSearch ></AddressSearch>
+        <AddressSearch label="Start Location"></AddressSearch>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label="Start Date" />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker label="End Date" />
         </LocalizationProvider>
-        <AddressSearch></AddressSearch>
+        <AddressSearch label="End Location"></AddressSearch>
         <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }}>
           <SearchIcon />
         </Fab>

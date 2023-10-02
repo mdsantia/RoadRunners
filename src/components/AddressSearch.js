@@ -25,7 +25,7 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-export default function AddressSearch() {
+export default function AddressSearch({label}) {
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
@@ -110,7 +110,7 @@ export default function AddressSearch() {
         setInputValue(newInputValue);
       }}
       renderInput={(params) => (
-        <TextField {...params} label="Starting Location" fullWidth />
+        <TextField {...params} label={label} fullWidth />
       )}
       renderOption={(props, option) => {
         const matches =
