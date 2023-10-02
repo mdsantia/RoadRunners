@@ -53,9 +53,9 @@ export default function HomePage() {
         {/*<Button onClick={() => { newUser() }}
           variant="contained" style={{ backgroundColor: '#e0c404', color: 'white', marginBottom: '20px' }}> Create user </Button> */}
         <ImageCard>
-        <Typography style={{fontSize:'50px', color:'white', fontWeight:'bold' ,paddingTop:'90px'}}>
-      Your <u>adventure</u> starts here.
-    </Typography>
+          <Typography style={{ fontSize: '50px', color: 'white', fontWeight: 'bold', paddingTop: '90px' }}>
+            Your <u>adventure</u> starts here.
+          </Typography>
           <CreateTrip></CreateTrip>
         </ImageCard>
       </Container>
