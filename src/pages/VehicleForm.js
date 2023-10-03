@@ -25,7 +25,10 @@ export default function VehicleForm() {
     const [yearList, setYearList] = React.useState([])
     const [makeList, setMakeList] = React.useState([]);
     const [modelList, setModelList] = React.useState([]);
-    const [allOptionList, setAllOptionList] = React.useState([]);
+    const [allOptionList, setAllOptionList] = React.useState([]);  // HOLDS ALL ORIGINAL DATA FROM API
+
+    const [yearFilledOut, setYearFilledOut] = React.useState(false);
+    const [makeFilledOut, setMakeFilledOut] = React.useState(false);
 
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = () => {
@@ -79,7 +82,10 @@ export default function VehicleForm() {
                     <Select
                         name="year"
                         value={year}
-                        onChange={(event) => setYear(event.target.value)}
+                        onChange={(event) => {
+                            setYear(event.target.value)
+                            setYearFilledOut(true)
+                        }}
                         >
                         {yearList.map((year, index) => (
                             <MenuItem key={index} value={year}>
@@ -94,7 +100,11 @@ export default function VehicleForm() {
                     <Select
                         name="make"
                         value={make}
-                        onChange={event => setMake(event.target.value)}
+                        disabled={!yearFilledOut}
+                        onChange={event => {
+                            setMake(event.target.value)
+                            setMakeFilledOut(true)
+                        }}
                         >
                         {makeList.map((make, index) => (
                             <MenuItem key={index} value={make}>
@@ -109,6 +119,7 @@ export default function VehicleForm() {
                     <Select
                         name="model"
                         value={model}
+                        disabled={!makeFilledOut}
                         onChange={event => setModel(event.target.value)}
                         >
                         {modelList.map((model, index) => (
