@@ -5,6 +5,7 @@ import image from '../assets/login-bg.jpg'
 import axios from 'axios'
 import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
+import VehicleForm from '../pages/VehicleForm';
 
 
 const Container = styled('div')({
@@ -48,14 +49,15 @@ export default function HomePage() {
 
   return (
     <div style={{ backgroundColor: 'white', height: '100vh' }}>
+      <VehicleForm></VehicleForm>
       <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}
           variant="contained" style={{ backgroundColor: '#e0c404', color: 'white', marginBottom: '20px' }}> Create user </Button> */}
         <ImageCard>
-        <Typography style={{fontSize:'50px', color:'white', fontWeight:'bold' ,paddingTop:'90px'}}>
-      Your <u>adventure</u> starts here.
-    </Typography>
+          <Typography style={{ fontSize: '50px', color: 'white', fontWeight: 'bold', paddingTop: '90px' }}>
+            Your <u>adventure</u> starts here.
+          </Typography>
           <CreateTrip></CreateTrip>
         </ImageCard>
       </Container>

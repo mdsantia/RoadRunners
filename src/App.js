@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage';
 import VehicleForm from './pages/VehicleForm';
 import HomePage from './pages/HomePage';
 import UserProfile from './pages/UserProfile';
+import VehiclesPage from './pages/VehiclesPage';
 
 
 
@@ -19,8 +20,8 @@ function App() {
       <Routes> 
         <Route exact path="/" element={<HomePage />} />
         <Route exact path="/login" element={<LoginPage />} />
-        <Route exact path="/vehicleForm" element={<VehicleForm />} />
         <Route exact path="/profile" element={<UserProfile />} />
+        <Route exact path="/vehicles" element={<VehiclesPage />} />
       </Routes>
     </div>
   );

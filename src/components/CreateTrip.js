@@ -10,6 +10,8 @@ import Stack from '@mui/material/Stack';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
 
 
 const StyledCard = styled(Card)({
@@ -25,23 +27,54 @@ const StyledCard = styled(Card)({
 
 export default function HomePage() {
 
-  const [value, setValue] = useState(null);
+  const [startLocation, setStartLocation] = useState(null);
+  const [endLocation, setEndLocation] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit= (event) => {
+      //call controller method to create trip
+      //redirect to dashboard on success
+      if(startLocation != null && endLocation != null && startDate != null && endDate != null){
+        console.log("redirecting");
+        navigate('/dashboard');
+      } else{
+        console.log("invalid");
+        setShouldDisplayWarning(true);
+      }
+  }
+
+  const RenderComponent = () => {
+    if (shouldDisplayWarning) {
+      console.log("display error");
+      return <Alert severity="error">This is an error alert — check it out!</Alert>;
+    } else {
+      return null;
+    }
+  };
 
   return (
     <StyledCard>
       <Stack direction="row" spacing={2}>
-        <AddressSearch ></AddressSearch>
+        <AddressSearch label="Start Location" onInputChange={(value) => setStartLocation(value)}></AddressSearch>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker label="Start Date" />
+          <DatePicker label="Start Date" onChange={(value) => setStartDate(value.format())} />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker label="End Date" />
+        <DatePicker label="End Date" onChange={(value) => setEndDate(value.format())} />
         </LocalizationProvider>
-        <AddressSearch></AddressSearch>
-        <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }}>
+        <AddressSearch label="End Location" onInputChange={(value) => setEndLocation(value)}></AddressSearch>
+        <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }} onClick={handleSubmit}>
           <SearchIcon />
         </Fab>
+      </Stack>
+      <Stack>
+      {RenderComponent}
       </Stack>
     </StyledCard>
   );
 }
+
+
