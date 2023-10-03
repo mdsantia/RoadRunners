@@ -30,8 +30,10 @@ app.use((req, res, next) => {
 
 const dataRoutes = require('./Routes/data_routes');
 const userRoutes = require('./Routes/user_routes');
+const roadtripRoutes = require('./Routes/roadtrip_routes');
 
 app.use('/api/data', dataRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/roadtrip', roadtripRoutes);
  
 app.listen(port, console.log(`Server is running on PORT ${port}....`.yellow.bold));
