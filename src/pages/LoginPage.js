@@ -5,9 +5,6 @@ import Iconify from '../components/iconify';
 
 import Logo from '../assets/rr-logo.png'
 import image from '../assets/login-bg.jpg'
-
-import Logo from '../assets/roadrunner-updated-logo.png';
-import image from '../assets/login-bg.jpg';
 import jwt_decode from "jwt-decode";
 
 
