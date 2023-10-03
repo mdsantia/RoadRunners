@@ -9,7 +9,7 @@ import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
 
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDL0EgNXAb6KBz2IlytmNRgnL4PWVTrrjY';
+export const GOOGLE_MAPS_API_KEY = 'AIzaSyDL0EgNXAb6KBz2IlytmNRgnL4PWVTrrjY';
 
 function loadScript(src, position, id) {
   if (!position) {
