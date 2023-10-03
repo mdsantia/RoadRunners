@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import image from '../assets/login-bg.jpg'
-import axios from 'axios'
+import axios from 'axios';
 import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
 import VehicleForm from '../pages/VehicleForm';
@@ -35,7 +35,7 @@ const StyledButton = styled(Button)({
 })
 
 const newUser = () => {
-  axios.post('http://localhost:5010/api/user/newUser')
+  axios.post('api/user/newUser')
     .then(res => {
       console.log(res)
     })
