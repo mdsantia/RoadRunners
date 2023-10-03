@@ -5,16 +5,16 @@ import axios from 'axios';
 
 
 const options = {
-  method: 'GET',
-  url: 'https://car-data.p.rapidapi.com/cars',
-  params: {
-    limit: '10',
-    page: '0'
-  },
-  headers: {
-    'X-RapidAPI-Key': '8f96b4e240msh2613d084cf46613p164776jsnbfdbabb5ba48',
-    'X-RapidAPI-Host': 'car-data.p.rapidapi.com'
-  }
+    method: 'GET',
+    url: 'https://car-data.p.rapidapi.com/cars',
+    params: {
+      limit: '50',
+      page: '0'
+    },
+    headers: {
+      'X-RapidAPI-Key': '8f96b4e240msh2613d084cf46613p164776jsnbfdbabb5ba48',
+      'X-RapidAPI-Host': 'car-data.p.rapidapi.com'
+    }
 };
 
 export default function VehicleForm() {
@@ -25,32 +25,45 @@ export default function VehicleForm() {
     const [yearList, setYearList] = React.useState([])
     const [makeList, setMakeList] = React.useState([]);
     const [modelList, setModelList] = React.useState([]);
-    const [allOptionList, setAllOptionList] = React.useState([]);
+    const [allOptionsList, setAllOptionsList] = React.useState([]);  // HOLDS ALL ORIGINAL DATA FROM API
+
+    const [yearFilledOut, setYearFilledOut] = React.useState(false);
+    const [makeFilledOut, setMakeFilledOut] = React.useState(false);
 
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = () => {
         axios.request(options)
         .then(response => {
             const data = response.data;
-            setAllOptionList(data);
+            setAllOptionsList(data);
+            console.log("API Response - All Data:", data);
             let optionArray = [];
             for (let i = 0; i < data.length; i++) {
-                optionArray.push(data[i].year);
+                if (!optionArray.includes(data[i].year)) {
+                    optionArray.push(data[i].year);
+                }
             }
+            optionArray.sort((a, b) => a - b);
             setYearList(optionArray);
-            console.log('API Response for Year:', optionArray);
+            // console.log('API Response for Year:', optionArray);
             optionArray = [];
             for (let i = 0; i < data.length; i++) {
-                optionArray.push(data[i].make);
+                if (!optionArray.includes(data[i].make)) {
+                    optionArray.push(data[i].make);
+                }           
             }
+            optionArray.sort((a, b) => a - b);
             setMakeList(optionArray);
-            console.log('API Response for Make:', optionArray);
+            // console.log('API Response for Make:', optionArray);
             optionArray = [];
             for (let i = 0; i < data.length; i++) {
-                optionArray.push(data[i].model);
+                if (!optionArray.includes(data[i].model)) {
+                    optionArray.push(data[i].model);
+                }  
             }
+            optionArray.sort((a, b) => a - b);
             setModelList(optionArray);
-            console.log('API Response for Model:', optionArray);
+            // console.log('API Response for Model:', optionArray);
         })
         .catch(error => {
             console.error(error);
@@ -59,12 +72,9 @@ export default function VehicleForm() {
     
     React.useEffect(() => {
         fetchData();
-        console.log("fetching year\n");
-        console.log(yearList);
-        console.log("fetching make\n");
-        console.log(makeList);
-        console.log("fetching model\n");
-        console.log(modelList);
+        console.log("yearList:\n" + yearList);
+        console.log("makeList:\n" + makeList);
+        console.log("modelList\n" + modelList);
     }, []);
     
     return (
@@ -79,7 +89,18 @@ export default function VehicleForm() {
                     <Select
                         name="year"
                         value={year}
-                        onChange={(event) => setYear(event.target.value)}
+                        onChange={(event) => {
+                            setYear(event.target.value);
+                            setYearFilledOut(true);
+                            let newOptionsList = [];
+                            for (let i = 0; i < allOptionsList.length; i++) {
+                                if (allOptionsList[i].year === event.target.value && !(newOptionsList.includes(allOptionsList[i].make))) {
+                                    newOptionsList.push(allOptionsList[i].make);
+                                }
+                            }
+                            newOptionsList.sort((a, b) => a - b);
+                            setMakeList(newOptionsList);
+                        }}
                         >
                         {yearList.map((year, index) => (
                             <MenuItem key={index} value={year}>
@@ -94,7 +115,18 @@ export default function VehicleForm() {
                     <Select
                         name="make"
                         value={make}
-                        onChange={event => setMake(event.target.value)}
+                        disabled={!yearFilledOut}
+                        onChange={event => {
+                            setMake(event.target.value);
+                            setMakeFilledOut(true);
+                            let newOptionsList = [];
+                            for (let i = 0; i < allOptionsList.length; i++) {
+                                if (allOptionsList[i].year === year && allOptionsList[i].make === event.target.value && !(newOptionsList.includes(allOptionsList[i].model))) {
+                                    newOptionsList.push(allOptionsList[i].model);
+                                }
+                            }
+                            setModelList(newOptionsList);
+                        }}
                         >
                         {makeList.map((make, index) => (
                             <MenuItem key={index} value={make}>
@@ -109,6 +141,7 @@ export default function VehicleForm() {
                     <Select
                         name="model"
                         value={model}
+                        disabled={!makeFilledOut}
                         onChange={event => setModel(event.target.value)}
                         >
                         {modelList.map((model, index) => (
