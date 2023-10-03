@@ -35,7 +35,7 @@ const StyledButton = styled(Button)({
 export default function LoginPage() {
   const [user, setUser] = useState({});
 
-  const clientID = "766899819559-91ms2mv2gtmksi22fbf605k6a4bf1okv.apps.googleusercontent.com";
+  const clientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
 
   const handleGoogleSignIn = (response) => {
     // Implement Google Sign In Logic here
