@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Button, IconButton, Link, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Iconify from '../components/iconify';
-import Logo from '../assets/roadrunner-updated-logo.png'
+import Logo from '../assets/rr-logo.png'
 import image from '../assets/login-bg.jpg'
 
 const Container = styled('div')({
