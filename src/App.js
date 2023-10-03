@@ -11,6 +11,7 @@ import VehicleForm from './pages/VehicleForm';
 import HomePage from './pages/HomePage';
 import UserProfile from './pages/UserProfile';
 import VehiclesPage from './pages/VehiclesPage';
+import Dashboard from './pages/Dashboard';
 
 
 
@@ -22,6 +23,7 @@ function App() {
         <Route exact path="/login" element={<LoginPage />} />
         <Route exact path="/profile" element={<UserProfile />} />
         <Route exact path="/vehicles" element={<VehiclesPage />} />
+        <Route exact path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>
   );

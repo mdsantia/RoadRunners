@@ -11,14 +11,17 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import Logo from '../assets/roadrunner-updated-logo.png'
+import Logo from '../assets/rr-logo.png'
+import { useNavigate } from 'react-router-dom';
 
-const pages = [];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = ['/profile'];
+const settings = ['Profile', 'Dashboard', 'Logout'];
 
 function TopBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -28,10 +31,12 @@ function TopBar() {
   };
 
   const handleCloseNavMenu = () => {
+
     setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
+    console.log("clicked");
     setAnchorElUser(null);
   };
 
@@ -39,7 +44,7 @@ function TopBar() {
     <AppBar position="static" style={{backgroundColor:'white', height:'95px'}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>  
-          <img src={Logo} alt="Logo" width={280} />
+          <img src={Logo}  alt="Logo" width={280} />
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
