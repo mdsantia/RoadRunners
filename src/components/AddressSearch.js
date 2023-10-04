@@ -2,9 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import { Grid, Typography } from '@mui/material';
 import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
 
@@ -25,17 +23,17 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-export default function AddressSearch({label, onInputChange}) {
+export default function AddressSearch({ label, onInputChange }) {
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
 
   const handleInputChange = (newInputValue) => {
-    if(newInputValue != null){
+    if (newInputValue != null) {
       onInputChange(newInputValue.description);
     }
-  }
+  };
 
   if (typeof window !== 'undefined' && !loaded.current) {
     if (!document.querySelector('#google-maps')) {
@@ -116,16 +114,14 @@ export default function AddressSearch({label, onInputChange}) {
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);
       }}
-      renderInput={(params) => (
-        <TextField {...params} label={label} fullWidth />
-      )}
+      renderInput={(params) => <TextField {...params} label={label} fullWidth />}
       renderOption={(props, option) => {
         const matches =
           option.structured_formatting.main_text_matched_substrings || [];
 
         const parts = parse(
           option.structured_formatting.main_text,
-          matches.map((match) => [match.offset, match.offset + match.length]),
+          matches.map((match) => [match.offset, match.offset + match.length])
         );
 
         return (
