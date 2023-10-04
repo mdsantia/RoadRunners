@@ -23,7 +23,7 @@ const newRoadTrip = async (req, res) => {
       });
   
       if (response.data.status === 'OK') {
-        const route = response.data.routes[0]; // Get the first route
+        const route = response.data; // Get the first route
         console.log(route);
         res.status(201).json(route);
       } else {

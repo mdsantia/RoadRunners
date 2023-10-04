@@ -1,12 +1,10 @@
-import { React, useEffect, useState} from 'react';
-import { Card, CardContent, Typography, Button, IconButton, Link, Stack } from '@mui/material';
+import { React, useEffect, useState } from 'react';
+import { Card, CardContent, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Iconify from '../components/iconify';
-
-import Logo from '../assets/rr-logo.png'
-import image from '../assets/login-bg.jpg'
 import jwt_decode from "jwt-decode";
 
+import Logo from '../assets/rr-logo.png';
+import image from '../assets/login-bg.jpg';
 
 const Container = styled('div')({
   display: 'flex',
@@ -26,11 +24,9 @@ const StyledCard = styled(Card)({
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
 });
 
-
-
 const StyledButton = styled(Button)({
   marginBottom: 10,
-})
+});
 
 export default function LoginPage() {
   const [user, setUser] = useState({});
@@ -46,17 +42,31 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: clientID,
-      callback: handleGoogleSignIn
-    });
-    
-    /* global google */
-    google.accounts.id.renderButton(
+    // Load the Google Sign-In script when the component mounts
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.onload = () => {
+      /* global google */
+      google.accounts.id.initialize({
+        client_id: clientID,
+        callback: handleGoogleSignIn
+      });
+
+      /* global google */
+      google.accounts.id.renderButton(
         document.getElementById("signInDiv"),
-        {   theme: "outline", size: "large"}
-    );
+        { theme: "outline", size: "large" }
+      );
+    };
+
+    document.head.appendChild(script);
+
+    // Cleanup when the component unmounts
+    return () => {
+      // Remove the script when the component unmounts
+      document.head.removeChild(script);
+    };
   }, []);
 
   return (
@@ -67,14 +77,11 @@ export default function LoginPage() {
             <img src={Logo} alt="Logo" width={400} />
             <br></br>
             <StyledButton>
-              {/* <Button variant="outlined" startIcon={<Iconify icon="eva:google-fill" color="#DF3E30" width={30} height={30} />}>
-              Sign in with Google
-              </Button> */}
               <div id="signInDiv"></div>
             </StyledButton>
             <br></br>
             <Typography component="a" href="https://accounts.google.com/signup/v2/createaccount?theme=glif&flowName=GlifWebSignIn&flowEntry=SignUp" target="_blank" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
-              Don&apos;t have an account?
+              Don't have an account?
             </Typography>
           </CardContent>
         </StyledCard>
