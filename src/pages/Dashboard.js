@@ -6,7 +6,7 @@ import TopBar from '../components/TopBar';
 import CreateTrip from '../components/CreateTrip'
 import { useState } from 'react';
 import Map from '../components/Map';
-import Itinerary from '../components/itinerary';
+import Itinerary from '../components/Itinerary';
 
 const Container = styled('div')({
     display: 'flex',
@@ -79,8 +79,6 @@ export default function Dashboard() {
                 <Wrapper>
                 <Itinerary></Itinerary>
                 </Wrapper>
-        
-               
             </Container>
         </div>
     );
