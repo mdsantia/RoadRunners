@@ -31,7 +31,6 @@ const StyledButton = styled(Button)({
 });
 
 export default function LoginPage() {
-  const [user, setUser] = useState({});
   const { dispatch } = useUserContext();
 
   const clientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
@@ -58,7 +57,7 @@ export default function LoginPage() {
     }).catch((err) => {
       console.log(err);
     });
-    setUser(userObject);
+    window.location.href = "/";
   };
 
   useEffect(() => {
@@ -69,7 +68,7 @@ export default function LoginPage() {
     script.onload = () => {
       /* global google */
       google.accounts.id.initialize({
-        client_id: clientID,
+        client_id: clientID,    
         callback: handleGoogleSignIn
       });
 

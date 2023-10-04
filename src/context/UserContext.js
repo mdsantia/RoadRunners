@@ -12,6 +12,10 @@ export const userReducer = (state, action) => {
             return {
                 user: null
             };
+        case 'UPDATE':
+            return {
+                user: action.payload
+            };
         default:
             return state;
     }
@@ -34,13 +38,18 @@ export const UserContextProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(user));
     }
 
+    const updateUser = (user) => {
+        dispatch({type: 'UPDATE', payload: user});
+        localStorage.setItem('user', JSON.stringify(user));
+    }
+
     const logout = () => {
         dispatch({type: 'LOGOUT'});
         localStorage.removeItem('user');
     }
 
-    return (
-        <UserContext.Provider value={{ user: state.user, setUser, logout }}>
+    return ( 
+        <UserContext.Provider value={{ user: state.user, setUser, updateUser, logout }}>
             { children }
         </UserContext.Provider>
     )
