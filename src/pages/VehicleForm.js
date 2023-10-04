@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
 import { Button, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import axios from 'axios';
 
@@ -29,6 +29,9 @@ export default function VehicleForm() {
 
     const [yearFilledOut, setYearFilledOut] = React.useState(false);
     const [makeFilledOut, setMakeFilledOut] = React.useState(false);
+    const [yearStatus, setYearStatus] = React.useState('');
+    const [makeStatus, setMakeStatus] = React.useState('');
+    const [modelStatus, setModelStatus] = React.useState('');
     
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = () => {
@@ -69,6 +72,23 @@ export default function VehicleForm() {
             console.error(error);
         });
     };
+
+    const handleOnSubmit = (event) => {
+        event.preventDefault();
+        if (year.length === 0) {
+            setYearStatus("Please select the year of your vehicle.");
+        } else if (make.length === 0) {
+            setMakeStatus("Please select the make of your vehicle.");
+        } else if (model.length === 0) {
+            setModelStatus("Please select the model of your vehicle.");
+        } else {
+            setYearStatus('');
+            setMakeStatus('');
+            setModelStatus('');
+            setOpen(false);
+            alert("Your vehicle has been saved!");
+        }
+    }
     
     React.useEffect(() => {
         fetchData();
@@ -109,6 +129,7 @@ export default function VehicleForm() {
                         <Select
                             name="year"
                             value={year}
+                            required
                             onChange={(event) => {
                                 setYear(event.target.value);
                                 setYearFilledOut(true);
@@ -119,6 +140,7 @@ export default function VehicleForm() {
                                     }
                                 }
                                 newOptionsList.sort((a, b) => a - b);
+                                setYearStatus('');
                                 setMakeList(newOptionsList);
                             }}
                             >
@@ -128,6 +150,7 @@ export default function VehicleForm() {
                                 </MenuItem>
                             ))}                
                         </Select>
+                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{yearStatus}</Typography>
                     </FormControl>
                     <br></br>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
@@ -135,6 +158,7 @@ export default function VehicleForm() {
                         <Select
                             name="make"
                             value={make}
+                            required
                             disabled={!yearFilledOut}
                             onChange={event => {
                                 setMake(event.target.value);
@@ -145,6 +169,7 @@ export default function VehicleForm() {
                                         newOptionsList.push(allOptionsList[i].model);
                                     }
                                 }
+                                setMakeStatus('');
                                 setModelList(newOptionsList);
                             }}
                             >
@@ -154,6 +179,7 @@ export default function VehicleForm() {
                                 </MenuItem>
                             ))}
                         </Select>
+                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{makeStatus}</Typography>
                     </FormControl>  
                     <br></br>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
@@ -162,7 +188,11 @@ export default function VehicleForm() {
                             name="model"
                             value={model}
                             disabled={!makeFilledOut}
-                            onChange={event => setModel(event.target.value)}
+                            required
+                            onChange={event =>  {
+                                setModelStatus('');
+                                setModel(event.target.value);
+                            }}
                             >
                             {modelList.map((model, index) => (
                                 <MenuItem key={index} value={model}>
@@ -170,10 +200,11 @@ export default function VehicleForm() {
                                 </MenuItem>
                             ))}                       
                         </Select>
+                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpen(false)}>OK</Button>
+                    <Button onClick={handleOnSubmit}>OK</Button>
                 </DialogActions>
             </Dialog>
         </>
