@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate} from 'react-router-dom'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -13,17 +13,16 @@ import UserProfile from './pages/UserProfile';
 import VehiclesPage from './pages/VehiclesPage';
 import Dashboard from './pages/Dashboard';
 
-
-
 function App() {
   return (
     <div className="App">
       <Routes> 
         <Route exact path="/" element={<HomePage />} />
         <Route exact path="/login" element={<LoginPage />} />
-        <Route exact path="/profile" element={<UserProfile />} />
+        <Route exact path="/profile/:id" element={<UserProfile />} />
         <Route exact path="/vehicles" element={<VehiclesPage />} />
         <Route exact path="/dashboard/:startLocation/:endLocation/:startDate/:endDate" element={<Dashboard />} />
+        <Route path="*" element={<Navigate to="/" replace />}/>
       </Routes>
     </div>
   );

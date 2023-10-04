@@ -27,7 +27,7 @@ function TopBar() {
   };
 
   const handleProfile = () => {
-    navigate('/profile');
+    navigate(`/profile/${user._id}`);
   };
 
   const handleLogout = () => {
