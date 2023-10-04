@@ -21,12 +21,13 @@ const CreateTripContainer = styled('div')({
     zIndex: 2, // Set a higher z-index for CreateTrip to make it appear above Map
     backgroundColor: 'rgba(255, 255, 255, 0)', // Make CreateTripContainer semi-transparent
 });
-const MapWrapper = styled('div')({
-    width: '100%', // Set the width to 100%
-    height: '100%', // Set the height to 100%
+const MapWrapper = styled(Card)({
+    width: '50%', // Set the width to 100%
+    height: '90%', // Set the height to 100%
     position: 'absolute', // Set position to absolute
-    top: 0,
-    left: 0,
+    top: '4%',
+    left: '2%',
+    borderRadius: 20,
 });
 
 export default function Dashboard() {
@@ -51,12 +52,12 @@ export default function Dashboard() {
       };
 
       return (
-        <div style={{ backgroundColor: 'white', height: '100vh' }}>
+        <div style={{ backgroundColor: '#F3F3F5', height: '100vh' }}>
             <TopBar></TopBar>
             <Container>
                 <CreateTripContainer>
                     {/* Add your CreateTrip component here */}
-                    <CreateTrip />
+                    <CreateTrip/>
                 </CreateTripContainer>
                 <MapWrapper>
                     {/* Add your Map component here */}
