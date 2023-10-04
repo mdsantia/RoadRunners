@@ -98,16 +98,16 @@ export default function VehicleForm() {
                 model: model,
                 year: year,
                 color: color,
-                mpg: mpg
+                mpgGiven: mpg
             }).then(response => {
                 const newUser = response.data;
                 updateUser(newUser);
                 alert("Your vehicle has been saved!");
-                setOpen(false);
+                //setOpen(false);
             }).catch(error => {
-                console.log(error);
-                alert("There was an error saving your vehicle. Please try again.")
-                setOpen(false);
+                console.log(error.response.data.error);
+                alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");
+                //setOpen(false);
             });
 
         }
