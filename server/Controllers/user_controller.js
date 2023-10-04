@@ -76,15 +76,7 @@ const addVehicle = async (req, res) => {
         return;
     }
 
-    if (mpg == 0) {
-        // Get MPG from API
-        const newMPG = await getMPG(make, model, year);
-        if (!newMPG) {
-            res.status(400).json({error: 'MPG not found'});
-            return;
-        }
-        mpg = newMPG;
-    }
+    mpg = mpg ? mpg : await getMPG(make, model, year);
     // Create new vehicle
     const newVehicle ={
         make,
