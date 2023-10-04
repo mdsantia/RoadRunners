@@ -28,7 +28,7 @@ export default function Map({directionsResponse}) {
     return (
         <GoogleMap
           center={userLocation || { lat: 40.43855441888486, lng: -86.91319150336594 }}
-          zoom={15}
+          zoom={5}
           mapContainerStyle={{ width: '100%', height: '100%' }}
           options={{
             streetViewControl: false,
