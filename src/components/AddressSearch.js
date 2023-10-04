@@ -69,6 +69,7 @@ export default function AddressSearch({ label, onInputChange }) {
       getOptionLabel={(option) =>
         typeof option === 'string' ? option : option.description
       }
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       filterOptions={(x) => x}
       options={options}
       autoComplete

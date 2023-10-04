@@ -68,7 +68,7 @@ function TopBar() {
             </Menu>
           {/*show when not signed */}
           <Button
-          OnClick={handleSignup}
+          onClick={handleSignup}
           >Sign Up
           </Button>
           </Box>

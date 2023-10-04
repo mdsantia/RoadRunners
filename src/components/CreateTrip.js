@@ -39,6 +39,7 @@ export default function HomePage() {
       //redirect to dashboard on success
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
         console.log("redirecting");
+        console.log("Starting Location:" ,startLocation);
         navigate('/dashboard');
         // buildRoadTrip();
       } else{
@@ -47,14 +48,7 @@ export default function HomePage() {
       }
   }
 
-  const RenderComponent = () => {
-    if (shouldDisplayWarning) {
-      console.log("display error");
-      return <Alert severity="error">This is an error alert — check it out!</Alert>;
-    } else {
-      return null;
-    }
-  };
+
 
   return (
     <StyledCard>
@@ -71,9 +65,7 @@ export default function HomePage() {
           <SearchIcon />
         </Fab>
       </Stack>
-      <Stack>
-      {RenderComponent}
-      </Stack>
+    
     </StyledCard>
   );
 }
