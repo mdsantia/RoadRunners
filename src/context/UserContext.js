@@ -7,20 +7,20 @@ export const userReducer = (state, action) => {
         case 'LOGIN':
             return {
                 user: action.payload
-            }
+            };
         case 'LOGOUT':
             return {
                 user: null
-            }
+            };
         default:
-            return state
+            return state;
     }
 }
 
 export const UserContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(userReducer, {
         user: null
-    })
+    });
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -28,9 +28,19 @@ export const UserContextProvider = ({ children }) => {
             dispatch({type: 'LOGIN', payload: user});
         }
     }, []);
-    
+
+    const setUser = (user) => {
+        dispatch({type: 'LOGIN', payload: user});
+        localStorage.setItem('user', JSON.stringify(user));
+    }
+
+    const logout = () => {
+        dispatch({type: 'LOGOUT'});
+        localStorage.removeItem('user');
+    }
+
     return (
-        <UserContext.Provider value={{...state, dispatch}}>
+        <UserContext.Provider value={{ user: state.user, setUser, logout }}>
             { children }
         </UserContext.Provider>
     )
