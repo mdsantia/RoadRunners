@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
 import { Card, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/TopBar';
 import CreateTrip from '../components/CreateTrip'
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Map from '../components/Map';
 import Divider from '@mui/material/Divider';
 
@@ -31,24 +31,7 @@ const MapWrapper = styled('div')({
 
 export default function Dashboard() {
 
-    const [startLocation, setStartLocation] = useState("Chicago");
-    const [endLocation, setEndLocation] = useState(null);
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-
-    const [directionsResponse, setDirectionsResponse] = useState(null);
-
-    const buildRoadTrip = () => {
-        axios
-          .get('/api/roadtrip/newRoadTrip')
-          .then((res) => {
-            console.log(res);
-            setDirectionsResponse(res.data); // Use res.data to set the directionsResponse
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      };
+    const { startLocation, endLocation, startDate, endDate } = useParams();
 
       return (
         <div style={{ backgroundColor: 'white', height: '100vh' }}>
@@ -56,11 +39,11 @@ export default function Dashboard() {
             <Container>
                 <CreateTripContainer>
                     {/* Add your CreateTrip component here */}
-                    <CreateTrip />
+                    <CreateTrip startLocation={startLocation} endLocation={endLocation} startDate={startDate} endDate={endDate}/>
                 </CreateTripContainer>
                 <MapWrapper>
                     {/* Add your Map component here */}
-                    <Map directionsResponse={directionsResponse}/>
+                    <Map />
                 </MapWrapper>
             </Container>
         </div>

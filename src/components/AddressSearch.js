@@ -26,8 +26,8 @@ function loadScript(src, position, id, onLoad) {
   position.appendChild(script);
 }
 
-export default function AddressSearch({ label, onInputChange }) {
-  const [value, setValue] = React.useState(null);
+export default function AddressSearch({ initial, label, onInputChange }) {
+  const [value, setValue] = React.useState(initial);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
