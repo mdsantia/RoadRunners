@@ -40,6 +40,7 @@ export default function HomePage() {
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
         console.log("redirecting");
         navigate('/dashboard');
+        // buildRoadTrip();
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);

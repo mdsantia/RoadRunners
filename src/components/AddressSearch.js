@@ -9,7 +9,7 @@ import { debounce } from '@mui/material/utils';
 
 export const GOOGLE_MAPS_API_KEY = 'AIzaSyBQSWehf4LQiWZKhB7NNmh0LEOoWJmV3-Y';
 
-function loadScript(src, position, id) {
+function loadScript(src, position, id, onLoad) {
   if (!position) {
     return;
   }
@@ -18,10 +18,13 @@ function loadScript(src, position, id) {
   script.setAttribute('async', '');
   script.setAttribute('id', id);
   script.src = src;
+
+  if (onLoad && typeof onLoad === 'function') {
+    script.onload = onLoad;
+  }
+
   position.appendChild(script);
 }
-
-const autocompleteService = { current: null };
 
 export default function AddressSearch({ label, onInputChange }) {
   const [value, setValue] = React.useState(null);
@@ -35,62 +38,29 @@ export default function AddressSearch({ label, onInputChange }) {
     }
   };
 
-  if (typeof window !== 'undefined' && !loaded.current) {
-    if (!document.querySelector('#google-maps')) {
+  const fetch = React.useMemo(
+    () =>
+      debounce((request, callback) => {
+        if (window.google && window.google.maps.places) {
+          const autocompleteService = new window.google.maps.places.AutocompleteService();
+          autocompleteService.getPlacePredictions(request, callback);
+        }
+      }, 400),
+    []
+  );
+
+  React.useEffect(() => {
+    if (!window.google && !loaded.current) {
       loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
         document.querySelector('head'),
         'google-maps',
+        () => {
+          loaded.current = true;
+        }
       );
     }
-
-    loaded.current = true;
-  }
-
-  const fetch = React.useMemo(
-    () =>
-      debounce((request, callback) => {
-        autocompleteService.current.getPlacePredictions(request, callback);
-      }, 400),
-    [],
-  );
-
-  React.useEffect(() => {
-    let active = true;
-
-    if (!autocompleteService.current && window.google) {
-      autocompleteService.current =
-        new window.google.maps.places.AutocompleteService();
-    }
-    if (!autocompleteService.current) {
-      return undefined;
-    }
-
-    if (inputValue === '') {
-      setOptions(value ? [value] : []);
-      return undefined;
-    }
-
-    fetch({ input: inputValue }, (results) => {
-      if (active) {
-        let newOptions = [];
-
-        if (value) {
-          newOptions = [value];
-        }
-
-        if (results) {
-          newOptions = [...newOptions, ...results];
-        }
-
-        setOptions(newOptions);
-      }
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [value, inputValue, fetch]);
+  }, []);
 
   return (
     <Autocomplete
@@ -113,6 +83,15 @@ export default function AddressSearch({ label, onInputChange }) {
       }}
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);
+        fetch({ input: newInputValue }, (results) => {
+          let newOptions = [];
+
+          if (results) {
+            newOptions = [...newOptions, ...results];
+          }
+
+          setOptions(newOptions);
+        });
       }}
       renderInput={(params) => <TextField {...params} label={label} fullWidth />}
       renderOption={(props, option) => {
