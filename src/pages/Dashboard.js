@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Card, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/TopBar';
@@ -11,7 +12,7 @@ const Container = styled('div')({
     display: 'flex',
     justifyContent: 'left',
     alignItems: 'left',
-    height: '80vh',
+    height: '90vh',
     flexDirection: 'column',
     position: 'relative', // Set position to relative
 });
@@ -37,6 +38,18 @@ export default function Dashboard() {
     const [endDate, setEndDate] = useState(null);
 
     const [directionsResponse, setDirectionsResponse] = useState(null);
+
+    const buildRoadTrip = () => {
+        axios
+          .get('/api/roadtrip/newRoadTrip')
+          .then((res) => {
+            console.log(res);
+            setDirectionsResponse(res.data); // Use res.data to set the directionsResponse
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      };
 
     return (
         <div style={{ backgroundColor: 'white', height: '100vh' }}>
