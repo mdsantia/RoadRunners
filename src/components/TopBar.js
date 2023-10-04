@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,6 +22,7 @@ const settings = ['Profile', 'Dashboard', 'Logout'];
 function TopBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const profile_picture = React.useState("/static/images/avatar/2.jpg");
   const user = useUserContext();
 
   const navigate = useNavigate();
@@ -42,11 +44,12 @@ function TopBar() {
     setAnchorElUser(null);
   };
 
+  /*
   const handleLogout = () => {
     localStorage.removeItem('user');
     useUserContext({ type: 'LOGOUT' });
     navigate('/');
-  };
+  };*/
 
   return (
     <AppBar position="static" style={{backgroundColor:'white', height:'95px'}}>
@@ -82,7 +85,7 @@ function TopBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="RC" src={user.profile_picture} />
+                <Avatar alt="RC" src={profile_picture} />
               </IconButton>
             </Tooltip>
             <Menu
