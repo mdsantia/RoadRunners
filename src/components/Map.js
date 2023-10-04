@@ -1,17 +1,16 @@
 import { React, useState } from 'react';
 import { GoogleMap, useJsApiLoader, DirectionsRenderer } from "@react-google-maps/api";
 import { GOOGLE_MAPS_API_KEY } from './AddressSearch';
-import { TextField } from '@mui/material';
 
 export default function Map({directionsResponse}) {
-    const [map, setMap] = useState(/** @type google.maps.Map */ (null));
-    // const {isLoaded} = useJsApiLoader({
-    //     googleMapsApiKey: GOOGLE_MAPS_API_KEY
-    // })
+    // const [map, setMap] = useState(/** @type google.maps.Map */ (null));
+    const {isLoaded} = useJsApiLoader({
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY
+    })
 
-    // if (!isLoaded) {
-    //     return <TextField></TextField>
-    // }
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }
     return (
         <GoogleMap 
         center={{lat: 40.43855441888486, lng: -86.91319150336594}} 
@@ -22,7 +21,7 @@ export default function Map({directionsResponse}) {
             mapTypeControl: false,
             fullscreenControl: false
         }}
-        onLoad = {map => setMap(map)}
+        // onLoad = {map => setMap(map)}
         >
             {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />

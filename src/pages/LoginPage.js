@@ -53,7 +53,6 @@ export default function LoginPage() {
         callback: handleGoogleSignIn
       });
 
-      /* global google */
       google.accounts.id.renderButton(
         document.getElementById("signInDiv"),
         { theme: "outline", size: "large" }

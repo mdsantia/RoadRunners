@@ -12,7 +12,6 @@ import HomePage from './pages/HomePage';
 import UserProfile from './pages/UserProfile';
 import VehiclesPage from './pages/VehiclesPage';
 import Dashboard from './pages/Dashboard';
-import MapPage from './pages/MapPage'
 
 
 
@@ -25,7 +24,6 @@ function App() {
         <Route exact path="/profile" element={<UserProfile />} />
         <Route exact path="/vehicles" element={<VehiclesPage />} />
         <Route exact path="/dashboard" element={<Dashboard />} />
-        <Route exact path="/map" element={<MapPage />} />
       </Routes>
     </div>
   );
