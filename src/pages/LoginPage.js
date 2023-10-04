@@ -52,7 +52,6 @@ export default function LoginPage() {
       google_expiry: google_expiry,
       profile_picture: profile_picture
     }).then((res) => {
-      console.log(res.data);
       localStorage.setItem('user', JSON.stringify(res.data));
       dispatch({ type: 'LOGIN', payload: res.data });
       window.location.href = "/";
