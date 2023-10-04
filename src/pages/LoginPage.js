@@ -1,7 +1,9 @@
 import { React, useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
 import jwt_decode from "jwt-decode";
+import { useUserContext } from '../hooks/useUserContext';
 
 import Logo from '../assets/rr-logo.png';
 import image from '../assets/login-bg.jpg';
@@ -30,14 +32,33 @@ const StyledButton = styled(Button)({
 
 export default function LoginPage() {
   const [user, setUser] = useState({});
+  const { dispatch } = useUserContext();
 
   const clientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
 
-  const handleGoogleSignIn = (response) => {
+  const handleGoogleSignIn = async (response) => {
     // Implement Google Sign In Logic here
     console.log("Encoded JWT ID Token:" + response.credential + "\nDECODED: ");
     var userObject = jwt_decode(response.credential);
-    console.log(userObject);
+    const email = userObject.email;
+    const name = userObject.name;
+    const google_id = userObject.sub;
+    const google_expiry = userObject.exp;
+    const profile_picture = userObject.picture;
+    await axios.post('/api/user/checkAndSaveUser', {
+      name: name,
+      email: email,
+      google_id: google_id,
+      google_expiry: google_expiry,
+      profile_picture: profile_picture
+    }).then((res) => {
+      console.log(res.data);
+      localStorage.setItem('user', JSON.stringify(res.data));
+      dispatch({ type: 'LOGIN', payload: res.data });
+      window.location.href = "/";
+    }).catch((err) => {
+      console.log(err);
+    });
     setUser(userObject);
   };
 

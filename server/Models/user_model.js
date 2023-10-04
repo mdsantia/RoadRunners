@@ -33,9 +33,7 @@ const User = new Schema({
         type: String,
         required: true
     },
-    age: {
-        type: Number,
-    },
+
     vehicles: {
         type: [Vehicle],
         default: []
@@ -45,8 +43,18 @@ const User = new Schema({
         type: Map,
         of: String,
         default: new Map()
+    },
+    google_id: {
+        type: String,
+        required: true
+    },
+    google_expiry: {
+        type: Number,
+        required: true
+    },
+    profile_picture: {
+        type: String,
     }
-    
 });
 
 module.exports = mongoose.model('User', User);

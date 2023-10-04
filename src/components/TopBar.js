@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Logo from '../assets/rr-logo.png'
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../hooks/useUserContext';
 
 const pages = ['/profile'];
 const settings = ['Profile', 'Dashboard', 'Logout'];
@@ -20,6 +21,7 @@ const settings = ['Profile', 'Dashboard', 'Logout'];
 function TopBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const user = useUserContext();
 
   const navigate = useNavigate();
 
@@ -28,16 +30,22 @@ function TopBar() {
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
+
   };
 
   const handleCloseNavMenu = () => {
-
     setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
     console.log("clicked");
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    useUserContext({ type: 'LOGOUT' });
+    navigate('/');
   };
 
   return (
@@ -54,7 +62,7 @@ function TopBar() {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+            <MenuIcon />
             </IconButton>
           
           </Box>
@@ -74,7 +82,7 @@ function TopBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="RC" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="RC" src={user.profile_picture} />
               </IconButton>
             </Tooltip>
             <Menu
