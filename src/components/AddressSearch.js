@@ -15,7 +15,8 @@ function loadScript(src, position, id, onLoad) {
   }
 
   const script = document.createElement('script');
-  script.setAttribute('async', '');
+  script.async = true;
+  script.defer = true;
   script.setAttribute('id', id);
   script.src = src;
 
@@ -24,10 +25,18 @@ function loadScript(src, position, id, onLoad) {
   }
 
   position.appendChild(script);
+
+  return () => {
+    // Remove the script when the component unmounts
+    if (script && script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+  };
 }
 
-export default function AddressSearch({ label, onInputChange }) {
-  const [value, setValue] = React.useState(null);
+export default function AddressSearch({ initial, label, onInputChange }) {
+  const scripts = document.getElementsByTagName('script');
+  const [value, setValue] = React.useState(initial);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
@@ -50,11 +59,11 @@ export default function AddressSearch({ label, onInputChange }) {
   );
 
   React.useEffect(() => {
-    if (!window.google && !loaded.current) {
+    if (!window.google && !loaded.current && !scripts.googlemaps) {
       loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
         document.querySelector('head'),
-        'google-maps',
+        'googlemaps',
         () => {
           loaded.current = true;
         }

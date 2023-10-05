@@ -22,7 +22,7 @@ function App() {
         <Route exact path="/login" element={<LoginPage />} />
         <Route exact path="/profile/:id" element={<UserProfile />} />
         <Route exact path="/vehicles" element={<VehiclesPage />} />
-        <Route exact path="/dashboard" element={<Dashboard />} />
+        <Route exact path="/dashboard/:startLocation/:endLocation/:startDate/:endDate" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/" replace />}/>
       </Routes>
     </div>
