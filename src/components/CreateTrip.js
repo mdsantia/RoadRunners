@@ -43,8 +43,6 @@ export default function HomePage(props) {
   const [endDate, setEndDate] = useState(props.endDate?dayjs(props.endDate):null);
   const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
 
-  const [directionsResponse, setDirectionsResponse] = useState(null);
-
   const buildRoadTrip = () => {
       const roadtripParams = {
         startLocation: startLocation,
@@ -57,7 +55,6 @@ export default function HomePage(props) {
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
           //console.log(res);
-          //setDirectionsResponse(res.data); // Use res.data to set the directionsResponse
           setDirection(res.data); // Set the directionsResponse in the context
         })
         .catch((err) => {
