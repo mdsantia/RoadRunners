@@ -48,8 +48,6 @@ export default function HomePage() {
       }
   }
 
-
-
   return (
     <StyledCard>
       <Stack direction="row" spacing={2}>

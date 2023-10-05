@@ -10,7 +10,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-function CustomTabPanel(props) {
+function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
     return (
@@ -31,7 +31,7 @@ function CustomTabPanel(props) {
   }
 
 
-CustomTabPanel.propTypes = {
+TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
     value: PropTypes.number.isRequired,
@@ -62,18 +62,18 @@ export default function Itinerary() {
             <Tab label="Overview" {...a11yProps(3)} />
           </Tabs>
         </Box>
-        <CustomTabPanel value={value} index={0}>
+        <TabPanel value={value} index={0}>
           Preferences form here
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
           Route options
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
           Attraction list
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={3}>
+        </TabPanel>
+        <TabPanel value={value} index={3}>
           Overview
-        </CustomTabPanel>
+        </TabPanel>
       </Box>
     );
   }
