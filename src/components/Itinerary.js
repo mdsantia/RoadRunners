@@ -9,7 +9,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import RouteIcon from '@mui/icons-material/Route';
+import AttractionsIcon from '@mui/icons-material/Attractions';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -62,10 +65,10 @@ export default function Itinerary() {
       <Box sx={{ width: '100%', paddingTop:'15%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-            <Tab label="Preferences" {...a11yProps(0)} />
-            <Tab label="Routes" {...a11yProps(1)} />
-            <Tab label="Attractions" {...a11yProps(2)} />
-            <Tab label="Overview" {...a11yProps(3)} />
+            <Tab icon={<FavoriteIcon />}  label="Preferences" {...a11yProps(0)} />
+            <Tab icon={<RouteIcon />}  label="Routes" {...a11yProps(1)} />
+            <Tab icon={<AttractionsIcon />} label="Attractions" {...a11yProps(2)} />
+            <Tab icon={<FormatListNumberedIcon />}label="Overview" {...a11yProps(3)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
