@@ -54,9 +54,10 @@ function a11yProps(index) {
 export default function Itinerary() {
 
   const {user} = useUserContext();
-
-
   const [value, setValue] = React.useState(0);
+  console.log("username:", user.name);
+  console.log("vehicle", user.vehicles);
+  console.log("preferences", user.preferences);
 
 
   const handleChange = (event, newValue) => {
@@ -69,10 +70,10 @@ export default function Itinerary() {
   const housingOptions = ["Hotels", "Motels", "Bed and Breakfasts", "RV Parks & Campgrounds", "Vacation Rentals", "Hostels", "Resorts", "Roadside Inns & Lodges", "Cabins & Cottages"];
   const vehicleOptions = ["Audi Q7"];
   const [open, setOpen] = React.useState(true);
-  const [budget, setBudget] = React.useState('');
+  const [budget, setBudget] = React.useState(user.name);
   const [commuteTime, setCommuteTime] = React.useState('');
   const [carsickRating, setCarsickRating] = React.useState('');
-  const [selectedVehicle, setSelectedVehicle] = React.useState('');
+  const [selectedVehicle, setSelectedVehicle] = React.useState(user.vehicles);
   const [attractionSelection, setAttractionSelection] = React.useState([]);
   const [diningSelection, setDiningSelection] = React.useState([]);
   const [housingSelection, setHousingSelection] = React.useState([]);
