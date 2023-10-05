@@ -47,7 +47,7 @@ export default function Dashboard() {
 
     const { startLocation, endLocation, startDate, endDate } = useParams();
     const [nonce, setNonce] = useState('');
-    
+
     useEffect(() => {
         // Fake nonce generation for purposes of demonstration
         const uuid = uuidv4();
@@ -66,7 +66,7 @@ export default function Dashboard() {
                 
                 <MapWrapper>
                     {/* Add your Map component here */}
-                    <Map nonce={nonce}/>
+                    <Map />
                 </MapWrapper>
                 <Wrapper>
                 <Itinerary></Itinerary>
