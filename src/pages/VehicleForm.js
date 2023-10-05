@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
-import { Button, InputLabel, MenuItem, FormControl, Select, Input, Grid } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography, Divider } from '@mui/material';
+import { Button, InputLabel, MenuItem, FormControl, Select, Input, Grid, createTheme, ThemeProvider } from '@mui/material';
 import axios from 'axios';
 import { useUserContext } from '../hooks/useUserContext';
+import Logo from '../assets/rr-logo.png';
 
 
 const options = {
@@ -17,6 +18,23 @@ const options = {
       'X-RapidAPI-Host': 'car-data.p.rapidapi.com'
     }
 };
+
+const theme = createTheme({
+    typography: {
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+    },
+  });
 
 export default function VehicleForm() {
     const [open, setOpen] = React.useState(true);
@@ -79,21 +97,31 @@ export default function VehicleForm() {
     };
 
     const handleSubmit = async (event) => {
+        console.log("here\n");
+        console.log(color.length);
         var success = true;
         event.preventDefault();
         if (year.length === 0) {
             setYearStatus("Please select the year of your vehicle.");
-        } else if (make.length === 0) {
-            setMakeStatus("Please select the make of your vehicle.");
-        } else if (model.length === 0) {
-            setModelStatus("Please select the model of your vehicle.");
-        } else if (color.length === 0) {
-            setColorStatus("Please enter the color of your vehicle.");
         }  else {
             setYearStatus('');
+        }
+        if (make.length === 0) {
+            setMakeStatus("Please select the make of your vehicle.");
+        } else {
             setMakeStatus('');
+        }
+        if (model.length === 0) {
+            setModelStatus("Please select the model of your vehicle.");
+        } else {
             setModelStatus('');
+        }
+        if (color.length === 0) {
+            setColorStatus("Please enter the color of your vehicle.");
+        } else {
             setColorStatus('');
+        }
+        if (yearStatus.length === 0 && makeStatus.length === 0 && modelStatus.length === 0 && colorStatus.length === 0) {
             await axios.post('/api/user/addVehicle', {
                 email: user.email,
                 make: make,
@@ -105,18 +133,24 @@ export default function VehicleForm() {
                 const newUser = response.data;
                 updateUser(newUser);
                 alert("Your vehicle has been saved!");
-                //setOpen(false);
             }).catch(error => {
                 console.log(error.response.data.error);
                 alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");
-                //setOpen(false);
             });
-
         }
     }
 
     const handleSkip = () => {
         setOpen(false);
+        setYear('');
+        setMake('');
+        setModel('');
+        setColor('');
+        setMPG('');
+        setYearStatus('');
+        setMakeStatus('');
+        setModelStatus('')
+        setColorStatus('');
         /* SEND DEFAULT DATA TO DATABASE */
     }
     
@@ -125,150 +159,155 @@ export default function VehicleForm() {
     }, []);
 
     return (
-        <>
-            {/* ADDS BACKGROUND BLUR EFFECT */}
-            {open && (
-                <div
-                style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                    backdropFilter: 'blur(5px)',
-                    zIndex: 999,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-                />
-            )}
+        <ThemeProvider theme={theme}>
+            <>
+                {/* ADDS BACKGROUND BLUR EFFECT */}
+                {open && (
+                    <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                        backdropFilter: 'blur(5px)',
+                        zIndex: 999,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    />
+                )}
 
-            <Dialog open={open} fullWidth>
-                <DialogTitle>Vehicle Information</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Please enter the year, make, and model of the primary vehicle you would like to use for road trips.
-                    </DialogContentText>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="yearLabel">Year</InputLabel>
-                        <Select
-                            name="year"
-                            value={year}
-                            required
-                            onChange={(event) => {
-                                setYear(event.target.value);
-                                setYearFilledOut(true);
-                                let newOptionsList = [];
-                                for (let i = 0; i < allOptionsList.length; i++) {
-                                    if (allOptionsList[i].year === event.target.value && !(newOptionsList.includes(allOptionsList[i].make))) {
-                                        newOptionsList.push(allOptionsList[i].make);
+                <Dialog open={open} fullWidth maxWidth="sm">
+                    <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
+                    <DialogTitle style={{ padding: '20px', margin: '0', fontSize: '25px' }}>Vehicle Information</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Please enter the year, make, and model of the primary vehicle you would like to use for road trips.
+                        </DialogContentText>
+                        <br></br>
+                        <Divider></Divider>
+                        <br></br>
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                            <InputLabel id="yearLabel">Year</InputLabel>
+                            <Select
+                                name="year"
+                                value={year}
+                                required
+                                onChange={(event) => {
+                                    setYear(event.target.value);
+                                    setYearFilledOut(true);
+                                    let newOptionsList = [];
+                                    for (let i = 0; i < allOptionsList.length; i++) {
+                                        if (allOptionsList[i].year === event.target.value && !(newOptionsList.includes(allOptionsList[i].make))) {
+                                            newOptionsList.push(allOptionsList[i].make);
+                                        }
                                     }
-                                }
-                                newOptionsList.sort((a, b) => a - b);
-                                setYearStatus('');
-                                setMakeList(newOptionsList);
-                            }}
-                            >
-                            {yearList.map((year, index) => (
-                                <MenuItem key={index} value={year}>
-                                    {year}
-                                </MenuItem>
-                            ))}                
-                        </Select>
-                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{yearStatus}</Typography>
-                    </FormControl>
-                    <br></br>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="makeLabel">Make</InputLabel>
-                        <Select
-                            name="make"
-                            value={make}
-                            required
-                            disabled={!yearFilledOut}
-                            onChange={event => {
-                                setMake(event.target.value);
-                                setMakeFilledOut(true);
-                                let newOptionsList = [];
-                                for (let i = 0; i < allOptionsList.length; i++) {
-                                    if (allOptionsList[i].year === year && allOptionsList[i].make === event.target.value && !(newOptionsList.includes(allOptionsList[i].model))) {
-                                        newOptionsList.push(allOptionsList[i].model);
+                                    newOptionsList.sort((a, b) => a - b);
+                                    setYearStatus('');
+                                    setMakeList(newOptionsList);
+                                }}
+                                >
+                                {yearList.map((year, index) => (
+                                    <MenuItem key={index} value={year}>
+                                        {}
+                                    </MenuItem>
+                                ))}                
+                            </Select>
+                            <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{yearStatus}</Typography>
+                        </FormControl>
+                        <br></br>
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                            <InputLabel id="makeLabel">Make</InputLabel>
+                            <Select
+                                name="make"
+                                value={make}
+                                required
+                                disabled={!yearFilledOut}
+                                onChange={event => {
+                                    setMake(event.target.value);
+                                    setMakeFilledOut(true);
+                                    let newOptionsList = [];
+                                    for (let i = 0; i < allOptionsList.length; i++) {
+                                        if (allOptionsList[i].year === year && allOptionsList[i].make === event.target.value && !(newOptionsList.includes(allOptionsList[i].model))) {
+                                            newOptionsList.push(allOptionsList[i].model);
+                                        }
                                     }
-                                }
-                                setMakeStatus('');
-                                setModelList(newOptionsList);
-                            }}
-                            >
-                            {makeList.map((make, index) => (
-                                <MenuItem key={index} value={make}>
-                                    {make}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{makeStatus}</Typography>
-                    </FormControl>  
-                    <br></br>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="modelLabel">Model</InputLabel>
-                        <Select
-                            name="model"
-                            value={model}
-                            disabled={!makeFilledOut}
-                            required
-                            onChange={event =>  {
-                                setModelStatus('');
-                                setModel(event.target.value);
-                            }}
-                            >
-                            {modelList.map((model, index) => (
-                                <MenuItem key={index} value={model}>
-                                    {model}
-                                </MenuItem>
-                            ))}                       
-                        </Select>
-                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
-                    </FormControl>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="colorLabel">Color</InputLabel>
-                        <Input
-                            name="color"
-                            value={color} 
-                            required
-                            onChange={event =>  {
-                                if (event.target.value.length !== 0) {
-                                    setColorStatus('');
-                                }
-                                setColor(event.target.value);
-                            }}
-                            >                   
-                        </Input>
-                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
-                    </FormControl>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="mpgLabel">Miles Per Gallon</InputLabel>
-                        <Input
-                            name="mpg"
-                            value={mpg}                  
-                            onChange={event =>  {
-                                setMPG(event.target.value);
-                            }}
-                            >                   
-                        </Input>
-                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
-                    </FormControl>
-                </DialogContent>
-                <DialogActions sx={{ padding: '16px', justifyContent: 'space-between' }}>
-                    <Grid container justifyContent="flex-start">
-                        <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px' }}>
-                            Skip
+                                    setMakeStatus('');
+                                    setModelList(newOptionsList);
+                                }}
+                                >
+                                {makeList.map((make, index) => (
+                                    <MenuItem key={index} value={make}>
+                                        {make}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{makeStatus}</Typography>
+                        </FormControl>  
+                        <br></br>
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                            <InputLabel id="modelLabel">Model</InputLabel>
+                            <Select
+                                name="model"
+                                value={model}
+                                disabled={!makeFilledOut}
+                                required
+                                onChange={event =>  {
+                                    setModelStatus('');
+                                    setModel(event.target.value);
+                                }}
+                                >
+                                {modelList.map((model, index) => (
+                                    <MenuItem key={index} value={model}>
+                                        {model}
+                                    </MenuItem>
+                                ))}                       
+                            </Select>
+                            <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
+                        </FormControl>
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                            <InputLabel id="colorLabel">Color</InputLabel>
+                            <Input
+                                name="color"
+                                value={color} 
+                                required
+                                onChange={event =>  {
+                                    if (event.target.value.length !== 0) {
+                                        setColorStatus('');
+                                    }
+                                    setColor(event.target.value);
+                                }}
+                                >                   
+                            </Input>
+                            <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{colorStatus}</Typography>
+                        </FormControl>
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                            <InputLabel id="mpgLabel">Miles Per Gallon</InputLabel>
+                            <Input
+                                name="mpg"
+                                value={mpg}                  
+                                onChange={event =>  {
+                                    setMPG(event.target.value);
+                                }}
+                                >                   
+                            </Input>
+                        </FormControl>
+                    </DialogContent>
+                    <DialogActions sx={{ padding: '16px', justifyContent: 'space-between' }}>
+                        <Grid container justifyContent="flex-start">
+                            <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'red', color: 'white'}}>
+                                Skip
+                            </Button>
+                        </Grid>
+                        <Button onClick={handleSubmit} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'red', color: 'white' }}>
+                            Done
                         </Button>
-                    </Grid>
-                    <Button onClick={handleSubmit} variant="contained" color="primary" sx={{ width: '120px' }}>
-                        Done
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
+                    </DialogActions>
+                </Dialog>
+            </>
+        </ThemeProvider>
     );
 }
