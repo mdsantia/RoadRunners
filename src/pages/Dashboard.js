@@ -25,7 +25,7 @@ const CreateTripContainer = styled('div')({
 });
 const MapWrapper = styled(Card)({
     width: '50%', // Set the width to 100%
-    height: '90%', // Set the height to 100%
+    height: '95%', // Set the height to 100%
     position: 'absolute', // Set position to absolute
     top: '4%',
     left: '1%',
@@ -34,8 +34,8 @@ const MapWrapper = styled(Card)({
 });
 
 const Wrapper = styled(Card)({
-    width: '45%', // Set the width to 100%
-    height: '90%', // Set the height to 100%
+    width: '47%', // Set the width to 100%
+    height: '95%', // Set the height to 100%
     position: 'absolute', // Set position to absolute,
     borderRadius: 20,
     right:'1%',
