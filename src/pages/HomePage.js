@@ -16,7 +16,7 @@ const Container = styled('div')({
   justifyContent: 'center',
   alignItems: 'center',
   height: '80vh',
-  flexDirection: 'column'
+  flexDirection: 'column',
 });
 
 
@@ -51,7 +51,18 @@ export default function HomePage() {
 
 
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh' , backgroundImage:`url(${bg})`, backgroundSize: 'cover',}}>
+    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100vh'}}>
+      <div style={{
+    backgroundImage: `url(${bg})`,
+    backgroundSize: 'cover',
+    filter: 'blur(7px)',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: -1,
+  }}></div>
       <PreferencesForm></PreferencesForm>
       <TopBar></TopBar>
       <Container>
