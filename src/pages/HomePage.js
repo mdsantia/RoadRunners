@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import image from '../assets/login-bg.jpg'
+import bg from '../assets/topography-bg.jpg'
 import axios from 'axios';
 import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
@@ -50,7 +51,7 @@ export default function HomePage() {
 
 
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh' }}>
+    <div style={{ backgroundColor: 'white', height: '100vh' , backgroundImage:`url(${bg})`, backgroundSize: 'cover',}}>
       <PreferencesForm></PreferencesForm>
       <TopBar></TopBar>
       <Container>
