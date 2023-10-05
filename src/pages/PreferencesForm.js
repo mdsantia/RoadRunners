@@ -131,6 +131,7 @@ export default function PreferencesForm() {
             } ).then((res) => {
                 const newUser = res.data;
                 updateUser(newUser);
+                console.log("printing new user:", newUser)
             }).catch((err) => {
                 console.log(err);
             });
