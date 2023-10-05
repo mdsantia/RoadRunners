@@ -78,9 +78,10 @@ export default function HomePage(props) {
   }
 
   useEffect(() => {
+    if (props) {
       buildRoadTrip();
-    
-  }, []);
+    }
+  }, [props]);
 
   return (
     <StyledCard>

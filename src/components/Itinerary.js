@@ -9,8 +9,17 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import RouteIcon from '@mui/icons-material/Route';
+import AttractionsIcon from '@mui/icons-material/Attractions';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
-function CustomTabPanel(props) {
+function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
     return (
@@ -31,7 +40,7 @@ function CustomTabPanel(props) {
   }
 
 
-CustomTabPanel.propTypes = {
+TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
     value: PropTypes.number.isRequired,
@@ -56,24 +65,36 @@ export default function Itinerary() {
       <Box sx={{ width: '100%', paddingTop:'15%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-            <Tab label="Preferences" {...a11yProps(0)} />
-            <Tab label="Routes" {...a11yProps(1)} />
-            <Tab label="Attractions" {...a11yProps(2)} />
-            <Tab label="Overview" {...a11yProps(3)} />
+            <Tab icon={<FavoriteIcon />}  label="Preferences" {...a11yProps(0)} />
+            <Tab icon={<RouteIcon />}  label="Routes" {...a11yProps(1)} />
+            <Tab icon={<AttractionsIcon />} label="Attractions" {...a11yProps(2)} />
+            <Tab icon={<FormatListNumberedIcon />}label="Overview" {...a11yProps(3)} />
           </Tabs>
         </Box>
-        <CustomTabPanel value={value} index={0}>
-          Preferences form here
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
+        <TabPanel value={value} index={0}>
+        <FormControl>
+      <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+      <RadioGroup
+        row
+        aria-labelledby="demo-row-radio-buttons-group-label"
+        name="row-radio-buttons-group"
+      >
+        <FormControlLabel value="female" control={<Radio />} label="Female" />
+        <FormControlLabel value="male" control={<Radio />} label="Male" />
+        <FormControlLabel value="other" control={<Radio />} label="Other" />
+     
+      </RadioGroup>
+    </FormControl>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
           Route options
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
           Attraction list
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={3}>
+        </TabPanel>
+        <TabPanel value={value} index={3}>
           Overview
-        </CustomTabPanel>
+        </TabPanel>
       </Box>
     );
   }
