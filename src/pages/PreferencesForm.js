@@ -10,12 +10,15 @@ export default function PreferencesForm() {
     const diningOptions = ["Fast Food", "Fine Dining", "Casual Dining", "Cafés/Coffee Shops", "Buffets", "Food Trucks", "Family Restaurants", "Vegetarian/Vegan", "Ethnic/International", "Diners"];
     const housingOptions = ["Hotels", "Motels", "Bed and Breakfasts", "RV Parks & Campgrounds", "Vacation Rentals", "Hostels", "Resorts", "Roadside Inns & Lodges", "Cabins & Cottages"];
     const [open, setOpen] = React.useState(true);
-    const [budget, setBudget] = React.useState(0);
+    const [budget, setBudget] = React.useState('');
     const [commuteTime, setCommuteTime] = React.useState('');
     const [carsickRating, setCarsickRating] = React.useState(0);
     const [attractionSelection, setAttractionSelection] = React.useState([]);
     const [diningSelection, setDiningSelection] = React.useState([]);
     const [housingSelection, setHousingSelection] = React.useState([]);
+
+    const [budgetStatus, setBudgetStatus] = React.useState([]);
+    const [commuteTimeStatus, setCommuteTimeStatus] = React.useState([]);
 
     
     const numOptionsPerColumn = 3;
@@ -53,13 +56,54 @@ export default function PreferencesForm() {
         }
     }
 
-    const handleSubmit = () => {
-        setOpen(false);
+    const checkBudgetFormat = (input) => {
+        const budgetRegex = /^\d+(\.\d{2})?$/;
+        if (!budgetRegex.test(budget)) {
+            setBudgetStatus("Please provide the budget in Dollar and Cents format (e.g., 100.00)");
+            return false;
+        } else {
+            setBudgetStatus('');
+            return true;
+        }
+
+    }
+
+    const checkCommuteTimeFormat = (input) => {
+        const commuteTimeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+        if (commuteTime.length !== 0) {
+            if (!commuteTimeRegex.test(commuteTime)) {
+                setCommuteTimeStatus("Please provide the commute time in HH:MM format (e.g., 01:00)");
+                return false;
+            } else {
+                setCommuteTimeStatus('');
+                return true;
+            }
+        }
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        let validBudget = false;
+        let validCommuteTime = false;
+        if (budget.length !== 0) {
+            validBudget = checkBudgetFormat(budget);
+        } else {
+            validBudget = true;
+        }
+        if (commuteTime.length !== 0) {
+            validCommuteTime = checkCommuteTimeFormat(commuteTime);
+        } else {
+            validCommuteTime = true;
+        }
+        if (validBudget && validCommuteTime) {
+            setOpen(false);
+            /* SEND DATA TO THE BACKEND */
+        }
     }
 
     const handleSkip = () => {
         setOpen(false);
-        /* SEND DEFAULT DATA TO BACKEND TO INDICATE NO PREFERENCES CHOSEN */
+        /* SEND DEFAULT DATA TO DATABASE */
     }
 
     return (
@@ -105,18 +149,20 @@ export default function PreferencesForm() {
                                             setBudget(event.target.value)
                                         }}
                                     />
+                                    <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{budgetStatus}</Typography>
                                 </Grid>
                                 <Grid item xs={12} md={4}>
                                     <Typography variant="body1" fontWeight="bold">Preferred Maximum Commute Time Between Stops</Typography>
                                     <TextField
                                         id="commuteTime"
                                         variant="outlined"
-                                        placeholder="Enter Time (e.g., 1:00)"
+                                        placeholder="Enter Time (e.g., 01:00)"
                                         fullWidth
                                         onChange={(event) => {
                                             setCommuteTime(event.target.value)
                                         }}
                                     />
+                                    <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{commuteTimeStatus}</Typography>
                                 </Grid>
                                 <Grid item xs={12} md={4}>
                                     <Typography variant="body1" fontWeight="bold">
