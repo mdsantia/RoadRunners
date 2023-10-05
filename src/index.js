@@ -5,16 +5,24 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
 import { UserContextProvider } from './context/UserContext'
+import { DirectionContextProvider } from './context/DirectionContext';
+import { GOOGLE_MAPS_API_KEY } from './components/AddressSearch';
+import { LoadScript } from '@react-google-maps/api';
+const GOOGLE_MAPS_LIBRARIES = ['places'];
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={GOOGLE_MAPS_LIBRARIES}>
     <UserContextProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <DirectionContextProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </DirectionContextProvider>
     </UserContextProvider>
+    </LoadScript>
   </React.StrictMode>
 );
 

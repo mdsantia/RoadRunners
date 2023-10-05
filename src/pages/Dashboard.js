@@ -43,7 +43,6 @@ const Wrapper = styled(Card)({
 });
 
 
-
 export default function Dashboard() {
 
     const { startLocation, endLocation, startDate, endDate } = useParams();
@@ -67,12 +66,13 @@ export default function Dashboard() {
                 
                 <MapWrapper>
                     {/* Add your Map component here */}
-                    <Map nonce={nonce} directionsResponse={null}/>
+                    <Map />
                 </MapWrapper>
                 <Wrapper>
                 <Itinerary></Itinerary>
                 </Wrapper>
             </Container>
         </div>
+
     );
 }
