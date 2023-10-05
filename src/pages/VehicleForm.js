@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
-import { Button, InputLabel, MenuItem, FormControl, Select, Input } from '@mui/material';
+import { Button, InputLabel, MenuItem, FormControl, Select, Input, Grid } from '@mui/material';
 import axios from 'axios';
 import { useUserContext } from '../hooks/useUserContext';
 
@@ -36,6 +36,7 @@ export default function VehicleForm() {
     const [yearStatus, setYearStatus] = React.useState('');
     const [makeStatus, setMakeStatus] = React.useState('');
     const [modelStatus, setModelStatus] = React.useState('');
+    const [colorStatus, setColorStatus] = React.useState('');
     
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = () => {
@@ -87,11 +88,12 @@ export default function VehicleForm() {
         } else if (model.length === 0) {
             setModelStatus("Please select the model of your vehicle.");
         } else if (color.length === 0) {
-            setModelStatus("Please select the color of your vehicle.");
+            setColorStatus("Please enter the color of your vehicle.");
         }  else {
             setYearStatus('');
             setMakeStatus('');
             setModelStatus('');
+            setColorStatus('');
             await axios.post('/api/user/addVehicle', {
                 email: user.email,
                 make: make,
@@ -111,6 +113,11 @@ export default function VehicleForm() {
             });
 
         }
+    }
+
+    const handleSkip = () => {
+        setOpen(false);
+        /* SEND DEFAULT DATA TO DATABASE */
     }
     
     React.useEffect(() => {
@@ -138,7 +145,7 @@ export default function VehicleForm() {
                 />
             )}
 
-            <Dialog open={open}>
+            <Dialog open={open} fullWidth>
                 <DialogTitle>Vehicle Information</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -223,14 +230,15 @@ export default function VehicleForm() {
                         <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
                     </FormControl>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="modelLabel">Color</InputLabel>
+                        <InputLabel id="colorLabel">Color</InputLabel>
                         <Input
                             name="color"
-                            value={color}
-                                                        
+                            value={color} 
                             required
                             onChange={event =>  {
-                                setModelStatus('');
+                                if (event.target.value.length !== 0) {
+                                    setColorStatus('');
+                                }
                                 setColor(event.target.value);
                             }}
                             >                   
@@ -238,14 +246,11 @@ export default function VehicleForm() {
                         <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
                     </FormControl>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="modelLabel">Miles Per Gallon</InputLabel>
+                        <InputLabel id="mpgLabel">Miles Per Gallon</InputLabel>
                         <Input
                             name="mpg"
-                            value={mpg}
-                                                        
-                            required
+                            value={mpg}                  
                             onChange={event =>  {
-                                setModelStatus('');
                                 setMPG(event.target.value);
                             }}
                             >                   
@@ -253,8 +258,15 @@ export default function VehicleForm() {
                         <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
                     </FormControl>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleSubmit}>OK</Button>
+                <DialogActions sx={{ padding: '16px', justifyContent: 'space-between' }}>
+                    <Grid container justifyContent="flex-start">
+                        <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px' }}>
+                            Skip
+                        </Button>
+                    </Grid>
+                    <Button onClick={handleSubmit} variant="contained" color="primary" sx={{ width: '120px' }}>
+                        Done
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>
