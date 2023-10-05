@@ -54,9 +54,9 @@ export default function HomePage(props) {
       axios
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
-          console.log(res.data);
+          //console.log(res.data);
           // setDirections(res.data); // Set the directionsResponse in the context
-          // directionsCallback(res.data);
+          directionsCallback(res.data);
         })
         .catch((err) => {
           console.log(err);
