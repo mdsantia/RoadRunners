@@ -1,9 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
-import { Card } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
-import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -14,17 +9,12 @@ import RouteIcon from '@mui/icons-material/Route';
 import AttractionsIcon from '@mui/icons-material/Attractions';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { TextField, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import { Button, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
-import VehicleForm from '../pages/VehicleForm.js';
-import Logo from '../assets/rr-logo.png';
-import PreferencesForm from '../pages/PreferencesForm.js';
 import AddRoadIcon from '@mui/icons-material/AddRoad';
-import { ForkLeft } from '@mui/icons-material';
+import { useUserContext } from '../hooks/useUserContext';
 
 
 function TabPanel(props) {
@@ -62,6 +52,9 @@ function a11yProps(index) {
 }
 
 export default function Itinerary() {
+
+  const {user} = useUserContext();
+
 
   const [value, setValue] = React.useState(0);
 
