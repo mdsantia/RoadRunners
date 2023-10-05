@@ -10,6 +10,12 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -63,7 +69,19 @@ export default function Itinerary() {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          Preferences form here
+        <FormControl>
+      <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+      <RadioGroup
+        row
+        aria-labelledby="demo-row-radio-buttons-group-label"
+        name="row-radio-buttons-group"
+      >
+        <FormControlLabel value="female" control={<Radio />} label="Female" />
+        <FormControlLabel value="male" control={<Radio />} label="Male" />
+        <FormControlLabel value="other" control={<Radio />} label="Other" />
+     
+      </RadioGroup>
+    </FormControl>
         </TabPanel>
         <TabPanel value={value} index={1}>
           Route options
