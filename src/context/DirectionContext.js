@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useState } from "react";
 
 export const DirectionContext = createContext();
 
@@ -18,21 +18,42 @@ export const directionReducer = (state, action) => {
 }
 
 export const DirectionContextProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(directionReducer, {
-        direction: null
-    });
+  const [directions, setDirections] = useState(null);
+  const [directionSet, setDirectionSet] = useState(false);
+  const [center, setCenter] = useState(null);
 
-    const setDirection = (direction) => {
-        dispatch({type: 'SET', payload: direction});
+  const directionsCallback = (response) => {
+    console.log(response);
+    if (directionSet) {
+      return;
     }
-
-    const clearDirection = () => {
-        dispatch({type: 'CLEAR'});
+    if (response !== null) {
+      if (response.status === 'OK') {
+        // Store the directions data in state
+        // console.log(response);
+        // setCenter(response.routes[0].overview_path[response.routes[0].overview_path.length / 2]);
+        setDirections(response);
+        // Set color of polyline to red
+        setDirectionSet(true);
+      } else {
+        console.error(`Directions request failed due to ${response.status}`);
+      }
     }
+  };
 
     return ( 
-        <DirectionContext.Provider value={{ direction: state.direction, setDirection, clearDirection }}>
-            { children }
-        </DirectionContext.Provider>
+    <DirectionContext.Provider
+      value={{
+        directions,
+        directionSet,
+        directionsCallback,
+      }}
+    >
+      {children}
+    </DirectionContext.Provider>
     )
+}
+
+export function useDirectionContext() {
+  return useContext(DirectionContext);
 }

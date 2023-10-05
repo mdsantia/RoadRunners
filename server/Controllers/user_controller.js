@@ -63,15 +63,16 @@ const checkAndSaveUser = async (req, res) => {
     Response: {email, make, model, year, color, mpg}
     responseCode: 200 if vehicle is added
     responseCode: 400 if user is not found or duplicate vehicle is detected
-
-*/
-const addVehicle = async (req, res) => {
-    const {email, make, model, year, color, mpgGiven} = req.body;
-    var mpg = mpgGiven;
-
-    // Check if user exists
-    const user = await User.findOne({email});
-    if (!user) {
+    
+    */
+   const addVehicle = async (req, res) => {
+       const {email, make, model, year, color, mpgGiven} = req.body;
+       var mpg = mpgGiven;
+       
+       // Check if user exists
+       const user = await User.findOne({email});
+       if (!user) {
+        console.log(`ERROR User was not found`.red.bold);
         res.status(400).json({error: 'User not found'});
         return;
     }
@@ -89,6 +90,7 @@ const addVehicle = async (req, res) => {
     for (let i = 0; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
         if (make == user.vehicles[i].make && model == user.vehicles[i].model && year == user.vehicles[i].year) {
+            console.log(`ERROR Vehicle exists`.red.bold);
             res.status(400).json({error: 'Vehicle already exists'});
             return;
         }
@@ -118,6 +120,7 @@ const removeVehicle = async (req, res) => {
     // Check if user exists
     const user = User.findOne({email});
     if (!user) {
+        console.log(`ERROR User was not found`.red.bold);
         res.status(400).json({error: 'User not found'});
         return;
     }
