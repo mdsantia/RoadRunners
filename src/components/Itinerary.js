@@ -55,9 +55,7 @@ export default function Itinerary() {
 
   const {user} = useUserContext();
   const [value, setValue] = React.useState(0);
-  console.log("username:", user.name);
-  console.log("vehicle", user.vehicles);
-  console.log("preferences", user.preferences);
+ 
 
 
   const handleChange = (event, newValue) => {
@@ -70,15 +68,15 @@ export default function Itinerary() {
   const housingOptions = ["Hotels", "Motels", "Bed and Breakfasts", "RV Parks & Campgrounds", "Vacation Rentals", "Hostels", "Resorts", "Roadside Inns & Lodges", "Cabins & Cottages"];
   const vehicleOptions = ["Audi Q7"];
   const [open, setOpen] = React.useState(true);
-  const [budget, setBudget] = React.useState(user.name);
-  const [commuteTime, setCommuteTime] = React.useState('');
-  const [carsickRating, setCarsickRating] = React.useState('');
+  const [budget, setBudget] = React.useState(user.preferences.budget);
+  const [commuteTime, setCommuteTime] = React.useState(user.preferences.commuteTime);
+  const [carsickRating, setCarsickRating] = React.useState(user.preferences.carsickRating);
   const [selectedVehicle, setSelectedVehicle] = React.useState(user.vehicles);
-  const [attractionSelection, setAttractionSelection] = React.useState([]);
-  const [diningSelection, setDiningSelection] = React.useState([]);
-  const [housingSelection, setHousingSelection] = React.useState([]);
-  const [budgetStatus, setBudgetStatus] = React.useState([]);
-  const [commuteTimeStatus, setCommuteTimeStatus] = React.useState([]);
+  const [attractionSelection, setAttractionSelection] = React.useState(user.preferences.attractionSelection);
+  const [diningSelection, setDiningSelection] = React.useState(user.preferences.diningSelection);
+  const [housingSelection, setHousingSelection] = React.useState(user.preferences.housingSelection);
+  const [budgetStatus, setBudgetStatus] = React.useState(user.preferences.budgetStatus);
+  const [commuteTimeStatus, setCommuteTimeStatus] = React.useState(user.preferences.commuteTimeStatus);
 
   const numOptionsPerColumn = 10;
   const findTotalColumns = (optionsList) => {
@@ -212,6 +210,7 @@ export default function Itinerary() {
                   variant="outlined"
                   placeholder="Enter your budget in Dollar and Cents format (e.g., 100.00)"
                   fullWidth
+                  value={budget}
                   inputProps={{ style: { height: '5px' } }}
                   onChange={(event) => {
                     setBudget(event.target.value);
@@ -237,6 +236,7 @@ export default function Itinerary() {
                   <Typography
                     variant="body1"
                     fontWeight="bold"
+                    value={commuteTime}
                     style={{ margin: '0' }}
                   >
                     Preferred Maximum Commute Time Between Stops
