@@ -31,27 +31,21 @@ const Vehicle = new Schema({
 const Preferences = new Schema({
     budget: {
         type: String,
-        required: true
     },
     commuteTime: {
         type: String,
-        required: true
     },
     carsickRating: {
         type: String,
-        required: true
     },
     attractionSelection: {
         type: [String],
-        required: true
     },
     diningSelection: {
         type: [String],
-        required: true
     },
     housingSelection: {
         type: [String],
-        required: true
     }
 });
 
@@ -73,6 +67,10 @@ const User = new Schema({
     preferences: {
         type: Preferences,
         default: {}
+    },
+    filled_preferences: {
+        type: Boolean,
+        default: false
     },
     google_id: {
         type: String,

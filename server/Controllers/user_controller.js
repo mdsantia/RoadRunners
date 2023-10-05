@@ -26,12 +26,12 @@ const checkAndSaveUser = async (req, res) => {
     if (!user) {
         // Create new user
         const newUser = new User({
-            name,
-            email,
-            preferences: preferences ? preferences : new Map(),
-            google_id,
-            google_expiry,
-            profile_picture
+            name: name,
+            email: email,
+            age: age,
+            google_id: google_id,
+            google_expiry: google_expiry,
+            profile_picture: profile_picture
         });
 
         // Save user
@@ -166,6 +166,8 @@ const setPreferences = async (req, res) => {
     };
 
     user.preferences = newPreferences;
+    user.markModified('preferences');
+    user.filled_preferences = true;
     await user.save();
     res.status(200).json(user);
     return;
