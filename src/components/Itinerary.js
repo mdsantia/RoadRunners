@@ -2,50 +2,80 @@ import React from 'react';
 import { useState } from 'react';
 import { Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
-import Fab from '@mui/material/Fab';
-import AddressSearch from './AddressSearch';
 import Stack from '@mui/material/Stack';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate } from 'react-router-dom';
-import Alert from '@mui/material/Alert';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+
+function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
 
 
-const StyledCard = styled(Card)({
-  width: 1000,
-  margin: 'auto',
-  padding: 20,
-  marginTop: 20,
-  textAlign: 'center',
-  borderRadius: 20,
-  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-});
-
+CustomTabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+  };
+  
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
 
 export default function Itinerary() {
 
-  const [startLocation, setStartLocation] = useState(null);
-  const [endLocation, setEndLocation] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
-  const navigate = useNavigate();
+    const [value, setValue] = React.useState(0);
 
-
-
-
-
-  return (
-    <StyledCard>
-      <Stack direction="column" spacing={2}>
-      
-      </Stack>
-    
-    </StyledCard>
-  );
-}
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
+  
+    return (
+      <Box sx={{ width: '100%', paddingTop:'15%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
+            <Tab label="Preferences" {...a11yProps(0)} />
+            <Tab label="Routes" {...a11yProps(1)} />
+            <Tab label="Attractions" {...a11yProps(2)} />
+            <Tab label="Overview" {...a11yProps(3)} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={value} index={0}>
+          Preferences form here
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          Route options
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          Attraction list
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={3}>
+          Overview
+        </CustomTabPanel>
+      </Box>
+    );
+  }
 
 

@@ -12,6 +12,7 @@ import HomePage from './pages/HomePage';
 import UserProfile from './pages/UserProfile';
 import VehiclesPage from './pages/VehiclesPage';
 import Dashboard from './pages/Dashboard';
+import PreferencesForm from './pages/PreferencesForm';
 
 function App() {
   return (

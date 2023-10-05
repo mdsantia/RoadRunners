@@ -77,7 +77,7 @@ export default function VehicleForm() {
         });
     };
 
-    const handleOnSubmit = async (event) => {
+    const handleSubmit = async (event) => {
         var success = true;
         event.preventDefault();
         if (year.length === 0) {
@@ -254,7 +254,7 @@ export default function VehicleForm() {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleOnSubmit}>OK</Button>
+                    <Button onClick={handleSubmit}>OK</Button>
                 </DialogActions>
             </Dialog>
         </>

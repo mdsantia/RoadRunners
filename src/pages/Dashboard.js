@@ -72,8 +72,6 @@ export default function Dashboard() {
                 <Wrapper>
                 <Itinerary></Itinerary>
                 </Wrapper>
-        
-               
             </Container>
         </div>
     );
