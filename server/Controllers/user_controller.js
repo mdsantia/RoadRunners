@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../Models/user_model');
 const Vehicle = require('../Models/user_model');
+const Preferences = require('../Models/user_model');
 
 /*
     Check if a user already exists, if they do update and return them
@@ -124,7 +125,6 @@ const removeVehicle = async (req, res) => {
         res.status(400).json({error: 'User not found'});
         return;
     }
-
     // Remove vehicle from user
     const vehicle = {
         make,
@@ -137,6 +137,40 @@ const removeVehicle = async (req, res) => {
     res.status(200).json(user);
 }
 
+/*
+    Given an object of preferences, update the user's preferences
+
+    API: /api/user/setPreferences
+    Method: POST
+    Request: {email, preferences}
+    Response: {user}
+    responseCode: 200 if preferences are set
+    responseCode: 400 if user is not found
+*/
+const setPreferences = async (req, res) => {
+    const {email, preferences} = req.body;
+    // Check if user exists
+    const user = await User.findOne({email: email});
+    if (!user) {
+        res.status(400).json({error: 'User not found'});
+        return;
+    }
+
+    const newPreferences = {
+        budget: preferences.budget,
+        commuteTime: preferences.commuteTime,
+        carsickRating: preferences.carsickRating,
+        attractionSelection: preferences.attractionSelection,
+        diningSelection: preferences.diningSelection,
+        housingSelection: preferences.housingSelection
+    };
+
+    user.preferences = newPreferences;
+    await user.save();
+    res.status(200).json(user);
+    return;
+}
+
 /* Helper Functions */
 const getMPG = async (make, model, year) => {
     const url = `https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=${year}&make=${make}&model=${model}`;
@@ -145,4 +179,4 @@ const getMPG = async (make, model, year) => {
     return mpg;
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle};
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences};

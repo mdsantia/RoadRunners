@@ -28,6 +28,33 @@ const Vehicle = new Schema({
 
 });
 
+const Preferences = new Schema({
+    budget: {
+        type: String,
+        required: true
+    },
+    commuteTime: {
+        type: String,
+        required: true
+    },
+    carsickRating: {
+        type: String,
+        required: true
+    },
+    attractionSelection: {
+        type: [String],
+        required: true
+    },
+    diningSelection: {
+        type: [String],
+        required: true
+    },
+    housingSelection: {
+        type: [String],
+        required: true
+    }
+});
+
 const User = new Schema({
     name: {
         type: String,
@@ -42,11 +69,10 @@ const User = new Schema({
         type: [Vehicle],
         default: []
     },
-    // Preferences will be a hash map of preferences
+
     preferences: {
-        type: Map,
-        of: String,
-        default: new Map()
+        type: Preferences,
+        default: {}
     },
     google_id: {
         type: String,
