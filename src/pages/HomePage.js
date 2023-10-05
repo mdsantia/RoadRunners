@@ -8,8 +8,7 @@ import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
 import VehicleForm from '../pages/VehicleForm';
 import PreferencesForm from '../pages/PreferencesForm';
-
-
+import { useUserContext } from '../hooks/useUserContext';
 
 const Container = styled('div')({
   display: 'flex',
@@ -37,25 +36,14 @@ const StyledButton = styled(Button)({
   marginBottom: 10,
 })
 
-const newUser = () => {
-  axios.post('api/user/newUser')
-    .then(res => {
-      console.log(res)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-}
-
 export default function HomePage() {
-
-
+  const { user } = useUserContext();
   return (
     <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100vh'}}>
       <div style={{
     backgroundImage: `url(${bg})`,
     backgroundSize: 'cover',
-    filter: 'blur(7px)',
+    filter: 'blur(4px)',
     position: 'absolute',
     top: 0,
     right: 0,
@@ -63,7 +51,7 @@ export default function HomePage() {
     left: 0,
     zIndex: -1,
   }}></div>
-      <PreferencesForm></PreferencesForm>
+      {user && !user.filled_preferences && <PreferencesForm></PreferencesForm>}
       <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}
