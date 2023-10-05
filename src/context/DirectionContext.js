@@ -23,7 +23,6 @@ export const DirectionContextProvider = ({ children }) => {
   const [center, setCenter] = useState(null);
 
   const directionsCallback = (response) => {
-    console.log(response);
     if (directionSet) {
       return;
     }

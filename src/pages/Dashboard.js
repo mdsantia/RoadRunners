@@ -4,7 +4,7 @@ import { Card, Button, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/TopBar';
 import CreateTrip from '../components/CreateTrip'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/Map';
@@ -47,6 +47,7 @@ export default function Dashboard() {
 
     const { startLocation, endLocation, startDate, endDate } = useParams();
     const [nonce, setNonce] = useState('');
+    const mapWrapperRef = useRef(null);
 
     useEffect(() => {
         // Fake nonce generation for purposes of demonstration
@@ -64,9 +65,9 @@ export default function Dashboard() {
                     <CreateTrip startLocation={startLocation} endLocation={endLocation} startDate={startDate} endDate={endDate}/>
                 </CreateTripContainer>
                 
-                <MapWrapper>
+                <MapWrapper ref={mapWrapperRef}>
                     {/* Add your Map component here */}
-                    <Map />
+                    <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
                 </MapWrapper>
                 <Wrapper>
                 <Itinerary></Itinerary>
