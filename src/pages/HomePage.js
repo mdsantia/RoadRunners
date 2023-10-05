@@ -55,7 +55,7 @@ export default function HomePage() {
       <div style={{
     backgroundImage: `url(${bg})`,
     backgroundSize: 'cover',
-    filter: 'blur(7px)',
+    filter: 'blur(4px)',
     position: 'absolute',
     top: 0,
     right: 0,
