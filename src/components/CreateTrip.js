@@ -42,8 +42,15 @@ export default function HomePage(props) {
   const [directionsResponse, setDirectionsResponse] = useState(null);
 
   const buildRoadTrip = () => {
+      const roadtripParams = {
+        startLocation: startLocation,
+        endLocation: endLocation,
+        startDate: startDate,
+        endDate: endDate
+      };
+      
       axios
-        .get('/api/roadtrip/newRoadTrip')
+        .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
           console.log(res);
           setDirectionsResponse(res.data); // Use res.data to set the directionsResponse

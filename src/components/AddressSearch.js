@@ -36,7 +36,6 @@ function loadScript(src, position, id, onLoad) {
 
 export default function AddressSearch({ initial, label, onInputChange }) {
   const scripts = document.getElementsByTagName('script');
-  console.log(scripts)
   const [value, setValue] = React.useState(initial);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
