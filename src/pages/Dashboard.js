@@ -9,6 +9,8 @@ import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/Map';
 import Itinerary from '../components/Itinerary';
+import { DirectionContextProvider } from '../context/DirectionContext';
+import { useDirectionContext } from '../hooks/useDirectionContext';
 
 const Container = styled('div')({
     display: 'flex',
@@ -43,12 +45,14 @@ const Wrapper = styled(Card)({
 });
 
 
-
 export default function Dashboard() {
 
     const { startLocation, endLocation, startDate, endDate } = useParams();
     const [nonce, setNonce] = useState('');
+    const { direction, setDirection } = useDirectionContext();
 
+    console.log('direction:', direction);
+    
     useEffect(() => {
         // Fake nonce generation for purposes of demonstration
         const uuid = uuidv4();
@@ -74,5 +78,6 @@ export default function Dashboard() {
                 </Wrapper>
             </Container>
         </div>
+
     );
 }
