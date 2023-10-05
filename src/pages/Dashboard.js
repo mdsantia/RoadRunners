@@ -44,7 +44,6 @@ const Wrapper = styled(Card)({
 
 
 export default function Dashboard() {
-
     const { startLocation, endLocation, startDate, endDate } = useParams();
     const [nonce, setNonce] = useState('');
     const mapWrapperRef = useRef(null);

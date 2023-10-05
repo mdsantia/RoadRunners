@@ -34,8 +34,7 @@ export default function Map(props) {
     }
     const { width, height } = props.size;
     const WORLD_DIM = { height: height, width: width };
-    console.log(WORLD_DIM)
-    const ZOOM_MAX = 15; // Maximum zoom level supported by Mapbox
+    const ZOOM_MAX = 10; // Maximum zoom level supported by Mapbox
   
     let maxLat = -Infinity;
     let minLat = Infinity;
@@ -101,7 +100,7 @@ export default function Map(props) {
           options={{
             strokeColor: 'blue',
             strokeOpacity: 0.8,
-            strokeWeight: 2,
+            strokeWeight: 4,
           }}
         />
       )}
