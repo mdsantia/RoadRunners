@@ -147,6 +147,10 @@ export default function VehicleForm() {
         setModel('');
         setColor('');
         setMPG('');
+        setYearStatus('');
+        setMakeStatus('');
+        setModelStatus('')
+        setColorStatus('');
         /* SEND DEFAULT DATA TO DATABASE */
     }
     
