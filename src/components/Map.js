@@ -1,16 +1,21 @@
-import { React, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, DirectionsRenderer } from "@react-google-maps/api";
 import { GOOGLE_MAPS_API_KEY } from './AddressSearch';
 
-export default function Map({directionsResponse}) {
-    // const [map, setMap] = useState(/** @type google.maps.Map */ (null));
+export default function Map(props) {
     const [userLocation, setUserLocation] = useState(null);
-    const {isLoaded} = useJsApiLoader({
-        googleMapsApiKey: GOOGLE_MAPS_API_KEY
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+        // Move the nonce and libraries options to a separate object
+        // and pass them as dependencies to ensure they don't change
+        // between renders.
+        dependencies: {
+          libraries: ['places'],
+          nonce: props.nonce,
+        }
     })
 
     useEffect(() => {
-        // Get the user's current location using the Geolocation API
         if (navigator.geolocation && !userLocation) {
           navigator.geolocation.getCurrentPosition((position) => {
             const { latitude, longitude } = position.coords;
@@ -19,7 +24,7 @@ export default function Map({directionsResponse}) {
             console.error('Error getting user location:', error);
           });
         }
-      }, []);
+    }, []);
 
     if (!isLoaded) {
         return <div>Loading...</div>;
@@ -36,15 +41,13 @@ export default function Map({directionsResponse}) {
             fullscreenControl: false
           }}
         >
-          {directionsResponse ? (
+          {props.directionsResponse ? (
             <>
-              <DirectionsRenderer directions={directionsResponse} />
-              {console.log("Directions Response:", directionsResponse)}
+              <DirectionsRenderer directions={props.directionsResponse} />
             </>
           ) : (
-            console.log("NO")
+            0
           )}
         </GoogleMap>
-      );
-      
+    );
 }

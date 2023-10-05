@@ -4,10 +4,11 @@ import { Card, Button, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/TopBar';
 import CreateTrip from '../components/CreateTrip'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/Map';
-import Itinerary from '../components/itinerary';
+import Itinerary from '../components/Itinerary';
 
 const Container = styled('div')({
     display: 'flex',
@@ -46,6 +47,14 @@ const Wrapper = styled(Card)({
 export default function Dashboard() {
 
     const { startLocation, endLocation, startDate, endDate } = useParams();
+    const [nonce, setNonce] = useState('');
+
+    useEffect(() => {
+        // Fake nonce generation for purposes of demonstration
+        const uuid = uuidv4();
+        // console.log('uuid:', uuid);
+        setNonce(`nonce-${uuid}`);
+    }, []);
 
       return (
         <div style={{ backgroundColor: '#F3F3F5'}}>
@@ -58,7 +67,7 @@ export default function Dashboard() {
                 
                 <MapWrapper>
                     {/* Add your Map component here */}
-                    <Map />
+                    <Map nonce={nonce} directionsResponse={null}/>
                 </MapWrapper>
                 <Wrapper>
                 <Itinerary></Itinerary>

@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
@@ -23,8 +23,11 @@ const StyledCard = styled(Card)({
   marginTop: 20,
   textAlign: 'center',
   borderRadius: 20,
-  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+  backgroundColor: 'rgba(255, 255, 255, 0.2)', // Background color with slight transparency
+  backdropFilter: 'blur(5px)', // Apply blur effect to the background
 });
+
 
 
 export default function HomePage(props) {
@@ -58,14 +61,17 @@ export default function HomePage(props) {
         console.log("Starting Location:" ,startLocation);
         console.log("Ending Location:", endLocation);
         navigate(`/dashboard/${startLocation}/${endLocation}/${startDate}/${endDate}`);
-        buildRoadTrip();
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);
       }
   }
 
-
+  useEffect(() => {
+    if (props) {
+      buildRoadTrip();
+    }
+  }, [props]);
 
   return (
     <StyledCard>
