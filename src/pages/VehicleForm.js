@@ -73,7 +73,7 @@ export default function VehicleForm() {
         });
     };
 
-    const handleOnSubmit = (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         if (year.length === 0) {
             setYearStatus("Please select the year of your vehicle.");
@@ -204,7 +204,7 @@ export default function VehicleForm() {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleOnSubmit}>OK</Button>
+                    <Button onClick={handleSubmit}>OK</Button>
                 </DialogActions>
             </Dialog>
         </>

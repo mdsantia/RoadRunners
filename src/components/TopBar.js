@@ -42,12 +42,6 @@ function TopBar() {
     setAnchorElUser(null);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    useUserContext({ type: 'LOGOUT' });
-    navigate('/');
-  };
-
   return (
     <AppBar position="static" style={{backgroundColor:'white', height:'95px'}}>
       <Container maxWidth="xl">
@@ -82,7 +76,7 @@ function TopBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="RC" src={user.profile_picture} />
+                {/* <Avatar alt="RC" src={user.profile_picture} /> */}
               </IconButton>
             </Tooltip>
             <Menu
