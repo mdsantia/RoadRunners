@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'; 
-import { Typography, TextField, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
+import { Typography, TextField, FormGroup, FormControlLabel, Checkbox, InputLabel } from '@mui/material';
 import { Button, FormControl, Select, MenuItem, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
 import VehicleForm from '../pages/VehicleForm.js';
 import Logo from '../assets/rr-logo.png';
@@ -21,7 +21,6 @@ const theme = createTheme({
         '"Segoe UI Symbol"',
       ].join(','),
     },
-    // Add other theme properties if needed
   });
 
 export default function PreferencesForm() {
@@ -122,6 +121,12 @@ export default function PreferencesForm() {
 
     const handleSkip = () => {
         setOpen(false);
+        setBudget('');
+        setCommuteTime('');
+        setCarsickRating('');
+        setAttractionSelection([]);
+        setDiningSelection([]);
+        setHousingSelection([]);
         /* SEND DATA TO BACKEND */
     }
 
@@ -159,7 +164,8 @@ export default function PreferencesForm() {
                             </DialogContentText>
                             <br></br>
                             <Divider></Divider>
-                            <FormControl sx={{ m: 5, minWidth: 300 }}>
+                            <br></br>
+                            <FormControl sx={{ m: 1, minWidth: 500 }}>
                                 <Grid container spacing={2} alignItems="center">
                                     <Grid item xs={12} md={4}>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
@@ -250,8 +256,7 @@ export default function PreferencesForm() {
                                         <Select
                                             name="carsickRating"
                                             value={carsickRating}
-                                            placeholder="lskdjflsd"
-                                            sx={{ height: '38px' }} // Adjust the height as needed
+                                            sx={{ height: '38px' }}
                                             onChange={(event) => {
                                                 setCarsickRating(event.target.value);
                                             }}
