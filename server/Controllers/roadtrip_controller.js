@@ -18,8 +18,8 @@ const newRoadTrip = async (req, res) => {
 
     const response = await axios.get(baseUrl, {
       params: {
-        origin: start,
-        destination: end,
+        origin: startLocation,
+        destination: endLocation,
         mode: 'driving', // Use 'driving' for driving directions
         key: apiKey,
       },
