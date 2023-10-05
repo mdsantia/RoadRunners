@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
-import { Button, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+import { Button, InputLabel, MenuItem, FormControl, Select, Input } from '@mui/material';
 import axios from 'axios';
+import { useUserContext } from '../hooks/useUserContext';
 
 
 const options = {
@@ -22,10 +23,13 @@ export default function VehicleForm() {
     const [year, setYear] = React.useState('');
     const [make, setMake] = React.useState('');
     const [model, setModel] = React.useState('');
+    const [color, setColor] = React.useState('');
+    const [mpg, setMPG] = React.useState('');
     const [yearList, setYearList] = React.useState([])
     const [makeList, setMakeList] = React.useState([]);
     const [modelList, setModelList] = React.useState([]);
     const [allOptionsList, setAllOptionsList] = React.useState([]);  // HOLDS ALL ORIGINAL DATA FROM API
+    const { user, updateUser } = useUserContext();
 
     const [yearFilledOut, setYearFilledOut] = React.useState(false);
     const [makeFilledOut, setMakeFilledOut] = React.useState(false);
@@ -39,7 +43,7 @@ export default function VehicleForm() {
         .then(response => {
             const data = response.data;
             setAllOptionsList(data);
-            console.log("API Response - All Data:", data);
+            //console.log("API Response - All Data:", data);
             let optionArray = [];
             for (let i = 0; i < data.length; i++) {
                 if (!optionArray.includes(data[i].year)) {
@@ -73,7 +77,8 @@ export default function VehicleForm() {
         });
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
+        var success = true;
         event.preventDefault();
         if (year.length === 0) {
             setYearStatus("Please select the year of your vehicle.");
@@ -81,20 +86,35 @@ export default function VehicleForm() {
             setMakeStatus("Please select the make of your vehicle.");
         } else if (model.length === 0) {
             setModelStatus("Please select the model of your vehicle.");
-        } else {
+        } else if (color.length === 0) {
+            setModelStatus("Please select the color of your vehicle.");
+        }  else {
             setYearStatus('');
             setMakeStatus('');
             setModelStatus('');
-            setOpen(false);
-            alert("Your vehicle has been saved!");
+            await axios.post('/api/user/addVehicle', {
+                email: user.email,
+                make: make,
+                model: model,
+                year: year,
+                color: color,
+                mpgGiven: mpg
+            }).then(response => {
+                const newUser = response.data;
+                updateUser(newUser);
+                alert("Your vehicle has been saved!");
+                //setOpen(false);
+            }).catch(error => {
+                console.log(error.response.data.error);
+                alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");
+                //setOpen(false);
+            });
+
         }
     }
     
     React.useEffect(() => {
         fetchData();
-        console.log("yearList:\n" + yearList);
-        console.log("makeList:\n" + makeList);
-        console.log("modelList\n" + modelList);
     }, []);
 
     return (
@@ -200,6 +220,36 @@ export default function VehicleForm() {
                                 </MenuItem>
                             ))}                       
                         </Select>
+                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                        <InputLabel id="modelLabel">Color</InputLabel>
+                        <Input
+                            name="color"
+                            value={color}
+                                                        
+                            required
+                            onChange={event =>  {
+                                setModelStatus('');
+                                setColor(event.target.value);
+                            }}
+                            >                   
+                        </Input>
+                        <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
+                    </FormControl>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                        <InputLabel id="modelLabel">Miles Per Gallon</InputLabel>
+                        <Input
+                            name="mpg"
+                            value={mpg}
+                                                        
+                            required
+                            onChange={event =>  {
+                                setModelStatus('');
+                                setMPG(event.target.value);
+                            }}
+                            >                   
+                        </Input>
                         <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{modelStatus}</Typography>
                     </FormControl>
                 </DialogContent>

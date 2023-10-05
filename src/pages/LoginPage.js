@@ -7,6 +7,7 @@ import { useUserContext } from '../hooks/useUserContext';
 
 import Logo from '../assets/rr-logo.png';
 import image from '../assets/login-bg.jpg';
+import TopBar from '../components/TopBar';
 
 const Container = styled('div')({
   display: 'flex',
@@ -31,8 +32,7 @@ const StyledButton = styled(Button)({
 });
 
 export default function LoginPage() {
-  const [user, setUser] = useState({});
-  const { dispatch } = useUserContext();
+  const {user, dispatch, logout } = useUserContext();
 
   const clientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
 
@@ -52,14 +52,14 @@ export default function LoginPage() {
       google_expiry: google_expiry,
       profile_picture: profile_picture
     }).then((res) => {
-      console.log(res.data);
       localStorage.setItem('user', JSON.stringify(res.data));
       dispatch({ type: 'LOGIN', payload: res.data });
+      alert("Login Successful!");
       window.location.href = "/";
     }).catch((err) => {
       console.log(err);
     });
-    setUser(userObject);
+    window.location.href = "/";
   };
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function LoginPage() {
     script.onload = () => {
       /* global google */
       google.accounts.id.initialize({
-        client_id: clientID,
+        client_id: clientID,    
         callback: handleGoogleSignIn
       });
 
@@ -89,20 +89,38 @@ export default function LoginPage() {
     };
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    window.location.reload();
+  };
+
+
   return (
     <div style={{ backgroundColor: 'white', height: '100vh' }}>
+      <TopBar></TopBar>
       <Container>
         <StyledCard>
           <CardContent>
             <img src={Logo} alt="Logo" width={400} />
             <br></br>
-            <StyledButton>
-              <div id="signInDiv"></div>
-            </StyledButton>
-            <br></br>
-            <Typography component="a" href="https://accounts.google.com/signup/v2/createaccount?theme=glif&flowName=GlifWebSignIn&flowEntry=SignUp" target="_blank" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
-              Don't have an account?
-            </Typography>
+            {user ? ( 
+              <div>
+                <Typography variant="body1" color="textPrimary">
+                  You are already signed in as {user.name}.
+                </Typography>
+                <Button onClick={handleLogout}>Log out</Button>
+              </div>
+            ) : (
+              <div>
+                <StyledButton>
+                  <div id="signInDiv"></div>
+                </StyledButton>
+                <br></br>
+                <Typography component="a" href="https://accounts.google.com/signup/v2/createaccount?theme=glif&flowName=GlifWebSignIn&flowEntry=SignUp" target="_blank" variant="body1" sx={{ textDecoration: 'none' }} color="primary">
+                  Don't have an account?
+                </Typography>
+              </div>
+            )}
           </CardContent>
         </StyledCard>
       </Container>

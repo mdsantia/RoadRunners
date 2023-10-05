@@ -9,6 +9,7 @@ import VehicleForm from '../pages/VehicleForm';
 import PreferencesForm from '../pages/PreferencesForm';
 
 
+
 const Container = styled('div')({
   display: 'flex',
   justifyContent: 'center',
@@ -50,7 +51,7 @@ export default function HomePage() {
 
   return (
     <div style={{ backgroundColor: 'white', height: '100vh' }}>
-      <PreferencesForm></PreferencesForm>
+    {/* <PreferencesForm></PreferencesForm> */}
       <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}

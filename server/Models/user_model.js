@@ -14,11 +14,15 @@ const Vehicle = new Schema({
         required: true
     },
     year: {
-        type: Number,
+        type: String,
+        required: true
+    },
+    color: {
+        type: String,
         required: true
     },
     mpg: {
-        type: Number,
+        type: String,
         required: true
     }
 
