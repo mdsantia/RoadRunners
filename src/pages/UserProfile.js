@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, Button, Typography, AppBar, Drawer } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useParams } from "react-router-dom";
@@ -19,17 +19,20 @@ const Container = styled('div')({
 export default function UserProfile() {
   const id = useParams().id;
   const {user} = useUserContext();
-  if (user._id !== id) {
-    window.location.href = "/";
-  }
+
+  useEffect(() => {
+    if (!user) {
+      return (<div>Loading...</div>);
+    }
+    if (user._id !== id) {
+      window.location.href = "/";
+    }
+  }, [user]);
+
   return (
     <div>
-        <AppBar>
-          <TopBar />
-        </AppBar>
-        <Container>
-          <NavBar />
-        </Container>
+      <AppBar><TopBar/></AppBar>
+      <Container><NavBar/></Container>    
     </div>
   );
 }
