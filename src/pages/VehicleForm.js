@@ -97,8 +97,6 @@ export default function VehicleForm() {
     };
 
     const handleSubmit = async (event) => {
-        console.log("here\n");
-        console.log(color.length);
         var success = true;
         event.preventDefault();
         if (year.length === 0) {
@@ -121,7 +119,7 @@ export default function VehicleForm() {
         } else {
             setColorStatus('');
         }
-        if (yearStatus.length === 0 && makeStatus.length === 0 && modelStatus.length === 0 && colorStatus.length === 0) {
+        if (year.length !== 0 && make.length !== 0 && model.length !== 0 && color.length !== 0) {
             await axios.post('/api/user/addVehicle', {
                 email: user.email,
                 make: make,
