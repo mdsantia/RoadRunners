@@ -37,27 +37,6 @@ const newRoadTrip = async (req, res) => {
     
     if (response.data.status === 'OK') {
       const route = response.data; // Get the first route
-      // delete request.key;
-      // delete request.origin;
-      // delete request.endLocation;
-      // const bounds = route.routes[0].bounds;
-      // delete route.routes[0].bounds;
-      // const convertedBounds = {'_.Gh': {
-      //     Ta: {'zh': {
-      //       lo: bounds.southwest.lng,
-      //       hi: bounds.northeast.lng,
-      //     }},
-      //     rb: {'Eh': {
-      //       lo: bounds.southwest.lat,
-      //       hi: bounds.northeast.lat,
-      //     }},
-      //   },
-      // };
-      // route.routes[0].bounds = convertedBounds;
-      // request.origin = {query: startLocation}
-      // request.destination = {query: endLocation}
-      // route.request = request;
-      // console.log(route);
       res.status(201).json(route);
     } else {
       console.error(`Error getting directions by request: ${response.data.status}`.red.bold);

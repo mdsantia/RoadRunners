@@ -45,6 +45,8 @@ export const DirectionContextProvider = ({ children }) => {
     <DirectionContext.Provider
       value={{
         directions,
+        center,
+        setCenter,
         directionSet,
         directionsCallback,
       }}
