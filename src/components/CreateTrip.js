@@ -12,6 +12,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate } from 'react-router-dom';
+import {useDirectionContext} from '../hooks/useDirectionContext';
+import {useUserContext} from '../hooks/useUserContext';
 import Alert from '@mui/material/Alert';
 import dayjs from 'dayjs';
 
@@ -32,6 +34,8 @@ const StyledCard = styled(Card)({
 
 export default function HomePage(props) {
   const navigate = useNavigate();
+  const {user} = useUserContext();
+  const {direction, setDirection} = useDirectionContext();
 
   const [startLocation, setStartLocation] = useState(props.startLocation?props.startLocation:null);
   const [endLocation, setEndLocation] = useState(props.endLocation?props.endLocation:null);
@@ -52,8 +56,9 @@ export default function HomePage(props) {
       axios
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
-          console.log(res);
-          setDirectionsResponse(res.data); // Use res.data to set the directionsResponse
+          //console.log(res);
+          //setDirectionsResponse(res.data); // Use res.data to set the directionsResponse
+          setDirection(res.data); // Set the directionsResponse in the context
         })
         .catch((err) => {
           console.log(err);
@@ -75,10 +80,9 @@ export default function HomePage(props) {
   }
 
   useEffect(() => {
-    if (props) {
       buildRoadTrip();
-    }
-  }, [props]);
+    
+  }, []);
 
   return (
     <StyledCard>
