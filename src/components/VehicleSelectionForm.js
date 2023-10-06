@@ -57,7 +57,9 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
           />
         </Grid>
       </Grid>
+      <br></br>
       <Divider />
+      <br></br>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} md={4}>
           <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
