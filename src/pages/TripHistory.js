@@ -19,6 +19,7 @@ const SidebarContainer = styled('div')({
     flexDirection: 'column',
     alignItems: 'flex-start', // Align children to the left
     width: '100%', // Ensure it takes up 100% of the available width
+    radius:10,
   });
 
 export default function TripHistory() {
