@@ -29,10 +29,10 @@ const theme = createTheme({
 function RouteOptions() {
     const navigate = useNavigate();
     const { user } = useUserContext();
-    const { directions, setChosenRoute, chosen } = useDirectionContext();
+    const { directions, setChosenRoute, chosenRoute } = useDirectionContext();
 
     const handleButton = (event) => {
-        setChosenRoute(event.currentTarget.id);
+        setChosenRoute(parseInt(event.currentTarget.id));
     }
 
     return (
@@ -47,12 +47,12 @@ function RouteOptions() {
                                 value={index}
                                 onClick={(event) => handleButton(event)}
                                 sx={{
-                                    backgroundColor: index === chosen ? '#000' : 'transparent', // Change the background color
-                                    color: index === chosen ? '#fff' : 'inherit', // Change the text color
+                                    backgroundColor: index === chosenRoute ? '#000' : 'transparent', // Change the background color
+                                    color: index === chosenRoute ? '#fff' : 'inherit', // Change the text color
                                 }}
                             >
                                 <ListItemText
-                                    primary={`Distance: ${overview.legs[0].distance.text}, Duration: ${overview.legs[0].duration.text}\nThrough ${overview.legs[0].waypointorder}`}
+                                    primary={`Index: ${index}, Distance: ${overview.legs[0].distance.text} & Duration: ${overview.legs[0].duration.text}`} //\nThrough ${overview.legs[0].waypointorder}`}
                                 />
                             </ListItemButton>
                         </ListItem>
