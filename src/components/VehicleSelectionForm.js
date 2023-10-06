@@ -75,7 +75,7 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
             fullWidth
             sx={{ height: '38px' }}
           >
-            {vehicleList.map((vehicle) => (
+            {vehicleList.map((vehicle ) => (
               <MenuItem key={vehicle} value={vehicle}>
                 {vehicle}
               </MenuItem>
