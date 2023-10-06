@@ -137,7 +137,23 @@ export default function VehicleForm(props) {
     }
 
     const handleSave = () => {
-
+        const params = { 
+            email: user.email,
+            _id: props.selectedCar._id,
+            year: year,
+            make: make,
+            model: model,
+            color: color,
+            mpgGiven: mpg
+        };
+        axios.post('/api/user/editVehicle', params)
+        .then((res) => {
+            updateUser(res.data);
+            handleCancel();
+        })
+        .catch((err) => {
+            console.log(err);
+        }); 
     }
 
     const handleCancel = () => {

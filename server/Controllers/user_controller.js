@@ -165,8 +165,6 @@ const addVehicle = async (req, res) => {
     */
 const editVehicle = async (req, res) => {
     const {email, _id, make, model, year, color, mpgGiven } = req.body;
-    var mpg = mpgGiven;
-    
     // Check if user exists
     const user = await User.findOne({email});
     if (!user) {
@@ -187,13 +185,15 @@ const editVehicle = async (req, res) => {
         res.status(400).json({error: 'Vehicle was not found'});
     }
 
+    const mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
     const newVehicle = {
         _id,
         year,
         make,
         model,
         color,
-        mpgGiven
+        ranking: i,
+        mpg
     }
     // Add editted vehicle to user
     user.vehicles[i] = newVehicle;
