@@ -349,12 +349,16 @@ export default function PreferencesForm(props) {
                     </FormControl>
                 </Container>
                 <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
-                    <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'red', color: 'white', }}>
-                        Skip
-                    </Button>
-                    <Button onClick={handleSubmit} variant="contained" sx={{ width: '120px', backgroundColor: 'red', color: 'white', }}>
-                        Done
-                    </Button>
+                    {props.showSkipButton && (
+                        <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'red', color: 'white' }}>
+                            Skip
+                        </Button>
+                    )}
+                    {props.showDoneButton && (
+                        <Button onClick={handleSubmit} variant="contained" sx={{ width: '120px', backgroundColor: 'red', color: 'white' }}>
+                            Done
+                        </Button>
+                    )}
                 </Container>
             </div>
         </ThemeProvider>

@@ -56,7 +56,7 @@ export default function PreferencesPage() {
       </Grid>
       <Grid>
         <Container>
-          <PreferencesForm/>
+          <PreferencesForm showSkipButton={false} showDoneButton={true}/>
         </Container>
       </Grid>
     </ThemeProvider>
