@@ -104,7 +104,6 @@ export default function VehicleForm(props) {
                 console.log(error.response.data.error);
                 alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");
             });
-            props.onClose();
         }
     }
 
@@ -118,7 +117,6 @@ export default function VehicleForm(props) {
         setMakeStatus('');
         setModelStatus('')
         setColorStatus('');
-        props.onClose();
     }
     
     React.useEffect(() => {
