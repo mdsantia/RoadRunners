@@ -27,18 +27,43 @@ const theme = createTheme({
 export default function VehicleForm(props) {
     React.useEffect(() => {
         if (props.selectedCar) {
-            setYear(props.selectedCar.year);
-            setYearFilledOut(true);
-            fetchData(props.selectedCar.year, '', '');
-            setMake(props.selectedCar.make);
-            setMakeFilledOut(true);
-            fetchData(props.selectedCar.year, props.selectedCar.make, '');
-            setModel(props.selectedCar.model);
-            fetchData(props.selectedCar.year, props.selectedCar.make, props.selectedCar.model);
-            setColor(props.selectedCar.color);
-            setMPG(props.selectedCar.mpg);
-        }  
-    }, [props.selectedCar]);
+            handleCancel();
+            fetchData('', '', '');
+            const timeout = 200; // 1 second timeout
+            let timeoutId;
+      
+            timeoutId = setTimeout(() => {
+                setYear(props.selectedCar.year);
+                setYearFilledOut(true);
+            }, timeout);
+      
+            timeoutId = setTimeout(() => {
+                setMake(props.selectedCar.make);
+                setMakeFilledOut(true);
+            }, timeout);
+      
+            timeoutId = setTimeout(() => {
+                setModel(props.selectedCar.model);
+            }, timeout);
+      
+            timeoutId = setTimeout(() => {
+                setColor(props.selectedCar.color);
+              }, timeout);
+      
+            timeoutId = setTimeout(() => {
+                setMPG(props.selectedCar.mpg);
+            }, timeout);
+            
+            timeoutId = setTimeout(() => {
+
+            }, timeout);
+            
+            return () => {
+                clearTimeout(timeoutId);
+              };
+        }
+      }, [props.selectedCar]);
+      
     
     const [year, setYear] = React.useState('');
     const [make, setMake] = React.useState('');
@@ -59,36 +84,31 @@ export default function VehicleForm(props) {
     
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = async (year, make, model) => {
-        if (!year) {
-            await axios
-            .get('/api/vehiclesData/getYears', { params: {year: year} })
-            .then((res) => {
-                setYearList(res.data.sort((a, b) => a - b));
-            })
-            .catch((err) => {
-            console.log(err);
-            });
+        let params = {};
+        if (props.selectedCar) {
+            params = {
+                year: props.selectedCar.year,
+                make: props.selectedCar.make,
+                model: props.selectedCar.model,
+                selectedCar: true
+            };
+        } else {
+            params = {
+                year,
+                make,
+                model
+            };
         }
-        if (year && !make) {
-            await axios
-            .get('/api/vehiclesData/getMakes', { params: {year: year} })
-            .then((res) => {
-                setMakeList(res.data.sort());
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-        if (year && make) {
-            await axios
-            .get('/api/vehiclesData/getModels', { params: {year: year, make: make} })
-            .then((res) => {
-                setModelList(res.data.sort());
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
+        await axios
+        .get('/api/vehiclesData/getACar', { params })
+        .then((res) => {
+            setYearList(res.data.years);
+            setMakeList(res.data.makes);
+            setModelList(res.data.models);
+        })
+        .catch((err) => {
+        console.log(err);
+        });
     };
 
     const handleSubmit = async (event) => {
@@ -197,15 +217,20 @@ export default function VehicleForm(props) {
                             required
                             onChange={(event) => {
                                 setYear(event.target.value);
-                                setYearFilledOut(true);
-                                setMake('');
-                                setModel('');
-                                setYearStatus('');
-                                setMakeFilledOut(false);
-                                setMakeStatus("Please select the make of your vehicle.");
-                                setModelStatus("Please select the model of your vehicle.");
+                                if (event.target.value == "") {
+                                    handleCancel();
+                                } else {
+                                    setYearFilledOut(true);
+                                    setMake('');
+                                    setModel('');
+                                    setYearStatus('');
+                                    setMakeFilledOut(false);
+                                    setMakeStatus("Please select the make of your vehicle.");
+                                    setModelStatus("Please select the model of your vehicle.");
+                                }
                             }}
                             >
+                            <MenuItem key={-1} value={""} style={{ height : '32px' }}></MenuItem>
                             {yearList.map((year, index) => (
                                 <MenuItem key={index} value={year}>
                                     {year}
@@ -281,9 +306,14 @@ export default function VehicleForm(props) {
                         <InputLabel id="mpgLabel">Miles Per Gallon (Not Required)</InputLabel>
                         <Input
                             name="mpg"
-                            value={mpg}                  
+                            value={mpg<1?'':mpg}                  
                             onChange={event =>  {
-                                setMPG(event.target.value);
+                                let inputValue = event.target.value;
+                                if (Number.isInteger(Number(inputValue)) && parseInt(inputValue) >= 1) {
+                                    setMPG(inputValue);
+                                } else {
+                                    setMPG('');
+                                }
                             }}
                             >                   
                         </Input>

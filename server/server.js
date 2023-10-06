@@ -7,7 +7,7 @@ const app = express();
 const port = 5010;
 
 const user = "mdsantia";
-const pwd = "PkLnDkpIynsO9YR8";
+const pwd = "efx777db3Fz8xHQi";
 // set up mongoose and DB
 const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
 // Moved the MongoDB client initialization outside of the function
