@@ -21,6 +21,7 @@ export const DirectionContextProvider = ({ children }) => {
   const [directions, setDirections] = useState(null);
   const [directionSet, setDirectionSet] = useState(false);
   const [center, setCenter] = useState(null);
+  const [chosenRoute, setChosenRoute] = useState(0);
 
   const directionsCallback = (response) => {
     if (directionSet) {
@@ -48,6 +49,8 @@ export const DirectionContextProvider = ({ children }) => {
         setCenter,
         directionSet,
         directionsCallback,
+        chosenRoute,
+        setChosenRoute
       }}
     >
       {children}

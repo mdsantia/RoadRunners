@@ -16,7 +16,7 @@ import { Button, Grid, Divider, createTheme, ThemeProvider } from '@mui/material
 import AddRoadIcon from '@mui/icons-material/AddRoad';
 import { useUserContext } from '../hooks/useUserContext';
 import axios from 'axios';
-
+import RouteOptions from './RouteOptions';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -415,6 +415,7 @@ export default function Itinerary(props) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         Route options
+        <RouteOptions/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Attraction list
