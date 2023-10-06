@@ -158,7 +158,9 @@ export default function VehicleForm(props) {
 
     return (
         <ThemeProvider theme={theme}>
-            <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
+            {props.showLogo && (
+                <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
+            )}            
             <div style={{ marginLeft: '10px' }}>
                 <Typography style={{ padding: '20px', margin: '0', fontSize: '25px', fontWeight: 'bold'}}>Vehicle Information</Typography>
                 <Container>
