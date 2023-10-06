@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './StrictModeDroppable';
+import ClearIcon from '@mui/icons-material/Clear'; 
 import { useUserContext } from '../hooks/useUserContext';
 import './CarRanking.css'
 import VehiclesPage from '../pages/VehiclesPage';
@@ -42,6 +43,23 @@ function CarRanking({onSelectCar}) {
   const handleSelectCar = (vehicleId) => {
     const foundVehicle = vehicles.find((vehicle) => vehicle._id === vehicleId);
     onSelectCar(foundVehicle);
+  }
+
+  const handleRemoveCar = async (vehicleId, event) => {
+    event.stopPropagation();
+
+    await axios.post('/api/user/removeVehicle', {
+      email: user.email,
+      _id: vehicleId
+    }).then(response => {
+      const newUser = response.data;
+      updateUser(newUser);
+      updateVehicles(newUser.vehicles);
+    }).catch(error => {
+      console.log(error.response.data.error);
+      alert("There was an error removing your vehicle: " + error.response.data.error + ".\nPlease try again.");
+    });
+
   }
 
   React.useEffect(() => {
@@ -137,6 +155,8 @@ function CarRanking({onSelectCar}) {
                           </div>
                           <p style={{ fontFamily: 'Arial', fontSize: '16px', textAlign: 'right'}}>
                             {ranking}: { name }
+                            <br />
+                            <ClearIcon style={{ fontSize: '16px', textAlign: 'right', cursor:'pointer'}} onClick={(event) => handleRemoveCar(id, event)}></ClearIcon>
                           </p>
                         </li>
                       )}

@@ -155,7 +155,7 @@ const addVehicle = async (req, res) => {
 /*
     Edit a vehicle in user array
 
-    API: /api/user/addVehicle
+    API: /api/user/editVehicle
     Method: POST
     Request: {email, _id}
     Response: {user}
@@ -242,25 +242,32 @@ const vehicleRanking = async (req, res) => {
     responseCode: 400 if user is not found
 */
 const removeVehicle = async (req, res) => {
-    const {email, make, model, year, color} = req.body;
+    const {email, _id} = req.body;
 
     // Check if user exists
-    const user = User.findOne({email});
+    const user = await User.findOne({email});
     if (!user) {
         console.log(`ERROR User was not found`.red.bold);
         res.status(400).json({error: 'User not found'});
         return;
     }
-    // Remove vehicle from user
-    const vehicle = {
-        make,
-        model,
-        year,
-        color
-    };
-    user.vehicles.pull(vehicle);
+
+    for (let i = 0; i < user.vehicles.length; i++) {
+        // Check if vehicle already exists
+        if (user.vehicles[i]._id == _id) {
+            // Remove vehicle from user
+            user.vehicles.splice(i, 1);
+        }
+    }
+
+    // Update rankings
+    for (let i = 0; i < user.vehicles.length; i++) {
+        user.vehicles[i].ranking = i;
+    }
+
     await user.save();
     res.status(200).json(user);
+    return;
 }
 
 /*
