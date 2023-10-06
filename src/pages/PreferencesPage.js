@@ -1,12 +1,12 @@
 import { React, useEffect } from 'react';
-import { Card, Button, Typography, AppBar, Drawer, Grid, Box, createTheme, ThemeProvider } from '@mui/material';
+import { Container, Button, Typography, AppBar, Drawer, Grid, Box, createTheme, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useParams } from "react-router-dom";
 import image from '../assets/login-bg.jpg';
 import axios from 'axios';
 import { useUserContext } from '../hooks/useUserContext';
 import TopBar from '../components/TopBar';
-import NavBar from '../components/SideBar';
+import SideBar from '../components/SideBar';
 import PreferencesForm from '../components/PreferencesForm';
 
 
@@ -27,12 +27,18 @@ const theme = createTheme({
   },
 });
 
-const Container = styled('div')({
+const SidebarContainer = styled('div')({
+  width: '25%',
+});
+
+const ContentContainer = styled('div')({
+  flex: 1, // This makes the content expand to take up available space horizontally
+  padding: '100px',
+  paddingTop: '80px',
   display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '80vh',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  alignItems: 'flex-start', // Align children to the left
+  width: '100%', // Ensure it takes up 100% of the available width
 });
 
 export default function PreferencesPage() {
@@ -41,7 +47,7 @@ export default function PreferencesPage() {
 
   useEffect(() => {
     if (!user) {
-      return (<div>Loading...</div>);
+      return;
     }
     if (user._id !== id) {
       window.location.href = "/";
@@ -51,14 +57,14 @@ export default function PreferencesPage() {
   return (
     <ThemeProvider theme={theme}>
       <AppBar><TopBar/></AppBar>
-      <Grid>
-        <NavBar/> 
-      </Grid>
-      <Grid>
-        <Container>
-          <PreferencesForm/>
-        </Container>
-      </Grid>
+      <Container>
+        <SidebarContainer>
+          <SideBar/> 
+        </SidebarContainer>
+        <ContentContainer>
+          <PreferencesForm showSkipButton={false} showDoneButton={true} showLogo={false}/>
+        </ContentContainer>
+      </Container>
     </ThemeProvider>
   );
 }

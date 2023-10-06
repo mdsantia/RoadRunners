@@ -126,7 +126,9 @@ export default function VehicleForm(props) {
 
     return (
         <ThemeProvider theme={theme}>
-            <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
+            {props.showLogo && (
+                <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
+            )}            
             <div style={{ marginLeft: '10px' }}>
                 <Typography style={{ padding: '20px', margin: '0', fontSize: '25px', fontWeight: 'bold'}}>Vehicle Information</Typography>
                 <Container>
@@ -236,12 +238,16 @@ export default function VehicleForm(props) {
                     </FormControl>
                 </Container>
                 <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
-                    <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'red', color: 'white'}}>
-                        Skip
-                    </Button>
-                    <Button onClick={handleSubmit} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'red', color: 'white' }}>
-                        Done
-                    </Button>
+                    {props.showSkipButton && (
+                        <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'red', color: 'white' }}>
+                            Skip
+                        </Button>
+                    )}
+                    {props.showDoneButton && (
+                        <Button onClick={handleSubmit} variant="contained" sx={{ width: '120px', backgroundColor: 'red', color: 'white' }}>
+                            Done
+                        </Button>
+                    )}
                 </Container>
             </div>
         </ThemeProvider>

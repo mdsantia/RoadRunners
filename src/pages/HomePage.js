@@ -34,7 +34,6 @@ const StyledButton = styled(Button)({
   marginBottom: 10,
 })
 
-
 export default function HomePage() {
   const [preferencesOpen, setPreferencesOpen] = React.useState(true);
 
@@ -78,7 +77,7 @@ export default function HomePage() {
           )}
           {preferencesOpen && (
             <Dialog fullWidth maxWidth="md" open={preferencesOpen} onClose={handleClosePreferences}>
-              <PreferencesForm onClose={handleClosePreferences}></PreferencesForm>
+              <PreferencesForm showSkipButton={true} showDoneButton={true} showLogo={true} onClose={handleClosePreferences}></PreferencesForm>
             </Dialog>
           )}
         </div>
