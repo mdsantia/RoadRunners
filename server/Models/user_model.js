@@ -24,6 +24,10 @@ const Vehicle = new Schema({
     mpg: {
         type: String,
         required: true
+    },
+    ranking: {
+        type: Number,
+        required: true
     }
 
 });

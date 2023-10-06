@@ -70,7 +70,7 @@ const checkAndSaveUser = async (req, res) => {
     
     */
 const addVehicle = async (req, res) => {
-    const {email, make, model, year, color, mpgGiven} = req.body;
+    const {email, make, model, year, color, mpgGiven } = req.body;
     var mpg = mpgGiven;
     
     // Check if user exists
@@ -81,11 +81,9 @@ const addVehicle = async (req, res) => {
         return;
     }
 
-    console.log(make, model, year)
-
     mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
     // Create new vehicle
-    const newVehicle ={
+    const newVehicle = {
         make,
         model,
         year,
@@ -93,7 +91,8 @@ const addVehicle = async (req, res) => {
         mpg 
     };
 
-    for (let i = 0; i < user.vehicles.length; i++) {
+    let i = 0;
+    for (; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
         if (make == user.vehicles[i].make && model == user.vehicles[i].model && year == user.vehicles[i].year) {
             console.log(`ERROR Vehicle exists`.red.bold);
@@ -102,6 +101,7 @@ const addVehicle = async (req, res) => {
         }
     }
 
+    newVehicle.ranking = i;
     // Add vehicle to user
     user.vehicles.push(newVehicle);
     await user.save();
@@ -109,6 +109,34 @@ const addVehicle = async (req, res) => {
         res.status(201).json(user);
         return;
     }
+    res.status(200).json(user);
+    return;
+}
+/*
+    UPDATE VEHICLE RANKING
+
+    API: /api/user/vehicleRanking
+    Method: POST
+    Request: {email, vehicles}
+    Response: {user}
+    responseCode: 200 if vehicles is updated
+    responseCode: 400 if user is not found or duplicate vehicle is detected
+    
+    */
+const vehicleRanking = async (req, res) => {
+    const {email, vehicles } = req.body;
+    
+    // Check if user exists
+    const user = await User.findOne({email});
+    if (!user) {
+        console.log(`ERROR User was not found`.red.bold);
+        res.status(400).json({error: 'User not found'});
+        return;
+    }
+
+    // Update vehicles to user
+    user.vehicles = vehicles;
+    await user.save();
     res.status(200).json(user);
     return;
 }
@@ -212,4 +240,4 @@ const getMPG = async (make, model, year) => {
     return mpg;
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences};
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking};
