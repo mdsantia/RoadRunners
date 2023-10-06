@@ -126,7 +126,6 @@ export default function Itinerary(props) {
         <PreferencesForm type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Route options
         <RouteOptions/>
       </TabPanel>
       <TabPanel value={value} index={2}>

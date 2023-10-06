@@ -49,6 +49,7 @@ function RouteOptions() {
                                 sx={{
                                     backgroundColor: index === chosenRoute ? '#000' : 'transparent', // Change the background color
                                     color: index === chosenRoute ? '#fff' : 'inherit', // Change the text color
+                                    borderRadius:4,
                                 }}
                             >
                                 <ListItemText
