@@ -5,7 +5,6 @@ import Logo from '../assets/rr-logo.png';
 import { useUserContext } from '../hooks/useUserContext';
 import axois from 'axios';
 
-
 const theme = createTheme({
     typography: {
       fontFamily: [
@@ -126,11 +125,14 @@ export default function PreferencesForm(props) {
             } ).then((res) => {
                 const newUser = res.data;
                 updateUser(newUser);
+                alert("Your preferences have been updated!");
                 console.log("printing new user:", newUser)
             }).catch((err) => {
                 console.log(err);
             });
-            props.onClose();
+            if (props.showSkipButton) {
+                props.onClose();
+            }
         }
     }
 
@@ -145,6 +147,18 @@ export default function PreferencesForm(props) {
         setCommuteTimeStatus('');
         props.onClose();
     }
+
+    React.useEffect(() => {
+        if (!user) {
+          return;
+        } 
+        setBudget(user.preferences.budget);
+        setCommuteTime(user.preferences.commuteTime);
+        setCarsickRating(user.preferences.carsickRating);
+        setAttractionSelection(user.preferences.attractionSelection);
+        setDiningSelection(user.preferences.diningSelection);
+        setHousingSelection(user.preferences.housingSelection);
+    }, [user]);
 
     return (
         <ThemeProvider theme={theme}>
