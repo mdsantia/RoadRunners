@@ -36,6 +36,9 @@ const StyledButton = styled(Button)({
 
 export default function HomePage() {
   const [preferencesOpen, setPreferencesOpen] = React.useState(true);
+  const urlParams = new URLSearchParams(window.location.search);
+  const firstLogin = urlParams.get('firstLogin');
+  console.log(firstLogin);
 
   const handleClosePreferences = () => {
     setPreferencesOpen(false);
@@ -56,7 +59,7 @@ export default function HomePage() {
         zIndex: -1,
       }}>
       </div>
-      {(user && !user.filled_preferences) && (
+      {(user && firstLogin) && (
         <div>
           {preferencesOpen && (
             <div

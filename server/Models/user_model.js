@@ -92,7 +92,6 @@ const User = new Schema({
         type: [Vehicle],
         default: []
     },
-
     preferences: {
         type: Preferences,
         default: {}

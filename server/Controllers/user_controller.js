@@ -41,7 +41,7 @@ const checkAndSaveUser = async (req, res) => {
         await newUser.save();
 
         // Return user
-        res.status(200).json(newUser);
+        res.status(200).json({user: newUser, firstTime: true});
         return;
     }
 
@@ -54,7 +54,7 @@ const checkAndSaveUser = async (req, res) => {
     
     // Save user
     await user.save();
-    res.status(201).json(user);
+    res.status(201).json({user: user, firstTime: false});
 }
 
 /*
