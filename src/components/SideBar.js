@@ -5,9 +5,14 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import { createTheme, ThemeProvider, Container } from '@mui/material';
 import { useUserContext } from '../hooks/useUserContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import ListIcon from '@mui/icons-material/List';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import PublicIcon from '@mui/icons-material/Public';
 
 
 const drawerWidth = 240;
@@ -31,6 +36,16 @@ const theme = createTheme({
 
 function SideBar() {
     const pageOptions = ['Account Information', 'Trip Preferences', 'Vehicles', 'Trip History'];
+    const Icons = ['ListIcon', 'FavoriteIcon', 'DirectionsCarIcon', 'PublicIcon'];
+
+    const ComponentMap = {
+        ListIcon,
+        FavoriteIcon,
+        DirectionsCarIcon,
+        PublicIcon
+    };
+
+
     const navigate = useNavigate();
     const {user} = useUserContext();
 
@@ -60,9 +75,14 @@ function SideBar() {
                     >
                     <CssBaseline/>
                     <List sx={{ paddingTop: '90px' }}>
+        
                         {pageOptions.map((text, index) => (
                             <ListItem key={text} disablePadding>
                                 <ListItemButton id={text} value={text} onClick={(event) => handleButton(event)}>
+                                    <ListItemIcon>
+                                        {ComponentMap[Icons[index]] && React.createElement(ComponentMap[Icons[index]])}
+                                    </ListItemIcon>
+
                                     <ListItemText primary={text} />
                                 </ListItemButton>
                             </ListItem>

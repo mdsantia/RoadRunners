@@ -10,10 +10,13 @@ import './CarRanking.css'
 function CarRanking({onSelectCar}) {
   const [vehicles, updateVehicles] = useState([]);
   const {user, updateUser} = useUserContext();
+  const [clickedItemId, setClickedItemId] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState(null);
 
   const handleSelectCar = (vehicleId) => {
     const foundVehicle = vehicles.find((vehicle) => vehicle._id === vehicleId);
     onSelectCar(foundVehicle);
+    setClickedItemId(vehicleId);
   }
 
   const handleRemoveCar = async (vehicleId, event) => {
@@ -117,14 +120,22 @@ function CarRanking({onSelectCar}) {
             {(provided) => (
               <ul className="characters" style={{ textAlign: 'right'}} {...provided.droppableProps} ref={provided.innerRef}>
                 {vehicles.map(({id, ranking, name, thumb}, index) => {
+                  const isClicked = clickedItemId === id;
                   return (
                     <Draggable key={id} draggableId={id} index={index}>
-                      {(provided) => (
+                      {(provided, snapshot) => (
                         <li
                           ref={provided.innerRef} 
                           {...provided.draggableProps} 
                           {...provided.dragHandleProps}
                           onClick={() => handleSelectCar(id)}
+                          onMouseEnter={() => setHoveredItem(id)}
+                          onMouseLeave={() => setHoveredItem(null)}
+                          style={{
+                            boxShadow: (snapshot.isDragging || isClicked || id === hoveredItem) ? '0 4px 8px rgba(0, 0, 0, 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.2)',
+                            cursor: snapshot.isDragging ? 'grabbing' : 'pointer',
+                            ...provided.draggableProps.style,
+                          }}
                         >
                           <ArrowBackIosNewIcon style={{ fontSize: '36px', textAlign: 'right', cursor:'pointer'}}/>
                           <div className="characters-thumb">
