@@ -65,7 +65,7 @@ export default function Itinerary(props) {
 
   const [vehicleList, setVehicleList] = React.useState([]);
   const [selectedVehicles, setSelectedVehicles] = React.useState([]);
-  const [numVehicles, setNumVehicles] = React.useState(1);
+  const [numVehicles, setNumVehicles] = React.useState(0);
 
   React.useEffect(() => {
     if (user) {
