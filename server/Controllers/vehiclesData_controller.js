@@ -87,35 +87,33 @@ async function findUniqueModelsForMake(collectionName, make) {
     await client.close();
   }
 }
+const getYears = async (req, res) => {
+  listCollections()
+  .then((collectionNames) => {
+    console.log(`Unique Car Years: ${collectionNames}`.green.bold);
+    res.status(201).json(collectionNames);
+  })
+  .catch((error) => {
+    console.error(`Error: ${error}`.red.bold);
+    res.status(400).json({ message: error });
+  });
+  return;
+}
 
-const getACar = async (req, res) => {
-  // if year is not given, returns all years
-  if (!req.query.year) {
-    listCollections()
-    .then((collectionNames) => {
-      console.log(`Unique Car Years: ${collectionNames}`.green.bold);
-      res.status(201).json(collectionNames);
-    })
-    .catch((error) => {
-      console.error(`Error: ${error}`.red.bold);
-      res.status(400).json({ message: error });
-    });
-    return;
-  }
-  // if make is not given, returns all makes
-  if (!req.query.make) {
-    findUniqueMakes(req.query.year)
-    .then((uniqueMakes) => {
-      console.log(`Unique Car in '${req.query.year}': ${uniqueMakes}`.green.bold);
-      res.status(201).json(uniqueMakes);
-    })
-    .catch((error) => {
-      console.error(`Error: ${error}`.red.bold);
-      res.status(400).json({ message: error });
-    });
-    return;
-  }
-  // returns all models
+const getMakes = async (req, res) => {
+  findUniqueMakes(req.query.year)
+  .then((uniqueMakes) => {
+    console.log(`Unique Car in '${req.query.year}': ${uniqueMakes}`.green.bold);
+    res.status(201).json(uniqueMakes);
+  })
+  .catch((error) => {
+    console.error(`Error: ${error}`.red.bold);
+    res.status(400).json({ message: error });
+  });
+  return;
+}
+
+const getModels = async (req, res) => {
   findUniqueModelsForMake(req.query.year, req.query.make)
   .then((uniqueModels) => {
     console.log(`Unique models for year '${req.query.year}' with make '${req.query.make}':${uniqueModels}`.green.bold);
@@ -125,8 +123,9 @@ const getACar = async (req, res) => {
     console.error(`Error: ${error}`.red.bold);
     res.status(400).json({ message: error });
   });
-} 
-
+  return;
+}
+  
 const getMPG = async (req, res) => {
   const query = {make: req.query.make, model: model}
   getDatabaseData("Vehicles", req.query.year, query)
@@ -141,4 +140,4 @@ const getMPG = async (req, res) => {
   });
 }
 
-module.exports = {getACar, getMPG};
+module.exports = {getYears, getMakes, getModels, getMPG};
