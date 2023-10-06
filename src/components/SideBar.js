@@ -43,7 +43,7 @@ function SideBar() {
         } else if (event.currentTarget.id === "Vehicles") {
             navigate(`/vehicles/${user._id}`);
         } else if (event.currentTarget.id === "Trip History") {
-            // navigate(`/tripHistory/${user._id}`);
+            navigate(`/tripHistory/${user._id}`);
         }
     }
 

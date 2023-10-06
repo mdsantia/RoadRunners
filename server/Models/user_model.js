@@ -32,6 +32,31 @@ const Vehicle = new Schema({
 
 });
 
+const Trip = new Schema({
+    origin: {
+        type: String,
+        required: true
+    },
+    destination: {
+        type: String,
+        required: true
+    },
+    startDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date,
+        required: true
+    },
+    lowestMpg: {
+        type: Number,
+    },
+    vehicles: {
+        type: [Vehicle],
+    },
+});
+
 const Preferences = new Schema({
     budget: {
         type: String,
@@ -75,6 +100,10 @@ const User = new Schema({
     filled_preferences: {
         type: Boolean,
         default: false
+    },
+    trips: {
+        type: [Trip],
+        default: []
     },
     google_id: {
         type: String,

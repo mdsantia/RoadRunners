@@ -69,7 +69,7 @@ export default function Dashboard() {
                     <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
                 </MapWrapper>
                 <Wrapper>
-                <Itinerary></Itinerary>
+                <Itinerary startLocation={startLocation} endLocation={endLocation} startDate={startDate} endDate={endDate}></Itinerary>
                 </Wrapper>
             </Container>
         </div>

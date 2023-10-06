@@ -15,6 +15,7 @@ import { TextField, FormGroup, FormControlLabel, Checkbox } from '@mui/material'
 import { Button, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
 import AddRoadIcon from '@mui/icons-material/AddRoad';
 import { useUserContext } from '../hooks/useUserContext';
+import axios from 'axios';
 
 
 function TabPanel(props) {
@@ -37,7 +38,6 @@ function TabPanel(props) {
   );
 }
 
-
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
@@ -51,9 +51,9 @@ function a11yProps(index) {
   };
 }
 
-export default function Itinerary() {
+export default function Itinerary(props) {
 
-  const {user} = useUserContext();
+  const {user, updateUser} = useUserContext();
  
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -148,12 +148,28 @@ export default function Itinerary() {
     }
   }
 
+  const saveTrip = async () => {
+    console.log(props)
+    await axios.post('/api/user/saveTrip', {
+      email: user.email,
+      startLocation: props.startLocation,
+      endLocation: props.endLocation,
+      startDate: props.startDate,
+      endDate: props.endDate,
+      vehicleList: [],
+    }).then((response) => {
+       const newUser = response.data;
+       updateUser(newUser);
+       alert("Trip saved!");
+    }
+    ).catch((error) => {
+      console.log(error);
+    });
+  }
+
   const handleSubmit = (event) => {
    /*generate route*/
   }
-
-
-
 
   return (
     <Box sx={{ width: '100%', paddingTop: '15%' }}>
@@ -404,7 +420,9 @@ export default function Itinerary() {
         Attraction list
       </TabPanel>
       <TabPanel value={value} index={3}>
-        Overview
+        <Button variant="contained" sx={{m:2}} onClick={saveTrip} >
+          Save Trip
+        </Button>
       </TabPanel>
     </Box>
   );

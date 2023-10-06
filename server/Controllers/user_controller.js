@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const User = require('../Models/user_model');
 const Vehicle = require('../Models/user_model');
 const Preferences = require('../Models/user_model');
+const Trip = require('../Models/user_model');
 const axios = require('axios');
 
 /*
@@ -54,6 +55,44 @@ const checkAndSaveUser = async (req, res) => {
     // Save user
     await user.save();
     res.status(201).json(user);
+}
+
+/*
+    Saves a trip given the startDate, endDate, startLocation, endLocation, and vehicle list
+
+    API: /api/user/saveTrip
+    Method: POST
+    Request: {email, startDate, endDate, startLocation, endLocation, vehicleList}
+    Response: {user}
+    responseCode: 200 if trip is saved
+    responseCode: 400 if user is not found
+*/
+
+const saveTrip = async (req, res) => {
+    const {email, startDate, endDate, startLocation, endLocation, vehicleList} = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({email});
+
+    if (!user) {
+        console.log(`ERROR in saveTrip User was not found`.red.bold);
+        res.status(400).json({error: 'User not found'});
+        return;
+    }
+
+    const newTrip = {
+        startDate,
+        endDate,
+        origin: startLocation,
+        destination: endLocation,
+        vehicles: [],
+        lowestMPG: 0,
+    }
+
+    // Add trip to user
+    user.trips.push(newTrip);
+    await user.save();
+    res.status(200).json(user);
 }
 
 /*
@@ -240,4 +279,4 @@ const getMPG = async (make, model, year) => {
     return mpg;
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking};
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking};

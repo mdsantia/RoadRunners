@@ -12,6 +12,7 @@ import UserProfile from './pages/UserProfile';
 import VehiclesPage from './pages/VehiclesPage';
 import Dashboard from './pages/Dashboard';
 import PreferencesPage from './pages/PreferencesPage';
+import TripHistory from './pages/TripHistory';
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         <Route exact path="/profile/:id" element={<UserProfile />} />
         <Route exact path="/vehicles/:id" element={<VehiclesPage />} />
         <Route exact path="/tripPreferences/:id" element={<PreferencesPage />} />
+        <Route exact path="/tripHistory/:id" element={<TripHistory />} />
+        <Route exact path="/drag" element={<Draggable_EX />} />
         <Route exact path="/dashboard/:startLocation/:endLocation/:startDate/:endDate" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/" replace />}/>
       </Routes>
