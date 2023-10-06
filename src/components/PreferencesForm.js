@@ -293,7 +293,7 @@ export default function PreferencesForm(props) {
                         <FormGroup>
                             <Grid container>
                                 {Array.from({ length: findTotalColumns(attractionOptions) }).map((_, columnIndex) => (
-                                    <Grid item xs={3} key={columnIndex}>
+                                    <Grid item xs={4} key={columnIndex}>
                                         {attractionOptions.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((attraction, index) => (
                                         <FormControlLabel
                                             key={index}
@@ -321,7 +321,7 @@ export default function PreferencesForm(props) {
                         <FormGroup>
                             <Grid container>
                                 {Array.from({ length: findTotalColumns(diningOptions) }).map((_, columnIndex) => (
-                                    <Grid item xs={3} key={columnIndex}>
+                                    <Grid item xs={4} key={columnIndex}>
                                         {diningOptions.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((diningPlace, index) => (
                                         <FormControlLabel
                                             key={index}
