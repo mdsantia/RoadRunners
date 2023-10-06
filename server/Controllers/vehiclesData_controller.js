@@ -7,34 +7,34 @@ const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?ret
 const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 async function getDatabaseData(database, collection, query) {
-    try {
-      // Connect to MongoDB before querying
-      await client.connect();
-  
-      const db = client.db(database);
-      const col = db.collection(collection);
-  
-      const document = await col.findOne(query);
-  
-      if (document) {
-        console.log(document);
-        const data = document._id;
-        console.log(data);
-        return data;
-      } else {
-        console.log("Data not found.");
-        return null;
-      }
-    } catch (error) {
-      console.error('Error querying MongoDB:', error);
+  try {
+    // Connect to MongoDB before querying
+    await client.connect();
+
+    const db = client.db(database);
+    const col = db.collection(collection);
+
+    const document = await col.findOne(query);
+
+    if (document) {
+      console.log(document);
+      const data = document._id;
+      console.log(data);
+      return data;
+    } else {
+      console.log("Data not found.");
       return null;
     }
+  } catch (error) {
+    console.error('Error querying MongoDB:', error);
+    return null;
   }
+}
 
 async function listCollections() {
-const client = new MongoClient(url, { useNewUrlParser: true });
+  const client = new MongoClient(url, { useNewUrlParser: true });
 
-try {
+  try {
     // Connect to the MongoDB server
     await client.connect();
 
@@ -48,58 +48,103 @@ try {
     const collectionNames = collections.map((collection) => collection.name);
 
     return collectionNames;
-} finally {
+  } finally {
     // Close the connection when done
     await client.close();
-}
+  }
 }
 
 async function findUniqueMakes(collectionName) {
-    const client = new MongoClient(url, { useNewUrlParser: true });
+  const client = new MongoClient(url, { useNewUrlParser: true });
   
-    try {
-      // Connect to the MongoDB server
-      await client.connect();
-  
-      // Get a reference to the database
-      const db = client.db("Vehicles");
-  
-      // Use the distinct method to find unique 'make' values
-      const uniqueMakes = await db.collection(collectionName).distinct('make');
-  
-      return uniqueMakes;
-    } finally {
-      // Close the connection when done
-      await client.close();
-    }
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+
+    // Get a reference to the database
+    const db = client.db("Vehicles");
+
+    // Use the distinct method to find unique 'make' values
+    const uniqueMakes = await db.collection(collectionName).distinct('make');
+
+    return uniqueMakes;
+  } finally {
+    // Close the connection when done
+    await client.close();
   }
+}
+
+async function findUniqueModelsForMake(collectionName, make) {
+  const client = new MongoClient(url, { useNewUrlParser: true });
+
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+
+    // Get a reference to the database
+    const db = client.db("Vehicles");
+
+    // Use the distinct method to find unique 'model' values
+    const uniqueModels = await db
+      .collection(collectionName)
+      .distinct('model', { make: make });
+
+    return uniqueModels;
+  } finally {
+    // Close the connection when done
+    await client.close();
+  }
+}
 
 const getACar = async (req, res) => {
-    // if year is not given, returns all years
-    if (!req.query.year) {
-        listCollections()
-        .then((collectionNames) => {
-            console.log(`Unique Car Year ${collectionNames}`.green.bold);
-            res.status(201).json(collectionNames);
-        })
-        .catch((error) => {
-            console.error(`Error: ${error}`.red.bold);
-            res.status(400).json({ message: error });
-        });
-    }
-    // if make is not given, returns all makes
-    if (!req.query.make) {
-        findUniqueMakes(req.query.year)
-        .then((uniqueMakes) => {
-            console.log(`Unique Car in ${req.query.year} Makes ${uniqueMakes}`.green.bold);
-            res.status(201).json(uniqueMakes);
-        })
-        .catch((error) => {
-            console.error(`Error: ${error}`.red.bold);
-            res.status(400).json({ message: error });
-        });
-    }
-    // if model is not given, returns all models
+  // if year is not given, returns all years
+  if (!req.query.year) {
+      listCollections()
+      .then((collectionNames) => {
+          console.log(`Unique Car Years: ${collectionNames}`.green.bold);
+          res.status(201).json(collectionNames);
+      })
+      .catch((error) => {
+          console.error(`Error: ${error}`.red.bold);
+          res.status(400).json({ message: error });
+      });
+  }
+  // if make is not given, returns all makes
+  if (!req.query.make) {
+  findUniqueMakes(req.query.year)
+  .then((uniqueMakes) => {
+      console.log(`Unique Car in '${req.query.year}': ${uniqueMakes}`.green.bold);
+      res.status(201).json(uniqueMakes);
+    })
+    .catch((error) => {
+      console.error(`Error: ${error}`.red.bold);
+      res.status(400).json({ message: error });
+    });
+  }
+  // returns all models
+  findUniqueModelsForMake(req.query.year, req.query.make)
+  .then((uniqueModels) => {
+    console.log(`Unique models for year '${req.query.year}' with make '${req.query.make}':uniqueModels`.green.bold);
+    res.status(201).json(uniqueMakes);
+  })
+  .catch((error) => {
+    console.error(`Error: ${error}`.red.bold);
+    res.status(400).json({ message: error });
+  });
 } 
 
-module.exports = {getACar};
+const getMPG = async (req, res) => {
+  const query = {make: req.query.make, model: model}
+  getDatabaseData("Vehicles", req.query.year, query)
+  .then((vehicleData)=> {
+    const vehicleMPG = vehicleData['mpgData'];
+    console.log(`The MPG for your given car is: ${vehicleMPG}`.green.bold);
+    res.status(201).json(vehicleMPG);
+  })
+  .catch((error) => {
+    console.error(`Error: ${error}`.red.bold);
+    res.status(400).json({ message: error });
+  });
+}
+
+module.exports = {getACar, getMPG};

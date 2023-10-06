@@ -6,20 +6,6 @@ import axios from 'axios';
 import { useUserContext } from '../hooks/useUserContext';
 import Logo from '../assets/rr-logo.png';
 
-
-const options = {
-    method: 'GET',
-    url: 'https://car-data.p.rapidapi.com/cars',
-    params: {
-      limit: '50',
-      page: '0'
-    },
-    headers: {
-      'X-RapidAPI-Key': '8f96b4e240msh2613d084cf46613p164776jsnbfdbabb5ba48',
-      'X-RapidAPI-Host': 'car-data.p.rapidapi.com'
-    }
-};
-
 const theme = createTheme({
     typography: {
       fontFamily: [
@@ -51,48 +37,30 @@ export default function VehicleForm(props) {
 
     const [yearFilledOut, setYearFilledOut] = React.useState(false);
     const [makeFilledOut, setMakeFilledOut] = React.useState(false);
-    const [yearStatus, setYearStatus] = React.useState('');
-    const [makeStatus, setMakeStatus] = React.useState('');
-    const [modelStatus, setModelStatus] = React.useState('');
+    const [yearStatus, setYearStatus] = React.useState(null);
+    const [makeStatus, setMakeStatus] = React.useState(null);
+    const [modelStatus, setModelStatus] = React.useState(null);
     const [colorStatus, setColorStatus] = React.useState('');
     
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = () => {
-        axios.request(options)
-        .then(response => {
-            const data = response.data;
-            setAllOptionsList(data);
-            //console.log("API Response - All Data:", data);
-            let optionArray = [];
-            for (let i = 0; i < data.length; i++) {
-                if (!optionArray.includes(data[i].year)) {
-                    optionArray.push(data[i].year);
-                }
-            }
-            optionArray.sort((a, b) => a - b);
-            setYearList(optionArray);
-            // console.log('API Response for Year:', optionArray);
-            optionArray = [];
-            for (let i = 0; i < data.length; i++) {
-                if (!optionArray.includes(data[i].make)) {
-                    optionArray.push(data[i].make);
-                }           
-            }
-            optionArray.sort((a, b) => a - b);
-            setMakeList(optionArray);
-            // console.log('API Response for Make:', optionArray);
-            optionArray = [];
-            for (let i = 0; i < data.length; i++) {
-                if (!optionArray.includes(data[i].model)) {
-                    optionArray.push(data[i].model);
-                }  
-            }
-            optionArray.sort((a, b) => a - b);
-            setModelList(optionArray);
-            // console.log('API Response for Model:', optionArray);
+        axios
+        .get('/api/vehiclesData/getACar', { params: {year: year, make: make, model: model} })
+        .then((res) => {
+          //console.log(res.data);
+          // setDirections(res.data); // Set the directionsResponse in the context
+          if (!year) {
+            setYearList(res.data.sort((a, b) => a - b));
+          }
+          if (!make) {
+            setMakeList(res.data.sort((a, b) => a - b));
+          }
+          if (!model) {
+            setModelList(res.data.sort((a, b) => a - b));
+          }
         })
-        .catch(error => {
-            console.error(error);
+        .catch((err) => {
+          console.log(err);
         });
     };
 
@@ -154,7 +122,7 @@ export default function VehicleForm(props) {
     
     React.useEffect(() => {
         fetchData();
-    }, []);
+    }, [make, year, model]);
 
     return (
         <ThemeProvider theme={theme}>
@@ -177,15 +145,11 @@ export default function VehicleForm(props) {
                             onChange={(event) => {
                                 setYear(event.target.value);
                                 setYearFilledOut(true);
-                                let newOptionsList = [];
-                                for (let i = 0; i < allOptionsList.length; i++) {
-                                    if (allOptionsList[i].year === event.target.value && !(newOptionsList.includes(allOptionsList[i].make))) {
-                                        newOptionsList.push(allOptionsList[i].make);
-                                    }
-                                }
-                                newOptionsList.sort((a, b) => a - b);
+                                setMake(null);
+                                setModel(null);
                                 setYearStatus('');
-                                setMakeList(newOptionsList);
+                                setMakeStatus("Please select the make of your vehicle.");
+                                setModelStatus("Please select the model of your vehicle.");
                             }}
                             >
                             {yearList.map((year, index) => (
@@ -207,14 +171,9 @@ export default function VehicleForm(props) {
                             onChange={event => {
                                 setMake(event.target.value);
                                 setMakeFilledOut(true);
-                                let newOptionsList = [];
-                                for (let i = 0; i < allOptionsList.length; i++) {
-                                    if (allOptionsList[i].year === year && allOptionsList[i].make === event.target.value && !(newOptionsList.includes(allOptionsList[i].model))) {
-                                        newOptionsList.push(allOptionsList[i].model);
-                                    }
-                                }
                                 setMakeStatus('');
-                                setModelList(newOptionsList);
+                                setModelStatus("Please select the model of your vehicle.");
+                                setModel(null);
                             }}
                             >
                             {makeList.map((make, index) => (
@@ -255,6 +214,8 @@ export default function VehicleForm(props) {
                             onChange={event =>  {
                                 if (event.target.value.length !== 0) {
                                     setColorStatus('');
+                                } else {
+                                    setColorStatus("Please enter the color of your vehicle.");
                                 }
                                 setColor(event.target.value);
                             }}
