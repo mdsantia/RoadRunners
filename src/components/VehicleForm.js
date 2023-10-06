@@ -135,6 +135,25 @@ export default function VehicleForm(props) {
             });
         }
     }
+
+    const handleSave = () => {
+
+    }
+
+    const handleCancel = () => {
+        setYear('');
+        setMake('');
+        setModel('');
+        setColor('');
+        setMPG('');
+        setYearStatus('');
+        setMakeStatus('');
+        setModelStatus('');
+        setColorStatus('');
+        setYearFilledOut(false);
+        setMakeFilledOut(false);
+        props.onSelectCar(null);
+    };
     
     React.useEffect(() => {
         fetchData(year, make, model);
@@ -254,22 +273,22 @@ export default function VehicleForm(props) {
                     </FormControl>
                 </Container>
                 <br></br>
-                <Container>
-                    {props.showAddButton && (
+                <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
+                    {!props.selectedCar ? (
                         <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
                             Add Vehicle                    
                         </Button>
-                    )}
-                    {props.showEditButton && (
-                        <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
+                    ):''}
+                    {props.selectedCar ? (
+                        <Button onClick={handleSave} variant="contained" style={{ width: '100px' }} sx={{ backgroundColor: 'darkblue', color: 'white' }}>
                             Save
                         </Button>
-                    )}
-                    {props.showCancelButton && (
-                        <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
+                    ):''}
+                    {props.selectedCar ? (
+                        <Button onClick={handleCancel} variant="contained" style={{ width: '100px' }} sx={{ backgroundColor: 'darkblue', color: 'white' }}>
                             Cancel
                         </Button>
-                    )}
+                    ):''}
                 </Container>
             </div>
         </ThemeProvider>
