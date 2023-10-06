@@ -63,7 +63,7 @@ export default function VehiclesPage() {
           <SideBar/> 
         </SidebarContainer>
         <ContentContainer>
-          <VehicleForm/>
+          <VehicleForm showSkipButton={false} showDoneButton={true} showLogo={false}/>
         </ContentContainer>
       </Container>
     </ThemeProvider>
