@@ -2,41 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './StrictModeDroppable';
-import ClearIcon from '@mui/icons-material/Clear'; 
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useUserContext } from '../hooks/useUserContext';
 import './CarRanking.css'
-import VehiclesPage from '../pages/VehiclesPage';
-
-// const finalSpaceCharacters = [
-//   {
-//     id: 'gary',
-//     name: 'Gary Goodspeed',
-//     thumb: '/images/gary.png'
-//   },
-//   {
-//     id: 'cato',
-//     name: 'Little Cato',
-//     thumb: '/images/cato.png'
-//   },
-//   {
-//     id: 'kvn',
-//     name: 'KVN',
-//     thumb: '/images/kvn.png'
-//   },
-//   {
-//     id: 'mooncake',
-//     name: 'Mooncake',
-//     thumb: '/images/mooncake.png'
-//   },
-//   {
-//     id: 'quinn',
-//     name: 'Quinn Ergon',
-//     thumb: '/images/quinn.png'
-//   }
-// ]
 
 function CarRanking({onSelectCar}) {
-  // const [characters, updateCharacters] = useState(finalSpaceCharacters);
   const [vehicles, updateVehicles] = useState([]);
   const {user, updateUser} = useUserContext();
 
@@ -46,7 +17,14 @@ function CarRanking({onSelectCar}) {
   }
 
   const handleRemoveCar = async (vehicleId, event) => {
-    event.stopPropagation();
+    const confirmed = window.confirm("Are you sure you want to remove this car?");
+    
+    if (!confirmed) {
+      // User clicked "Cancel," do nothing
+      event.stopPropagation();
+      return;
+    }
+    // add alert
 
     await axios.post('/api/user/removeVehicle', {
       email: user.email,
@@ -59,7 +37,7 @@ function CarRanking({onSelectCar}) {
       console.log(error.response.data.error);
       alert("There was an error removing your vehicle: " + error.response.data.error + ".\nPlease try again.");
     });
-
+    onSelectCar(null);
   }
 
   React.useEffect(() => {
@@ -88,12 +66,10 @@ function CarRanking({onSelectCar}) {
   async function handleOnDragEnd (result) {
     if (!result.destination) return;
     
-    // const items = Array.from(characters);
     const items = Array.from(vehicles);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    // updateCharacters(items);
     console.log(items);
     const newVehicles = items.map((vehicle, index) => {
       return {
@@ -150,13 +126,14 @@ function CarRanking({onSelectCar}) {
                           {...provided.dragHandleProps}
                           onClick={() => handleSelectCar(id)}
                         >
+                          <ArrowBackIosNewIcon style={{ fontSize: '36px', textAlign: 'right', cursor:'pointer'}}/>
                           <div className="characters-thumb">
                             <img src={thumb} alt={`${name} Thumb`} />
                           </div>
                           <p style={{ fontFamily: 'Arial', fontSize: '16px', textAlign: 'right'}}>
                             {ranking}: { name }
                             <br />
-                            <ClearIcon style={{ fontSize: '16px', textAlign: 'right', cursor:'pointer'}} onClick={(event) => handleRemoveCar(id, event)}></ClearIcon>
+                            <DeleteForeverIcon style={{ fontSize: '30px', textAlign: 'right', cursor:'pointer'}} onClick={(event) => handleRemoveCar(id, event)}/>
                           </p>
                         </li>
                       )}
