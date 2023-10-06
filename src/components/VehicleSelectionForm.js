@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FormControl,
   InputLabel,
@@ -12,6 +12,7 @@ import {
 
 
 function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setNumVehicles, setSelectedVehicles }) {
+  const [selectedVehiclesMPG, setSelectedVehiclesMPG] = useState([]);
 
     const handleNumVehiclesChange = (event) => {
         const newValue = parseInt(event.target.value, 10);
@@ -21,13 +22,34 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
         }
         setNumVehicles(newValue);
         setSelectedVehicles([]);
+        setSelectedVehiclesMPG([]);
     };
 
+    const getMinMpg = () => {
+      let min = Infinity;
+      for (let i = 0; i < selectedVehiclesMPG.length; i++) {
+        if (selectedVehiclesMPG[i] == -1)
+          continue;
+        if (selectedVehiclesMPG[i] < min)
+          min = selectedVehiclesMPG[i];
+      }
+
+      if (min == Infinity) {
+        return 0;
+      }
+      return min;
+    }
+
     const handleVehicleSelectChange = (event) => {
-        console.log(numVehicles);
-        if (event.target.value.length <= numVehicles) {
-            setSelectedVehicles(event.target.value);
-        }
+    if (event.target.value.length <= numVehicles) {
+      const selectedValues = event.target.value;
+      const selectedMPGValues = selectedValues.map((selectedValue) => {
+      const selectedVehicle = vehicleList.find((vehicle) => vehicle.name === selectedValue);
+        return selectedVehicle ? parseInt(selectedVehicle.mpg) : 0; // Set a default value as needed
+      });;
+      setSelectedVehicles(selectedValues);
+      setSelectedVehiclesMPG(selectedMPGValues);
+    }
     };
 
   return (
@@ -48,7 +70,7 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
             value={numVehicles }
             fullWidth
             inputProps={{
-              min: 1,
+              min: 0,
               max: vehicleList.length,
               style: { height: '16px' },
 
@@ -77,12 +99,31 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
             fullWidth
             sx={{ height: '38px' }}
           >
-            {vehicleList.map((vehicle ) => (
-              <MenuItem key={vehicle} value={vehicle}>
-                {vehicle}
+            {vehicleList.map((vehicle,index ) => (
+              <MenuItem id={index} key={vehicle.mpg} value={vehicle.name} mpg={vehicle.mpg<=0?Infinity:vehicle.mpg}>
+                {vehicle.name}
               </MenuItem>
             ))}
           </Select>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={12} md={4}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
+            <Typography variant="body1" fontWeight="bold" style={{ margin: '0' }}>
+              Your Trip MPG
+            </Typography>
+          </div>
+        </Grid>
+        <br></br>
+        <Divider />
+        <br></br>
+        <Grid item xs={12} md={8}>
+          {selectedVehiclesMPG.length == 0 ? (
+            <p>No vehicle selected</p>
+          ):(
+          <p>{getMinMpg() == 0 ? "Not available MPG data" : `${getMinMpg()}`}</p>)}
+          {/* <p>{selectedVehiclesMPG.length==0?'No vehicle selected':(Math.min(selectedVehiclesMPG)==Infinity?'Missing MPG':Math.min(selectedVehiclesMPG))}</p> */}
         </Grid>
       </Grid>
     </FormControl>

@@ -102,7 +102,7 @@ export default function Itinerary(props) {
   }
 
   const formatVehicleList = (vehicleList) => {
-    return vehicleList.map((vehicle) => `${vehicle.year} ${vehicle.make} ${vehicle.model}`);
+    return vehicleList.map((vehicle) => {return {name: `${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`, mpg: vehicle.mpg}});
   }
 
   return (
