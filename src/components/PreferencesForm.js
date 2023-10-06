@@ -29,7 +29,6 @@ export default function PreferencesForm(props) {
         if (!user) {
           return;
         } 
-        console.log(user.preferences.budget);
         setBudget(user.preferences.budget);
         setCommuteTime(user.preferences.commuteTime);
         setCarsickRating(user.preferences.carsickRating);
