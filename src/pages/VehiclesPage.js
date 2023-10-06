@@ -77,6 +77,7 @@ export default function VehiclesPage() {
                   showAddButton={true}
                   showLogo={false}
                   selectedCar={selectedCar}
+                  onSelectCar={handleSelectCar}
                 />
               </ContentContainer>
             </Grid>
