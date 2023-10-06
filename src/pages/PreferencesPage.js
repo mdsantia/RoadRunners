@@ -55,8 +55,9 @@ export default function PreferencesPage() {
         <NavBar/> 
       </Grid>
       <Grid>
-        <PreferencesForm/>
-        this should appear right next to navbar
+        <Container>
+          <PreferencesForm/>
+        </Container>
       </Grid>
     </ThemeProvider>
   );

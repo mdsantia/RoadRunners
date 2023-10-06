@@ -143,24 +143,6 @@ export default function PreferencesForm(props) {
         setHousingSelection([]);
         setBudgetStatus('');
         setCommuteTimeStatus('');
-        const preferences = {
-            budget: budget,
-            commuteTime: commuteTime,
-            carsickRating: carsickRating,
-            attractionSelection: attractionSelection,
-            diningSelection: diningSelection,
-            housingSelection: housingSelection
-        }
-        await axois.post('/api/user/setPreferences', {
-            email: user.email,
-            preferences: preferences
-        } ).then((res) => {
-            const newUser = res.data;
-            updateUser(newUser);
-            console.log("printing new user:", newUser)
-        }).catch((err) => {
-            console.log(err);
-        });
         props.onClose();
     }
 
