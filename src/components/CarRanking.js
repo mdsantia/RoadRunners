@@ -4,6 +4,7 @@ import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './StrictModeDroppable';
 import { useUserContext } from '../hooks/useUserContext';
 import './CarRanking.css'
+import VehiclesPage from '../pages/VehiclesPage';
 
 // const finalSpaceCharacters = [
 //   {
@@ -33,10 +34,15 @@ import './CarRanking.css'
 //   }
 // ]
 
-function CarRanking() {
+function CarRanking({onSelectCar}) {
   // const [characters, updateCharacters] = useState(finalSpaceCharacters);
   const [vehicles, updateVehicles] = useState([]);
   const {user, updateUser} = useUserContext();
+
+  const handleSelectCar = (vehicleId) => {
+    const foundVehicle = vehicles.find((vehicle) => vehicle._id === vehicleId);
+    onSelectCar(foundVehicle);
+  }
 
   React.useEffect(() => {
     if (!user) {
@@ -81,7 +87,7 @@ function CarRanking() {
         color: vehicle.color,
         ranking: index
     }});
-    
+
     await axios.post('/api/user/vehicleRanking', {
       email: user.email,
       vehicles: newVehicles
@@ -110,21 +116,26 @@ function CarRanking() {
   return (
     <div className="Drag-Exam">
       <header className="Drag-Exam-header">
-        <h4 style={{ color: 'darkblue' }}>Your Vehicles</h4>
-        <div>Drag and drop for ranking. Click to load and edit.</div>
+        <h4 style={{ color: 'darkblue', textAlign: 'right'}}>Your Vehicles</h4>
+        <div style={{ textAlign: 'right' }}>Drag and drop for ranking.<br></br>Click to load and edit.</div>
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <StrictModeDroppable droppableId="characters">
             {(provided) => (
-              <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
+              <ul className="characters" style={{ textAlign: 'right'}} {...provided.droppableProps} ref={provided.innerRef}>
                 {vehicles.map(({id, ranking, name, thumb}, index) => {
                   return (
                     <Draggable key={id} draggableId={id} index={index}>
                       {(provided) => (
-                        <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        <li
+                          ref={provided.innerRef} 
+                          {...provided.draggableProps} 
+                          {...provided.dragHandleProps}
+                          onClick={() => handleSelectCar(id)}
+                        >
                           <div className="characters-thumb">
                             <img src={thumb} alt={`${name} Thumb`} />
                           </div>
-                          <p style={{ fontFamily: 'Arial', fontSize: '16px' }}>
+                          <p style={{ fontFamily: 'Arial', fontSize: '16px', textAlign: 'right'}}>
                             {ranking}: { name }
                           </p>
                         </li>
