@@ -7,13 +7,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import LoginPage from './pages/LoginPage';
-import VehicleForm from './pages/VehicleForm';
 import HomePage from './pages/HomePage';
 import UserProfile from './pages/UserProfile';
 import VehiclesPage from './pages/VehiclesPage';
 import Dashboard from './pages/Dashboard';
 import Draggable_EX from './pages/Draggable_EX'
-import PreferencesForm from './pages/PreferencesForm';
 import PreferencesPage from './pages/PreferencesPage';
 
 function App() {
