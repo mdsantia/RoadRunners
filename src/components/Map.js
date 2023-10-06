@@ -6,7 +6,8 @@ import { GOOGLE_MAPS_API_KEY } from './AddressSearch';
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { directions, directionSet, center, setCenter, directionsCallback } = useDirectionContext();
+  const { directions, center, setCenter, chosenRoute } = useDirectionContext();
+  console.log(directions);
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
 
@@ -75,7 +76,7 @@ export default function Map(props) {
   useEffect(() => {
     if (directions) {
       // Calculate the new center based on the directions
-      var decoded = /* global google */ google.maps.geometry.encoding.decodePath(directions.routes[0].overview_polyline.points);
+      var decoded = /* global google */ google.maps.geometry.encoding.decodePath(directions.routes[chosenRoute].overview_polyline.points);
       setDecodedPath(decoded);
       calculateCenter(decoded);
       calculateZoom(decoded);

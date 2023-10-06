@@ -133,7 +133,7 @@ const addVehicle = async (req, res) => {
     let i = 0;
     for (; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
-        if (make == user.vehicles[i].make && model == user.vehicles[i].model && year == user.vehicles[i].year) {
+        if (make == user.vehicles[i].make && model == user.vehicles[i].model && year == user.vehicles[i].year && color == user.vehicles[i].color) {
             console.log(`ERROR Vehicle exists`.red.bold);
             res.status(400).json({error: 'Vehicle already exists'});
             return;
@@ -151,6 +151,57 @@ const addVehicle = async (req, res) => {
     res.status(200).json(user);
     return;
 }
+
+/*
+    Edit a vehicle in user array
+
+    API: /api/user/addVehicle
+    Method: POST
+    Request: {email, _id}
+    Response: {user}
+    responseCode: 200 if vehicle is editted
+    responseCode: 400 if user is not found or no vehicle is found
+    
+    */
+const editVehicle = async (req, res) => {
+    const {email, _id, make, model, year, color, mpgGiven } = req.body;
+    var mpg = mpgGiven;
+    
+    // Check if user exists
+    const user = await User.findOne({email});
+    if (!user) {
+        console.log(`ERROR User was not found`.red.bold);
+        res.status(400).json({error: 'User not found'});
+        return;
+    }
+
+    let i = 0;
+    for (; i < user.vehicles.length; i++) {
+        // Check if vehicle already exists
+        if (user.vehicles[i]._id == _id) {
+            break;
+        }
+    }
+    if (i == user.vehicles.length) {
+        console.log(`ERROR Vehicle does not exist`.red.bold);
+        res.status(400).json({error: 'Vehicle was not found'});
+    }
+
+    const newVehicle = {
+        _id,
+        year,
+        make,
+        model,
+        color,
+        mpgGiven
+    }
+    // Add editted vehicle to user
+    user.vehicles[i] = newVehicle;
+    await user.save();
+    res.status(200).json(user);
+    return;
+}
+
 /*
     UPDATE VEHICLE RANKING
 
@@ -279,4 +330,4 @@ const getMPG = async (make, model, year) => {
     return mpg;
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking};
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking, editVehicle};

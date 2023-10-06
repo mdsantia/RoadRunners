@@ -14,6 +14,7 @@ import axios from 'axios';
 import PreferencesForm from '../components/PreferencesForm';
 import { useNavigate } from 'react-router-dom';
 import VehicleSelectionForm from '../components/VehicleSelectionForm';
+import RouteOptions from './RouteOptions';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -126,6 +127,7 @@ export default function Itinerary(props) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         Route options
+        <RouteOptions/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Attraction list
