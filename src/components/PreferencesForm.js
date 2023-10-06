@@ -24,12 +24,12 @@ const theme = createTheme({
 
 export default function PreferencesForm(props) {
     const {user, updateUser} = useUserContext();
+    const inDashboard = props.type == 'dashboard';
 
     React.useEffect(() => {
         if (!user) {
           return;
         } 
-        console.log(user.preferences.budget);
         setBudget(user.preferences.budget);
         setCommuteTime(user.preferences.commuteTime);
         setCarsickRating(user.preferences.carsickRating);

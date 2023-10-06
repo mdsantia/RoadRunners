@@ -61,7 +61,7 @@ export default function HomePage(props) {
         .catch((err) => {
           console.log(err);
         });
-    };
+  };
 
   const handleSubmit= (event) => {
       //call controller method to create trip
@@ -103,5 +103,4 @@ export default function HomePage(props) {
     </StyledCard>
   );
 }
-
 
