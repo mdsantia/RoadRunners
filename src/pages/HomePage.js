@@ -10,6 +10,7 @@ import VehicleForm from '../components/VehicleForm';
 import PreferencesForm from '../components/PreferencesForm';
 import { useUserContext } from '../hooks/useUserContext';
 
+
 const Container = styled('div')({
   display: 'flex',
   justifyContent: 'center',
@@ -17,8 +18,6 @@ const Container = styled('div')({
   height: '80vh',
   flexDirection: 'column',
 });
-
-
 
 const ImageCard = styled(Card)({
   position: 'relative',
@@ -31,23 +30,17 @@ const ImageCard = styled(Card)({
   backgroundSize: 'cover',
 });
 
-
 const StyledButton = styled(Button)({
   marginBottom: 10,
 })
 
+
 export default function HomePage() {
   const [preferencesOpen, setPreferencesOpen] = React.useState(true);
-  const [vehicleOpen, setVehicleOpen] = React.useState(false);
 
   const handleClosePreferences = () => {
     setPreferencesOpen(false);
-    setVehicleOpen(true);
   }
-
-  const handleCloseVehicle = () => {
-    setVehicleOpen(false);
-  };
 
   const { user } = useUserContext();
   return (
@@ -66,7 +59,7 @@ export default function HomePage() {
       </div>
       {(user && !user.filled_preferences) && (
         <div>
-          {(preferencesOpen || vehicleOpen) && (
+          {preferencesOpen && (
             <div
               style={{
                 position: 'fixed',
@@ -86,11 +79,6 @@ export default function HomePage() {
           {preferencesOpen && (
             <Dialog fullWidth maxWidth="md" open={preferencesOpen} onClose={handleClosePreferences}>
               <PreferencesForm onClose={handleClosePreferences}></PreferencesForm>
-            </Dialog>
-          )}
-          {vehicleOpen && (
-            <Dialog fullWidth maxWidth="sm" open={vehicleOpen} onClose={handleCloseVehicle}>
-              <VehicleForm onClose={handleCloseVehicle}></VehicleForm>
             </Dialog>
           )}
         </div>

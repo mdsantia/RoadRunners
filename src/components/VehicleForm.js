@@ -150,7 +150,6 @@ export default function VehicleForm(props) {
         setModelStatus('')
         setColorStatus('');
         props.onClose();
-        /* SEND DEFAULT DATA TO DATABASE */
     }
     
     React.useEffect(() => {
