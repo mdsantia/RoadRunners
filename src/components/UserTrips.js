@@ -3,8 +3,6 @@ import {useNavigate} from 'react-router-dom';
 import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
 import RouteIcon from '@mui/icons-material/Route';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import HistoryIcon from '@mui/icons-material/History';
-import TripHistory from '../pages/TripHistory';
 
 const UserTrips = ({ user }) => {
     const navigate = useNavigate();
@@ -29,7 +27,7 @@ const UserTrips = ({ user }) => {
                 }}
                 >
                     <CardContent>
-                        <TripHistory></TripHistory>
+                    <RouteIcon></RouteIcon>
                         <Typography
                         variant="h6"
                         style={{
@@ -40,17 +38,14 @@ const UserTrips = ({ user }) => {
                         
                         }}
                         >
-                            
                        {trip.origin} - {trip.destination}
                         </Typography>
-                        <RouteIcon></RouteIcon>
                         <Typography
                         style={{
                             fontSize: '14px',
                             color: '#555',
                         }}
                         >
-
                         Origin: {trip.origin}
                         <br />
                         Destination: {trip.destination}
