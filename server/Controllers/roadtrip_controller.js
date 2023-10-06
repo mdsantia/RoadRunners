@@ -49,11 +49,13 @@ const newRoadTrip = async (req, res) => {
     res.status(409).json({ message: route.message });
   }
   
-  request.waypoints = [{
-    location: 'Joplin, MO',
-    stopover: false
-  },{
-    location: 'Oklahoma City, OK',
+  request.waypoints = [
+  // {
+  //   location: 'Joplin, MO',
+  //   stopover: false
+  // },
+  {
+    location: 'Chicago, IL, USA',
     stopover: true
   }];
     
