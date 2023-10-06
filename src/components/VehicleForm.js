@@ -25,6 +25,20 @@ const theme = createTheme({
   });
 
 export default function VehicleForm(props) {
+    React.useEffect(() => {
+        console.log(props.selectedCar);
+        if (props.selectedCar) {
+            console.log(props.selectedCar);
+            setYear(props.selectedCar.year);
+            setYearFilledOut(true);
+            setMake(props.selectedCar.make);
+            setMakeFilledOut(true);
+            setModel(props.selectedCar.model);
+            setColor(props.selectedCar.color);
+            setMPG(props.selectedCar.mpg);
+        } 
+    }, [props.selectedCar]);
+    
     const [year, setYear] = React.useState('');
     const [make, setMake] = React.useState('');
     const [model, setModel] = React.useState('');
@@ -33,15 +47,14 @@ export default function VehicleForm(props) {
     const [yearList, setYearList] = React.useState([])
     const [makeList, setMakeList] = React.useState([]);
     const [modelList, setModelList] = React.useState([]);
-    const [allOptionsList, setAllOptionsList] = React.useState([]);  // HOLDS ALL ORIGINAL DATA FROM API
-    const { user, updateUser } = useUserContext();
-
+    
     const [yearFilledOut, setYearFilledOut] = React.useState(false);
     const [makeFilledOut, setMakeFilledOut] = React.useState(false);
     const [yearStatus, setYearStatus] = React.useState('');
     const [makeStatus, setMakeStatus] = React.useState('');
     const [modelStatus, setModelStatus] = React.useState('');
     const [colorStatus, setColorStatus] = React.useState('');
+    const { user, updateUser } = useUserContext();
     
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = () => {
@@ -66,7 +79,6 @@ export default function VehicleForm(props) {
     };
 
     const handleSubmit = async (event) => {
-        var success = true;
         event.preventDefault();
         if (year.length === 0) {
             setYearStatus("Please select the year of your vehicle.");
@@ -110,21 +122,11 @@ export default function VehicleForm(props) {
             });
         }
     }
-
-    const handleSkip = () => {
-        setYear('');
-        setMake('');
-        setModel('');
-        setColor('');
-        setMPG('');
-        setYearStatus('');
-        setMakeStatus('');
-        setModelStatus('')
-        setColorStatus('');
-    }
     
     React.useEffect(() => {
-        fetchData();
+        if (!props.selectedCar) {
+            fetchData();
+        }
     }, [make, year, model]);
 
     return (
@@ -132,7 +134,7 @@ export default function VehicleForm(props) {
             {props.showLogo && (
                 <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
             )}            
-            <div style={{ marginLeft: '10px' }}>
+            <div style={{ marginLeft: '10px', textAlign: 'left' }}>
                 <Typography style={{ padding: '20px', margin: '0', fontSize: '25px', fontWeight: 'bold'}}>Vehicle Information</Typography>
                 <Container>
                     <Typography variant="body1">
@@ -241,11 +243,24 @@ export default function VehicleForm(props) {
                         </Input>
                     </FormControl>
                 </Container>
-                {props.showDoneButton && (
-                    <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
-                        <AddIcon style={{ fontSize: '50px' }}/>
-                    </Button>
-                )}
+                <br></br>
+                <Container>
+                    {props.showAddButton && (
+                        <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
+                            Add Vehicle                    
+                        </Button>
+                    )}
+                    {props.showEditButton && (
+                        <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
+                            Save
+                        </Button>
+                    )}
+                    {props.showCancelButton && (
+                        <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
+                            Cancel
+                        </Button>
+                    )}
+                </Container>
             </div>
         </ThemeProvider>
     );

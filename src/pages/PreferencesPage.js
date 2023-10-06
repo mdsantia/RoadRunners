@@ -32,13 +32,13 @@ const SidebarContainer = styled('div')({
 });
 
 const ContentContainer = styled('div')({
-  flex: 1, // This makes the content expand to take up available space horizontally
+  flex: 1,
   padding: '100px',
   paddingTop: '80px',
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'flex-start', // Align children to the left
-  width: '100%', // Ensure it takes up 100% of the available width
+  alignItems: 'flex-start',
+  width: '100%',
 });
 
 export default function PreferencesPage() {

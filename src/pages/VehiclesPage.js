@@ -27,7 +27,7 @@ const theme = createTheme({
 });
 
 const SidebarContainer = styled('div')({
-  width: '25%',
+  width: '10%',
 });
 
 const ContentContainer = styled('div')({
@@ -43,6 +43,11 @@ const ContentContainer = styled('div')({
 export default function VehiclesPage() {
   const id = useParams().id;
   const {user} = useUserContext();
+  const [selectedCar, setSelectedCar] = React.useState(null);
+  
+  const handleSelectCar = (car) => {
+    setSelectedCar(car);
+  }
 
   useEffect(() => {
     if (!user) {
@@ -60,27 +65,25 @@ export default function VehiclesPage() {
           <TopBar />
         </AppBar>
         <Container>
-          <Grid container>
-            {/* Left Sidebar */}
-            <Grid item xs={2} sm={0} md={1}>
-              <SidebarContainer>
-                <SideBar />
-              </SidebarContainer>
-            </Grid>
+          {/* Left Sidebar */}
+          <SidebarContainer>
+            <SideBar />
+          </SidebarContainer>
+          <Grid container spacing={32}>
             {/* Middle Content (VehicleForm) */}
-            <Grid item xs={12} sm={1} md={8}>
+            <Grid item xs={12} sm={6} md={6}>
               <ContentContainer>
                 <VehicleForm
-                  showSkipButton={false}
-                  showDoneButton={true}
+                  showAddButton={true}
                   showLogo={false}
+                  selectedCar={selectedCar}
                 />
               </ContentContainer>
             </Grid>
             {/* Right Content (Draggable_EX) */}
-            <Grid item xs={12} sm={4} md={1}>
+            <Grid item xs={12} sm={6} md={6}>
               <ContentContainer>
-                <CarRanking />
+                <CarRanking onSelectCar={handleSelectCar}/>
               </ContentContainer>
             </Grid>
           </Grid>
