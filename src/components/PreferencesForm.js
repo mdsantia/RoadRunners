@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Typography, TextField, FormGroup, FormControlLabel, Checkbox, Container } from '@mui/material';
 import { Button, FormControl, Select, MenuItem, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
-import VehicleForm from '../pages/VehicleForm.js';
 import Logo from '../assets/rr-logo.png';
+import { useUserContext } from '../hooks/useUserContext';
+import axois from 'axios';
 
 
 const theme = createTheme({
@@ -20,7 +21,7 @@ const theme = createTheme({
         '"Segoe UI Symbol"',
       ].join(','),
     },
-  });
+});
 
 export default function PreferencesForm(props) {
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -33,9 +34,9 @@ export default function PreferencesForm(props) {
     const [attractionSelection, setAttractionSelection] = React.useState([]);
     const [diningSelection, setDiningSelection] = React.useState([]);
     const [housingSelection, setHousingSelection] = React.useState([]);
-
     const [budgetStatus, setBudgetStatus] = React.useState([]);
     const [commuteTimeStatus, setCommuteTimeStatus] = React.useState([]);
+    const {user, updateUser} = useUserContext();
     
     const numOptionsPerColumn = 3;
     const findTotalColumns = (optionsList) => {
@@ -96,7 +97,7 @@ export default function PreferencesForm(props) {
         }
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         let validBudget = false;
         let validCommuteTime = false;
@@ -111,12 +112,29 @@ export default function PreferencesForm(props) {
             validCommuteTime = true;
         }
         if (validBudget && validCommuteTime) {
+            const preferences = {
+                budget: budget,
+                commuteTime: commuteTime,
+                carsickRating: carsickRating,
+                attractionSelection: attractionSelection,
+                diningSelection: diningSelection,
+                housingSelection: housingSelection
+            }
+            await axois.post('/api/user/setPreferences', {
+                email: user.email,
+                preferences: preferences
+            } ).then((res) => {
+                const newUser = res.data;
+                updateUser(newUser);
+                console.log("printing new user:", newUser)
+            }).catch((err) => {
+                console.log(err);
+            });
             props.onClose();
-            /* SEND DATA TO THE BACKEND */
         }
     }
 
-    const handleSkip = () => {
+    const handleSkip = async () => {
         setBudget('');
         setCommuteTime('');
         setCarsickRating('');
@@ -125,8 +143,25 @@ export default function PreferencesForm(props) {
         setHousingSelection([]);
         setBudgetStatus('');
         setCommuteTimeStatus('');
+        const preferences = {
+            budget: budget,
+            commuteTime: commuteTime,
+            carsickRating: carsickRating,
+            attractionSelection: attractionSelection,
+            diningSelection: diningSelection,
+            housingSelection: housingSelection
+        }
+        await axois.post('/api/user/setPreferences', {
+            email: user.email,
+            preferences: preferences
+        } ).then((res) => {
+            const newUser = res.data;
+            updateUser(newUser);
+            console.log("printing new user:", newUser)
+        }).catch((err) => {
+            console.log(err);
+        });
         props.onClose();
-        /* SEND DATA TO BACKEND */
     }
 
     return (
