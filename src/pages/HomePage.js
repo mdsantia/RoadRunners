@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, Button, Typography } from '@mui/material';
+import { Card, Button, Typography, Dialog, DialogContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import image from '../assets/login-bg.jpg'
 import bg from '../assets/topography-bg.jpg'
 import axios from 'axios';
 import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
-import VehicleForm from '../pages/VehicleForm';
-import PreferencesForm from '../pages/PreferencesForm';
+import VehicleForm from '../components/VehicleForm';
+import PreferencesForm from '../components/PreferencesForm';
 
 
 
@@ -48,11 +48,43 @@ const newUser = () => {
 }
 
 export default function HomePage() {
+  const [preferencesOpen, setPreferencesOpen] = React.useState(true);
+  const [vehicleOpen, setVehicleOpen] = React.useState(false);
 
+  const handleClosePreferences = () => {
+    setPreferencesOpen(false);
+    setVehicleOpen(true);
+  }
+
+  const handleCloseVehicle = () => {
+    setVehicleOpen(false);
+  };
 
   return (
     <div style={{ backgroundColor: 'white', height: '100vh' , backgroundImage:`url(${bg})`, backgroundSize: 'cover',}}>
-      <PreferencesForm></PreferencesForm>
+      {(preferencesOpen || vehicleOpen) && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            backdropFilter: 'blur(5px)',
+            zIndex: 999,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
+      )}
+      <Dialog fullWidth maxWidth="md" open={preferencesOpen} onClose={handleClosePreferences}>
+        <PreferencesForm onClose={handleClosePreferences}></PreferencesForm>
+      </Dialog>
+      <Dialog fullWidth maxWidth="sm" open={vehicleOpen} onClose={handleCloseVehicle}>
+        <VehicleForm onClose={handleCloseVehicle}></VehicleForm>
+      </Dialog>
       <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}

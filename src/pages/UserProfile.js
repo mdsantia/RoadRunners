@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import image from '../assets/login-bg.jpg';
 import axios from 'axios';
 import TopBar from '../components/TopBar';
-import NavBar from '../components/NavBar';
+import NavBar from '../components/SideBar';
 import { useUserContext } from '../hooks/useUserContext';
 
 const Container = styled('div')({

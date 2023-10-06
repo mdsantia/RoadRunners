@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'; 
 import { Typography, TextField, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import { Button, FormControl, Select, MenuItem, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
-import VehicleForm from '../pages/VehicleForm.js';
+import VehicleForm from './VehicleForm.js';
 import Logo from '../assets/rr-logo.png';
 
 
