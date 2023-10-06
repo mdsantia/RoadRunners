@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
-import StrictModeDroppable from '../components/StrictModeDroppable';
-import './Draggable_EX.css'
+import StrictModeDroppable from './StrictModeDroppable';
+import './CarRanking.css'
 
 const finalSpaceCharacters = [
   {
@@ -31,7 +31,7 @@ const finalSpaceCharacters = [
   }
 ]
 
-function Draggable_EX() {
+function CarRanking() {
   const [characters, updateCharacters] = useState(finalSpaceCharacters);
 
   function handleOnDragEnd(result) {
@@ -47,7 +47,7 @@ function Draggable_EX() {
   return (
     <div className="Drag-Exam">
       <header className="Drag-Exam-header">
-        <h1>Final Space Characters</h1>
+        <h4 style={{ color: 'darkblue' }}>Your Vehicles</h4>
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <StrictModeDroppable droppableId="characters">
             {(provided) => (
@@ -74,11 +74,8 @@ function Draggable_EX() {
           </StrictModeDroppable>
         </DragDropContext>
       </header>
-      <p>
-        Images from <a href="https://final-space.fandom.com/wiki/Final_Space_Wiki">Final Space Wiki</a>
-      </p>
     </div>
   );
 }
 
-export default Draggable_EX;
+export default CarRanking;

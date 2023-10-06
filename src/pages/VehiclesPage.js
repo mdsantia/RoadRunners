@@ -1,14 +1,20 @@
-import { React, useEffect } from 'react';
-import { Container, Button, Typography, AppBar, Drawer, Grid, Box, createTheme, ThemeProvider } from '@mui/material';
+import React, { useEffect } from 'react';
+import {
+  Container,
+  Typography,
+  AppBar,
+  Grid,
+  createTheme,
+  ThemeProvider,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useParams } from "react-router-dom";
-import image from '../assets/login-bg.jpg';
 import axios from 'axios';
 import { useUserContext } from '../hooks/useUserContext';
 import TopBar from '../components/TopBar';
 import SideBar from '../components/SideBar';
 import VehicleForm from '../components/VehicleForm';
-
+import CarRanking from '../components/CarRanking';
 
 const theme = createTheme({
   typography: {
@@ -57,16 +63,36 @@ export default function VehiclesPage() {
   return (
     <div>
       <ThemeProvider theme={theme}>
-      <AppBar><TopBar/></AppBar>
-      <Container>
-        <SidebarContainer>
-          <SideBar/> 
-        </SidebarContainer>
-        <ContentContainer>
-          <VehicleForm showSkipButton={false} showDoneButton={true} showLogo={false}/>
-        </ContentContainer>
-      </Container>
-    </ThemeProvider>
+        <AppBar>
+          <TopBar />
+        </AppBar>
+        <Container>
+          <Grid container>
+            {/* Left Sidebar */}
+            <Grid item xs={2} sm={0} md={1}>
+              <SidebarContainer>
+                <SideBar />
+              </SidebarContainer>
+            </Grid>
+            {/* Middle Content (VehicleForm) */}
+            <Grid item xs={12} sm={1} md={8}>
+              <ContentContainer>
+                <VehicleForm
+                  showSkipButton={false}
+                  showDoneButton={true}
+                  showLogo={false}
+                />
+              </ContentContainer>
+            </Grid>
+            {/* Right Content (Draggable_EX) */}
+            <Grid item xs={12} sm={4} md={1}>
+              <ContentContainer>
+                <CarRanking />
+              </ContentContainer>
+            </Grid>
+          </Grid>
+        </Container>
+      </ThemeProvider>
     </div>
   );
 }
