@@ -149,6 +149,7 @@ export default function VehicleForm(props) {
                 } else {
                     alert("Your vehicle has been saved!");
                 }
+                handleCancel();
             }).catch(error => {
                 console.log(error.response.data.error);
                 alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");

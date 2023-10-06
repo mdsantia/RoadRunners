@@ -48,8 +48,14 @@ export default function TripHistory() {
                     </>
                 ) : (
                     <>
-                        <Typography variant="h5">No trips yet!</Typography>
+                      
+                        <Container paddingTop={20}>
+                        <Typography variant="h5" >No trips yet!</Typography>
                         <a href={`/`}>  <Typography variant="h6">Create trips to get started.</Typography> </a>
+                        </Container>
+                        
+                        
+                        
                     </>
                 )}
             </ContentContainer>
