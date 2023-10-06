@@ -17,9 +17,7 @@ async function getDatabaseData(database, collection, query) {
     const document = await col.findOne(query);
 
     if (document) {
-      console.log(document);
       const data = document._id;
-      console.log(data);
       return data;
     } else {
       console.log("Data not found.");
@@ -32,8 +30,6 @@ async function getDatabaseData(database, collection, query) {
 }
 
 async function listCollections() {
-  const client = new MongoClient(url, { useNewUrlParser: true });
-
   try {
     // Connect to the MongoDB server
     await client.connect();
@@ -45,7 +41,7 @@ async function listCollections() {
     const collections = await db.listCollections().toArray();
 
     // Extract the collection names from the result
-    const collectionNames = collections.map((collection) => collection.name);
+    const collectionNames = collections.map((collection) => parseInt(collection.name));
 
     return collectionNames;
   } finally {
@@ -55,8 +51,6 @@ async function listCollections() {
 }
 
 async function findUniqueMakes(collectionName) {
-  const client = new MongoClient(url, { useNewUrlParser: true });
-  
   try {
     // Connect to the MongoDB server
     await client.connect();
@@ -75,8 +69,6 @@ async function findUniqueMakes(collectionName) {
 }
 
 async function findUniqueModelsForMake(collectionName, make) {
-  const client = new MongoClient(url, { useNewUrlParser: true });
-
   try {
     // Connect to the MongoDB server
     await client.connect();
@@ -99,20 +91,21 @@ async function findUniqueModelsForMake(collectionName, make) {
 const getACar = async (req, res) => {
   // if year is not given, returns all years
   if (!req.query.year) {
-      listCollections()
-      .then((collectionNames) => {
-          console.log(`Unique Car Years: ${collectionNames}`.green.bold);
-          res.status(201).json(collectionNames);
-      })
-      .catch((error) => {
-          console.error(`Error: ${error}`.red.bold);
-          res.status(400).json({ message: error });
-      });
+    listCollections()
+    .then((collectionNames) => {
+      console.log(`Unique Car Years: ${collectionNames}`.green.bold);
+      res.status(201).json(collectionNames);
+    })
+    .catch((error) => {
+      console.error(`Error: ${error}`.red.bold);
+      res.status(400).json({ message: error });
+    });
+    return;
   }
   // if make is not given, returns all makes
   if (!req.query.make) {
-  findUniqueMakes(req.query.year)
-  .then((uniqueMakes) => {
+    findUniqueMakes(req.query.year)
+    .then((uniqueMakes) => {
       console.log(`Unique Car in '${req.query.year}': ${uniqueMakes}`.green.bold);
       res.status(201).json(uniqueMakes);
     })
@@ -120,12 +113,13 @@ const getACar = async (req, res) => {
       console.error(`Error: ${error}`.red.bold);
       res.status(400).json({ message: error });
     });
+    return;
   }
   // returns all models
   findUniqueModelsForMake(req.query.year, req.query.make)
   .then((uniqueModels) => {
-    console.log(`Unique models for year '${req.query.year}' with make '${req.query.make}':uniqueModels`.green.bold);
-    res.status(201).json(uniqueMakes);
+    console.log(`Unique models for year '${req.query.year}' with make '${req.query.make}':${uniqueModels}`.green.bold);
+    res.status(201).json(uniqueModels);
   })
   .catch((error) => {
     console.error(`Error: ${error}`.red.bold);

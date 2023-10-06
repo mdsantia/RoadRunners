@@ -37,9 +37,9 @@ export default function VehicleForm(props) {
 
     const [yearFilledOut, setYearFilledOut] = React.useState(false);
     const [makeFilledOut, setMakeFilledOut] = React.useState(false);
-    const [yearStatus, setYearStatus] = React.useState(null);
-    const [makeStatus, setMakeStatus] = React.useState(null);
-    const [modelStatus, setModelStatus] = React.useState(null);
+    const [yearStatus, setYearStatus] = React.useState('');
+    const [makeStatus, setMakeStatus] = React.useState('');
+    const [modelStatus, setModelStatus] = React.useState('');
     const [colorStatus, setColorStatus] = React.useState('');
     
     /* FETCHES DATA FROM CAR DATA API */
@@ -147,16 +147,17 @@ export default function VehicleForm(props) {
                             onChange={(event) => {
                                 setYear(event.target.value);
                                 setYearFilledOut(true);
-                                setMake(null);
-                                setModel(null);
+                                setMake('');
+                                setModel('');
                                 setYearStatus('');
+                                setMakeFilledOut(false);
                                 setMakeStatus("Please select the make of your vehicle.");
                                 setModelStatus("Please select the model of your vehicle.");
                             }}
                             >
                             {yearList.map((year, index) => (
                                 <MenuItem key={index} value={year}>
-                                    {}
+                                    {year}
                                 </MenuItem>
                             ))}                
                         </Select>
@@ -175,7 +176,7 @@ export default function VehicleForm(props) {
                                 setMakeFilledOut(true);
                                 setMakeStatus('');
                                 setModelStatus("Please select the model of your vehicle.");
-                                setModel(null);
+                                setModel('');
                             }}
                             >
                             {makeList.map((make, index) => (
@@ -226,7 +227,7 @@ export default function VehicleForm(props) {
                         <Typography color="error.main" justifyContent="flex-end" component="h1" variant="body2">{colorStatus}</Typography>
                     </FormControl>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
-                        <InputLabel id="mpgLabel">Miles Per Gallon</InputLabel>
+                        <InputLabel id="mpgLabel">Miles Per Gallon (Not Required)</InputLabel>
                         <Input
                             name="mpg"
                             value={mpg}                  
