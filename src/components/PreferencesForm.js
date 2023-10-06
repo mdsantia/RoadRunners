@@ -148,8 +148,10 @@ export default function PreferencesForm(props) {
 
     return (
         <ThemeProvider theme={theme}>
-            <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
-            <div style={{ marginLeft: '10px' }}>
+            {props.showLogo && (
+                <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
+            )}
+            <div style={{ marginLeft: '10px', textAlign: 'left' }}>
                 <Typography style={{ padding: '20px', margin: '0', fontSize: '25px', fontWeight: 'bold'}}>Trip Preferences</Typography>
                 <Container>
                     <Typography variant="body1">
@@ -285,6 +287,7 @@ export default function PreferencesForm(props) {
                                             />
                                             }
                                             label={attraction}
+                                            sx={{ display: 'flex', alignItems: 'center' }}
                                         />
                                         ))}
                                     </Grid>
@@ -312,6 +315,7 @@ export default function PreferencesForm(props) {
                                             />
                                             }
                                             label={diningPlace}
+                                            sx={{ display: 'flex', alignItems: 'center' }}
                                         />
                                         ))}
                                     </Grid>
@@ -339,6 +343,7 @@ export default function PreferencesForm(props) {
                                                         />
                                                     }
                                                     label={housingChoice}
+                                                    sx={{ display: 'flex', alignItems: 'center' }}
                                                 />
                                             </div>
                                         ))}
