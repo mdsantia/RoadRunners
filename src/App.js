@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard';
 import PreferencesPage from './pages/PreferencesPage';
 import TripHistory from './pages/TripHistory';
 
+
 function App() {
   return (
     <div className="App">

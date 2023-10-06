@@ -73,6 +73,5 @@ export default function Dashboard() {
                 </Wrapper>
             </Container>
         </div>
-
     );
 }

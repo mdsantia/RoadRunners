@@ -24,30 +24,30 @@ const theme = createTheme({
 
 export default function PreferencesForm(props) {
     const {user, updateUser} = useUserContext();
+    const inDashboard = props.type == 'dashboard';
 
     React.useEffect(() => {
         if (!user) {
           return;
         } 
-        console.log(user.preferences.budget);
-        setBudget(user.preferences.budget);
-        setCommuteTime(user.preferences.commuteTime);
-        setCarsickRating(user.preferences.carsickRating);
-        setAttractionSelection(user.preferences.attractionSelection);
-        setDiningSelection(user.preferences.diningSelection);
-        setHousingSelection(user.preferences.housingSelection);
+        setBudget(user.preferences.budget ? user.preferences.budget : '');
+        setCommuteTime(user.preferences.commuteTime ? user.preferences.commuteTime : '');
+        setCarsickRating(user.preferences.carsickRating ? user.preferences.carsickRating : '');
+        setAttractionSelection(user.preferences.attractionSelection ? user.preferences.attractionSelection : [] );
+        setDiningSelection(user.preferences.diningSelection ? user.preferences.diningSelection : []);
+        setHousingSelection(user.preferences.housingSelection ? user.preferences.housingSelection : []);
     }, [user]);
 
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const attractionOptions = ["Entertainment", "Outdoor/Nature", "Cultural", "Adventure", "Water", "Educational", "Shopping", "Culinary", "Religious", "Family-Friendly"];
     const diningOptions = ["Fast Food", "Fine Dining", "Casual Dining", "Cafés/Coffee Shops", "Buffets", "Food Trucks", "Family Restaurants", "Vegetarian/Vegan", "Ethnic/International", "Diners"];
     const housingOptions = ["Hotels", "Motels", "Bed and Breakfasts", "RV Parks & Campgrounds", "Vacation Rentals", "Hostels", "Resorts", "Roadside Inns & Lodges", "Cabins & Cottages"];
-    const [budget, setBudget] = React.useState(user ? user.preferences.budget : '');
-    const [commuteTime, setCommuteTime] = React.useState(user ? user.preferences.commuteTime : '');
-    const [carsickRating, setCarsickRating] = React.useState(user ? user.preferences.carsickRating : '');
-    const [attractionSelection, setAttractionSelection] = React.useState(user ? user.preferences.attractionSelection : []);
-    const [diningSelection, setDiningSelection] = React.useState(user ? user.preferences.diningSelection : []);
-    const [housingSelection, setHousingSelection] = React.useState(user ? user.preferences.housingSelection : []);
+    const [budget, setBudget] = React.useState( '');
+    const [commuteTime, setCommuteTime] = React.useState( '');
+    const [carsickRating, setCarsickRating] = React.useState( '');
+    const [attractionSelection, setAttractionSelection] = React.useState([]);
+    const [diningSelection, setDiningSelection] = React.useState([]);
+    const [housingSelection, setHousingSelection] = React.useState([]);
     const [budgetStatus, setBudgetStatus] = React.useState([]); 
     const [commuteTimeStatus, setCommuteTimeStatus] = React.useState([]);
     

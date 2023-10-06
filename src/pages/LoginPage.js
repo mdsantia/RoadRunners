@@ -32,7 +32,7 @@ const StyledButton = styled(Button)({
 });
 
 export default function LoginPage() {
-  const {user, dispatch, logout } = useUserContext();
+  const {user, setUser, logout } = useUserContext();
 
   const clientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
 
@@ -52,14 +52,12 @@ export default function LoginPage() {
       google_expiry: google_expiry,
       profile_picture: profile_picture
     }).then((res) => {
-      localStorage.setItem('user', JSON.stringify(res.data));
-      dispatch({ type: 'LOGIN', payload: res.data });
-      alert("Login Successful!");
-      window.location.href = "/";
+      setUser(res.data.user);
+      const firstLogin = res.data.firstTime;
+      window.location.href = firstLogin ? "/?firstLogin=true" : "/";
     }).catch((err) => {
       console.log(err);
     });
-    window.location.href = "/";
   };
 
   useEffect(() => {

@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Container,
-  Typography,
-  AppBar,
-  Grid,
-  createTheme,
-  ThemeProvider,
-} from '@mui/material';
+import { Container, Typography, AppBar, Grid, createTheme, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
@@ -38,13 +31,13 @@ const SidebarContainer = styled('div')({
 });
 
 const ContentContainer = styled('div')({
-  flex: 1, // This makes the content expand to take up available space horizontally
+  flex: 1,
   padding: '100px',
   paddingTop: '80px',
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'flex-start', // Align children to the left
-  width: '100%', // Ensure it takes up 100% of the available width
+  alignItems: 'flex-start',
+  width: '100%',
 });
 
 export default function VehiclesPage() {
