@@ -26,17 +26,18 @@ const theme = createTheme({
 
 export default function VehicleForm(props) {
     React.useEffect(() => {
-        console.log(props.selectedCar);
         if (props.selectedCar) {
-            console.log(props.selectedCar);
             setYear(props.selectedCar.year);
             setYearFilledOut(true);
+            fetchData(props.selectedCar.year, '', '');
             setMake(props.selectedCar.make);
             setMakeFilledOut(true);
+            fetchData(props.selectedCar.year, props.selectedCar.make, '');
             setModel(props.selectedCar.model);
+            fetchData(props.selectedCar.year, props.selectedCar.make, props.selectedCar.model);
             setColor(props.selectedCar.color);
             setMPG(props.selectedCar.mpg);
-        } 
+        }  
     }, [props.selectedCar]);
     
     const [year, setYear] = React.useState('');
@@ -57,25 +58,37 @@ export default function VehicleForm(props) {
     const { user, updateUser } = useUserContext();
     
     /* FETCHES DATA FROM CAR DATA API */
-    const fetchData = () => {
-        axios
-        .get('/api/vehiclesData/getACar', { params: {year: year, make: make, model: model} })
-        .then((res) => {
-          //console.log(res.data);
-          // setDirections(res.data); // Set the directionsResponse in the context
-          if (!year) {
-            setYearList(res.data.sort((a, b) => a - b));
-          }
-          if (!make) {
-            setMakeList(res.data.sort((a, b) => a - b));
-          }
-          if (!model) {
-            setModelList(res.data.sort((a, b) => a - b));
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    const fetchData = async (year, make, model) => {
+        if (!year) {
+            await axios
+            .get('/api/vehiclesData/getYears', { params: {year: year} })
+            .then((res) => {
+                setYearList(res.data.sort((a, b) => a - b));
+            })
+            .catch((err) => {
+            console.log(err);
+            });
+        }
+        if (year && !make) {
+            await axios
+            .get('/api/vehiclesData/getMakes', { params: {year: year} })
+            .then((res) => {
+                setMakeList(res.data.sort());
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+        if (year && make) {
+            await axios
+            .get('/api/vehiclesData/getModels', { params: {year: year, make: make} })
+            .then((res) => {
+                setModelList(res.data.sort());
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
     };
 
     const handleSubmit = async (event) => {
@@ -143,11 +156,8 @@ export default function VehicleForm(props) {
     };
     
     React.useEffect(() => {
-        if (!props.selectedCar) {
-            fetchData();
-        }
-    }, [make, year, model]);
-
+        fetchData(year, make, model);
+    }, [year, make, model]);
     return (
         <ThemeProvider theme={theme}>
             {props.showLogo && (

@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const {getACar, getMPG} = require('../Controllers/vehiclesData_controller');
+const {getYears, getMakes, getModels, getMPG} = require('../Controllers/vehiclesData_controller');
 
 /* POST Requests */
-router.get('/getACar', getACar);
+router.get('/getYears', getYears);
+router.get('/getMakes', getMakes);
+router.get('/getModels', getModels);
 router.get('/getMPG', getMPG);
 
 module.exports = router;
