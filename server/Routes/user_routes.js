@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, saveTrip} = require('../Controllers/user_controller');
+const {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, saveTrip, editVehicle} = require('../Controllers/user_controller');
 
 /* POST Requests */
 router.post('/checkAndSaveUser', checkAndSaveUser);
@@ -10,5 +10,6 @@ router.post('/removeVehicle', removeVehicle);
 router.post('/setPreferences', setPreferences);
 router.post('/saveTrip', saveTrip);
 router.post('/vehicleRanking', vehicleRanking);
+router.post('/editVehicle', editVehicle);
 
 module.exports = router;
