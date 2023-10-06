@@ -34,6 +34,7 @@ const UserTrips = ({ user }) => {
                             fontSize: '16px',
                             fontWeight: 'bold',
                             marginBottom: '8px',
+                            color:'#1F55B3',
                         
                         }}
                         >
