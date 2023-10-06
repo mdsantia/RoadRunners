@@ -1,34 +1,45 @@
 import { React, useEffect } from 'react';
-import { Card, Button, Typography, AppBar, Drawer, Box } from '@mui/material';
+import { Container, Button, Typography, AppBar, Drawer, Grid, Box, createTheme, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useParams } from "react-router-dom";
 import image from '../assets/login-bg.jpg';
 import axios from 'axios';
-import TopBar from '../components/TopBar';
-import NavBar from '../components/SideBar';
 import { useUserContext } from '../hooks/useUserContext';
-import { useParams } from 'react-router-dom';
-import UserProfile from '../pages/UserProfile';
-import CreateTrip from '../components/CreateTrip';
+import TopBar from '../components/TopBar';
+import SideBar from '../components/SideBar';
+import VehicleForm from '../components/VehicleForm';
 
-const Container = styled('div')({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '80vh',
-  flexDirection: 'column'
+
+const theme = createTheme({
+  typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
 });
 
-const ImageCard = styled(Card)({
-    position: 'static',
-    maxWidth: 2000,
-    width: 1200,
-    padding: 5,
-    height: 500,
-    borderRadius: 25,
-    backgroundImage: `url(${image})`,
-    backgroundSize: 'cover',
-    align: 'center'
-  });
+const SidebarContainer = styled('div')({
+  width: '25%',
+});
+
+const ContentContainer = styled('div')({
+  flex: 1, // This makes the content expand to take up available space horizontally
+  padding: '100px',
+  paddingTop: '80px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start', // Align children to the left
+  width: '100%', // Ensure it takes up 100% of the available width
+});
 
 export default function VehiclesPage() {
   const id = useParams().id;
@@ -45,8 +56,17 @@ export default function VehiclesPage() {
 
   return (
     <div>
-      <AppBar><TopBar /></AppBar>
-      <Container><NavBar /></Container>
+      <ThemeProvider theme={theme}>
+      <AppBar><TopBar/></AppBar>
+      <Container>
+        <SidebarContainer>
+          <SideBar/> 
+        </SidebarContainer>
+        <ContentContainer>
+          <VehicleForm showSkipButton={false} showDoneButton={true} showLogo={false}/>
+        </ContentContainer>
+      </Container>
+    </ThemeProvider>
     </div>
   );
 }
