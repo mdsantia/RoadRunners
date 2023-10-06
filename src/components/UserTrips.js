@@ -1,8 +1,6 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import { Grid, Card, CardContent, Typography, Button } from '@mui/material';
-import RouteIcon from '@mui/icons-material/Route';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const UserTrips = ({ user }) => {
     const navigate = useNavigate();
@@ -20,25 +18,21 @@ const UserTrips = ({ user }) => {
             <Button style={{textDecoration: 'none'}} onClick={() => handleTripClick(trip)} >
                 <Card
                 style={{
-                    minWidth: 500,
+                    minWidth: 275,
                     marginBottom: '16px',
                     backgroundColor: '#f5f5f5',
-                    borderRadius:4,
                 }}
                 >
                     <CardContent>
-                    <RouteIcon></RouteIcon>
                         <Typography
                         variant="h6"
                         style={{
                             fontSize: '16px',
                             fontWeight: 'bold',
                             marginBottom: '8px',
-                            color:'#1F55B3',
-                        
                         }}
                         >
-                       {trip.origin} - {trip.destination}
+                        {trip.origin} - {trip.destination}
                         </Typography>
                         <Typography
                         style={{
@@ -50,7 +44,6 @@ const UserTrips = ({ user }) => {
                         <br />
                         Destination: {trip.destination}
                         </Typography>
-                        <CalendarMonthIcon></CalendarMonthIcon>
                         <Typography
                         style={{
                             fontSize: '14px',
