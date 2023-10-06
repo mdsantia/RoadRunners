@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const user = "mdsantia";
-const pwd = "PkLnDkpIynsO9YR8";
-const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
+const pwd = "efx777db3Fz8xHQi";
+const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/?retryWrites=true&w=majority`;
 
 // Moved the MongoDB client initialization outside of the function
 const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -44,7 +44,7 @@ async function listCollections() {
     const collectionNames = collections.map((collection) => parseInt(collection.name));
 
     return collectionNames;
-  } finally {
+  } catch {
     // Close the connection when done
     await client.close();
   }
@@ -62,7 +62,7 @@ async function findUniqueMakes(collectionName) {
     const uniqueMakes = await db.collection(collectionName).distinct('make');
 
     return uniqueMakes;
-  } finally {
+  } catch {
     // Close the connection when done
     await client.close();
   }
@@ -82,7 +82,7 @@ async function findUniqueModelsForMake(collectionName, make) {
       .distinct('model', { make: make });
 
     return uniqueModels;
-  } finally {
+  } catch {
     // Close the connection when done
     await client.close();
   }
@@ -140,4 +140,39 @@ const getMPG = async (req, res) => {
   });
 }
 
-module.exports = {getYears, getMakes, getModels, getMPG};
+const getACar = async (req, res) => {
+  // if year is not given, returns all years
+  let result = {years: [], makes: [], models: []};
+  let string = '';
+  try {
+    let years = await listCollections();
+    result.years = years.sort((a, b) => a - b);
+    string = `Unique Car Years: ${result.years}`;
+    if (!req.query.year) {
+      result.data = result.years;
+    }
+
+    if (req.query.year) {
+      let makes = await findUniqueMakes(req.query.year);
+      result.makes = makes.sort((a, b) => a - b);
+      string = `Unique Car in '${req.query.year}': ${result.makes}`;
+    }
+
+    if (req.query.make) {
+      let models = await findUniqueModelsForMake(req.query.year, req.query.make);
+      result.models = models.sort((a, b) => a - b);
+      string = `Unique models for year '${req.query.year}' with make '${req.query.make}':${result.models}`;
+      if (!req.query.model) {
+        result.data = result.models;
+      }
+    }
+
+    console.log(string.green.bold);
+    res.status(201).json(result);
+  } catch (error) {
+    console.error(`Error: ${error}`.red.bold);
+    res.status(400).json({ message: error });
+  }
+}
+
+module.exports = {getACar, getYears, getMakes, getModels, getMPG};
