@@ -78,7 +78,7 @@ export default function HomePage(props) {
   }
 
   useEffect(() => {
-    if (props) {
+    if (props && props.startLocation && props.endLocation && props.startDate && props.endDate) {
       buildRoadTrip();
     }
   }, [props]);

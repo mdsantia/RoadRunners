@@ -4,7 +4,8 @@ import { Typography, TextField, FormGroup, FormControlLabel, Checkbox } from '@m
 import { Button, FormControl, Select, MenuItem, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
 import VehicleForm from './VehicleForm.js';
 import Logo from '../assets/rr-logo.png';
-
+import { useUserContext } from '../hooks/useUserContext';
+import axois from 'axios';
 
 const theme = createTheme({
     typography: {
@@ -25,6 +26,7 @@ const theme = createTheme({
 
 export default function PreferencesForm() {
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const {user, updateUser} = useUserContext();
     const attractionOptions = ["Entertainment", "Outdoor/Nature", "Cultural", "Adventure", "Water", "Educational", "Shopping", "Culinary", "Religious", "Family-Friendly"];
     const diningOptions = ["Fast Food", "Fine Dining", "Casual Dining", "Cafés/Coffee Shops", "Buffets", "Food Trucks", "Family Restaurants", "Vegetarian/Vegan", "Ethnic/International", "Diners"];
     const housingOptions = ["Hotels", "Motels", "Bed and Breakfasts", "RV Parks & Campgrounds", "Vacation Rentals", "Hostels", "Resorts", "Roadside Inns & Lodges", "Cabins & Cottages"];
@@ -99,7 +101,7 @@ export default function PreferencesForm() {
         }
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         let validBudget = false;
         let validCommuteTime = false;
@@ -115,7 +117,24 @@ export default function PreferencesForm() {
         }
         if (validBudget && validCommuteTime) {
             setOpen(false);
-            /* SEND DATA TO THE BACKEND */
+            const preferences = {
+                budget: budget,
+                commuteTime: commuteTime,
+                carsickRating: carsickRating,
+                attractionSelection: attractionSelection,
+                diningSelection: diningSelection,
+                housingSelection: housingSelection
+            }
+            await axois.post('/api/user/setPreferences', {
+                email: user.email,
+                preferences: preferences
+            } ).then((res) => {
+                const newUser = res.data;
+                updateUser(newUser);
+                console.log("printing new user:", newUser)
+            }).catch((err) => {
+                console.log(err);
+            });
         }
     }
 
@@ -129,7 +148,6 @@ export default function PreferencesForm() {
         setHousingSelection([]);
         setBudgetStatus('');
         setCommuteTimeStatus('');
-        /* SEND DATA TO BACKEND */
     }
 
     return (

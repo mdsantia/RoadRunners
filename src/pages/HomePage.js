@@ -8,15 +8,14 @@ import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
 import VehicleForm from '../components/VehicleForm';
 import PreferencesForm from '../components/PreferencesForm';
-
-
+import { useUserContext } from '../hooks/useUserContext';
 
 const Container = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   height: '80vh',
-  flexDirection: 'column'
+  flexDirection: 'column',
 });
 
 
@@ -37,16 +36,6 @@ const StyledButton = styled(Button)({
   marginBottom: 10,
 })
 
-const newUser = () => {
-  axios.post('api/user/newUser')
-    .then(res => {
-      console.log(res)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-}
-
 export default function HomePage() {
   const [preferencesOpen, setPreferencesOpen] = React.useState(true);
   const [vehicleOpen, setVehicleOpen] = React.useState(false);
@@ -60,31 +49,52 @@ export default function HomePage() {
     setVehicleOpen(false);
   };
 
+  const { user } = useUserContext();
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh' , backgroundImage:`url(${bg})`, backgroundSize: 'cover',}}>
-      {(preferencesOpen || vehicleOpen) && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            backdropFilter: 'blur(5px)',
-            zIndex: 999,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        />
+    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100vh'}}>
+      <div style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: 'cover',
+        filter: 'blur(4px)',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: -1,
+      }}>
+      </div>
+      {(user && !user.filled_preferences) && (
+        <div>
+          {(preferencesOpen || vehicleOpen) && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                backdropFilter: 'blur(5px)',
+                zIndex: 999,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            />
+          )}
+          {preferencesOpen && (
+            <Dialog fullWidth maxWidth="md" open={preferencesOpen} onClose={handleClosePreferences}>
+              <PreferencesForm onClose={handleClosePreferences}></PreferencesForm>
+            </Dialog>
+          )}
+          {vehicleOpen && (
+            <Dialog fullWidth maxWidth="sm" open={vehicleOpen} onClose={handleCloseVehicle}>
+              <VehicleForm onClose={handleCloseVehicle}></VehicleForm>
+            </Dialog>
+          )}
+        </div>
       )}
-      <Dialog fullWidth maxWidth="md" open={preferencesOpen} onClose={handleClosePreferences}>
-        <PreferencesForm onClose={handleClosePreferences}></PreferencesForm>
-      </Dialog>
-      <Dialog fullWidth maxWidth="sm" open={vehicleOpen} onClose={handleCloseVehicle}>
-        <VehicleForm onClose={handleCloseVehicle}></VehicleForm>
-      </Dialog>
       <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}
