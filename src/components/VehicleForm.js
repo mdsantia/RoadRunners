@@ -121,7 +121,6 @@ export default function VehicleForm(props) {
         setMakeStatus('');
         setModelStatus('')
         setColorStatus('');
-        props.onClose();
     }
     
     React.useEffect(() => {
