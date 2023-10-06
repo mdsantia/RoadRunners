@@ -41,7 +41,7 @@ export default function PreferencesPage() {
 
   useEffect(() => {
     if (!user) {
-      return (<div>Loading...</div>);
+      return;
     }
     if (user._id !== id) {
       window.location.href = "/";

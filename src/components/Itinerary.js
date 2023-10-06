@@ -54,16 +54,6 @@ function a11yProps(index) {
 export default function Itinerary() {
 
   const {user} = useUserContext();
-  var loading = false;
-  React.useEffect(() => {
-    if (!user) {
-      loading = true;
-    } else {
-      loading = false;
-    }
-  }, [user]);
-
-  console.log(user);
  
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -85,6 +75,18 @@ export default function Itinerary() {
   const [housingSelection, setHousingSelection] = React.useState(user ? user.preferences.housingSelection : []);
   const [budgetStatus, setBudgetStatus] = React.useState([]); 
   const [commuteTimeStatus, setCommuteTimeStatus] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!user) {
+      return;
+    } 
+    setBudget(user.preferences.budget);
+    setCommuteTime(user.preferences.commuteTime);
+    setCarsickRating(user.preferences.carsickRating);
+    setAttractionSelection(user.preferences.attractionSelection);
+    setDiningSelection(user.preferences.diningSelection);
+    setHousingSelection(user.preferences.housingSelection);
+  }, [user]);
 
   const numOptionsPerColumn = 10;
   const findTotalColumns = (optionsList) => {

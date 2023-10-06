@@ -34,7 +34,6 @@ const StyledButton = styled(Button)({
   marginBottom: 10,
 })
 
-
 export default function HomePage() {
   const [preferencesOpen, setPreferencesOpen] = React.useState(true);
 

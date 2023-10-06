@@ -71,6 +71,7 @@ export default function HomePage(props) {
         console.log("Starting Location:" ,startLocation);
         console.log("Ending Location:", endLocation);
         navigate(`/dashboard/${startLocation}/${endLocation}/${startDate}/${endDate}`);
+        window.location.reload();
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);
