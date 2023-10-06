@@ -1,14 +1,15 @@
 import React from 'react';
-import { Card, Button, Typography } from '@mui/material';
+import { Card, Button, Typography, Dialog, DialogContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import image from '../assets/login-bg.jpg'
 import bg from '../assets/topography-bg.jpg'
 import axios from 'axios';
 import CreateTrip from '../components/CreateTrip'
 import TopBar from '../components/TopBar';
-import VehicleForm from '../pages/VehicleForm';
-import PreferencesForm from '../pages/PreferencesForm';
+import VehicleForm from '../components/VehicleForm';
+import PreferencesForm from '../components/PreferencesForm';
 import { useUserContext } from '../hooks/useUserContext';
+
 
 const Container = styled('div')({
   display: 'flex',
@@ -17,8 +18,6 @@ const Container = styled('div')({
   height: '80vh',
   flexDirection: 'column',
 });
-
-
 
 const ImageCard = styled(Card)({
   position: 'relative',
@@ -31,27 +30,59 @@ const ImageCard = styled(Card)({
   backgroundSize: 'cover',
 });
 
-
 const StyledButton = styled(Button)({
   marginBottom: 10,
 })
 
+
 export default function HomePage() {
+  const [preferencesOpen, setPreferencesOpen] = React.useState(true);
+
+  const handleClosePreferences = () => {
+    setPreferencesOpen(false);
+  }
+
   const { user } = useUserContext();
   return (
     <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100vh'}}>
       <div style={{
-    backgroundImage: `url(${bg})`,
-    backgroundSize: 'cover',
-    filter: 'blur(4px)',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    zIndex: -1,
-  }}></div>
-      {user && !user.filled_preferences && <PreferencesForm></PreferencesForm>}
+        backgroundImage: `url(${bg})`,
+        backgroundSize: 'cover',
+        filter: 'blur(4px)',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: -1,
+      }}>
+      </div>
+      {(user && !user.filled_preferences) && (
+        <div>
+          {preferencesOpen && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                backdropFilter: 'blur(5px)',
+                zIndex: 999,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            />
+          )}
+          {preferencesOpen && (
+            <Dialog fullWidth maxWidth="md" open={preferencesOpen} onClose={handleClosePreferences}>
+              <PreferencesForm onClose={handleClosePreferences}></PreferencesForm>
+            </Dialog>
+          )}
+        </div>
+      )}
       <TopBar></TopBar>
       <Container>
         {/*<Button onClick={() => { newUser() }}

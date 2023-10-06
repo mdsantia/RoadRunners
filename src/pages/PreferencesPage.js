@@ -1,12 +1,31 @@
 import { React, useEffect } from 'react';
-import { Card, Button, Typography, AppBar, Drawer } from '@mui/material';
+import { Card, Button, Typography, AppBar, Drawer, Grid, Box, createTheme, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useParams } from "react-router-dom";
 import image from '../assets/login-bg.jpg';
 import axios from 'axios';
-import TopBar from '../components/TopBar';
-import NavBar from '../components/NavBar';
 import { useUserContext } from '../hooks/useUserContext';
+import TopBar from '../components/TopBar';
+import NavBar from '../components/SideBar';
+import PreferencesForm from '../components/PreferencesForm';
+
+
+const theme = createTheme({
+  typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+});
 
 const Container = styled('div')({
   display: 'flex',
@@ -30,9 +49,16 @@ export default function PreferencesPage() {
   }, [user]);
   
   return (
-    <div>
+    <ThemeProvider theme={theme}>
       <AppBar><TopBar/></AppBar>
-      <Container><NavBar/></Container>    
-    </div>
+      <Grid>
+        <NavBar/> 
+      </Grid>
+      <Grid>
+        <Container>
+          <PreferencesForm/>
+        </Container>
+      </Grid>
+    </ThemeProvider>
   );
 }

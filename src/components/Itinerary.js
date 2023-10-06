@@ -54,10 +54,18 @@ function a11yProps(index) {
 export default function Itinerary() {
 
   const {user} = useUserContext();
-  const [value, setValue] = React.useState(0);
+  var loading = false;
+  React.useEffect(() => {
+    if (!user) {
+      loading = true;
+    } else {
+      loading = false;
+    }
+  }, [user]);
+
+  console.log(user);
  
-
-
+  const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -68,15 +76,15 @@ export default function Itinerary() {
   const housingOptions = ["Hotels", "Motels", "Bed and Breakfasts", "RV Parks & Campgrounds", "Vacation Rentals", "Hostels", "Resorts", "Roadside Inns & Lodges", "Cabins & Cottages"];
   const vehicleOptions = ["Audi Q7"];
   const [open, setOpen] = React.useState(true);
-  const [budget, setBudget] = React.useState(user.preferences.budget);
-  const [commuteTime, setCommuteTime] = React.useState(user.preferences.commuteTime);
-  const [carsickRating, setCarsickRating] = React.useState(user.preferences.carsickRating);
-  const [selectedVehicle, setSelectedVehicle] = React.useState(user.vehicles);
-  const [attractionSelection, setAttractionSelection] = React.useState(user.preferences.attractionSelection);
-  const [diningSelection, setDiningSelection] = React.useState(user.preferences.diningSelection);
-  const [housingSelection, setHousingSelection] = React.useState(user.preferences.housingSelection);
-  const [budgetStatus, setBudgetStatus] = React.useState(user.preferences.budgetStatus);
-  const [commuteTimeStatus, setCommuteTimeStatus] = React.useState(user.preferences.commuteTimeStatus);
+  const [budget, setBudget] = React.useState(user ? user.preferences.budget : '');
+  const [commuteTime, setCommuteTime] = React.useState(user ? user.preferences.commuteTime : '');
+  const [carsickRating, setCarsickRating] = React.useState(user ? user.preferences.carsickRating : '');
+  const [selectedVehicle, setSelectedVehicle] = React.useState( '');
+  const [attractionSelection, setAttractionSelection] = React.useState(user ? user.preferences.attractionSelection : []);
+  const [diningSelection, setDiningSelection] = React.useState(user ? user.preferences.diningSelection : []);
+  const [housingSelection, setHousingSelection] = React.useState(user ? user.preferences.housingSelection : []);
+  const [budgetStatus, setBudgetStatus] = React.useState([]); 
+  const [commuteTimeStatus, setCommuteTimeStatus] = React.useState([]);
 
   const numOptionsPerColumn = 10;
   const findTotalColumns = (optionsList) => {
