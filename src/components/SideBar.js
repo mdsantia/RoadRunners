@@ -5,7 +5,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { createTheme, ThemeProvider } from '@mui/material';
+import { createTheme, ThemeProvider, Container } from '@mui/material';
 import { useUserContext } from '../hooks/useUserContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 
@@ -29,7 +29,7 @@ const theme = createTheme({
     },
 });
 
-function NavBar() {
+function SideBar() {
     const pageOptions = ['Account Information', 'Trip Preferences', 'Vehicles', 'Trip History'];
     const navigate = useNavigate();
     const {user} = useUserContext();
@@ -49,26 +49,28 @@ function NavBar() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Drawer
-                variant="permanent"
-                open
-                sx={{
-                    display: "flex",
-                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, height: '100%', zIndex: '0'},
-                }}
-                >
-                <CssBaseline/>
-                <List sx={{ paddingTop: '100px' }}>
-                    {pageOptions.map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton id={text} value={text} onClick={(event) => handleButton(event)}>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
+            <Container>
+                <Drawer
+                    variant="permanent"
+                    open
+                    sx={{
+                        display: "flex",
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, height: '100%', zIndex: '0'},
+                    }}
+                    >
+                    <CssBaseline/>
+                    <List sx={{ paddingTop: '90px' }}>
+                        {pageOptions.map((text, index) => (
+                            <ListItem key={text} disablePadding>
+                                <ListItemButton id={text} value={text} onClick={(event) => handleButton(event)}>
+                                    <ListItemText primary={text} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Drawer>
+            </Container>
         </ThemeProvider>
     );
 }
-export default NavBar;
+export default SideBar;
