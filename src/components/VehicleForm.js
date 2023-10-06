@@ -99,12 +99,15 @@ export default function VehicleForm(props) {
             }).then(response => {
                 const newUser = response.data;
                 updateUser(newUser);
-                alert("Your vehicle has been saved!");
+                if (response.status === 201) {
+                    alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.\nPlease enter it manually.");
+                } else {
+                    alert("Your vehicle has been saved!");
+                }
             }).catch(error => {
                 console.log(error.response.data.error);
                 alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");
             });
-            props.onClose();
         }
     }
 
@@ -118,7 +121,6 @@ export default function VehicleForm(props) {
         setMakeStatus('');
         setModelStatus('')
         setColorStatus('');
-        props.onClose();
     }
     
     React.useEffect(() => {

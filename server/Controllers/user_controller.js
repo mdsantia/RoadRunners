@@ -1,9 +1,11 @@
 const express = require('express');
+const { MongoClient } = require('mongodb');
 const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../Models/user_model');
 const Vehicle = require('../Models/user_model');
 const Preferences = require('../Models/user_model');
+const axios = require('axios');
 
 /*
     Check if a user already exists, if they do update and return them
@@ -63,20 +65,23 @@ const checkAndSaveUser = async (req, res) => {
     Request: {email, make, model, year, color, mpg}
     Response: {email, make, model, year, color, mpg}
     responseCode: 200 if vehicle is added
+    responseCode: 201 if vehicle is added but there is no mpg data
     responseCode: 400 if user is not found or duplicate vehicle is detected
     
     */
-   const addVehicle = async (req, res) => {
-       const {email, make, model, year, color, mpgGiven} = req.body;
-       var mpg = mpgGiven;
-       
-       // Check if user exists
-       const user = await User.findOne({email});
-       if (!user) {
+const addVehicle = async (req, res) => {
+    const {email, make, model, year, color, mpgGiven} = req.body;
+    var mpg = mpgGiven;
+    
+    // Check if user exists
+    const user = await User.findOne({email});
+    if (!user) {
         console.log(`ERROR User was not found`.red.bold);
         res.status(400).json({error: 'User not found'});
         return;
     }
+
+    console.log(make, model, year)
 
     mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
     // Create new vehicle
@@ -100,7 +105,10 @@ const checkAndSaveUser = async (req, res) => {
     // Add vehicle to user
     user.vehicles.push(newVehicle);
     await user.save();
-    console.log(user);
+    if (mpg == -1) {
+        res.status(201).json(user);
+        return;
+    }
     res.status(200).json(user);
     return;
 }
@@ -175,9 +183,32 @@ const setPreferences = async (req, res) => {
 
 /* Helper Functions */
 const getMPG = async (make, model, year) => {
-    const url = `https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=${year}&make=${make}&model=${model}`;
+    // Mongodb Vehicle connection
+    const user = "mdsantia";
+    const pwd = "PkLnDkpIynsO9YR8";
+    const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
+    const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+    var id = -1;
+    try {
+        await client.connect();
+        const db = client.db("Vehicles");
+        const col = db.collection(year + '');
+        const query = {make: make, model: model};
+        const document = await col.findOne(query);
+        const mpgData = document.mpgData;
+        if (mpgData == 'N') {
+            return -1;
+        }
+        id = document.id;
+    } catch (error) {
+        console.error('Error querying MongoDB:', error);
+        return -1;
+    } finally {
+        await client.close();
+    }
+    const url = `https://www.fueleconomy.gov/ws/rest/ympg/shared/ympgVehicle/${id}`;
     const response = await axios.get(url);
-    const mpg = response.data.menuItems[0].value;
+    const mpg = Math.round(response.data.avgMpg);
     return mpg;
 }
 
