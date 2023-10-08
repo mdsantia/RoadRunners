@@ -5,7 +5,6 @@ import { Container } from '@mui/material';
 import axios from 'axios';
 import { useUserContext } from '../hooks/useUserContext';
 import Logo from '../assets/rr-logo.png';
-import AddIcon from '@mui/icons-material/Add';
 
 const theme = createTheme({
     typography: {
@@ -25,9 +24,9 @@ const theme = createTheme({
   });
 
 export default function VehicleForm(props) {
+    console.log(props.selectedCar)
     React.useEffect(() => {
         if (props.selectedCar) {
-            handleCancel();
             fetchData('', '', '');
             const timeout = 200; // 1 second timeout
             let timeoutId;
