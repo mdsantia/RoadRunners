@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Typography, TextField, FormGroup, FormControlLabel, Checkbox, Container } from '@mui/material';
 import { Button, FormControl, Select, MenuItem, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
-import Logo from '../assets/rr-logo.png';
-import { useUserContext } from '../hooks/useUserContext';
+import Logo from '../../assets/rr-logo.png';
+import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
 
 const theme = createTheme({

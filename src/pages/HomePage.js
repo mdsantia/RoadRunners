@@ -4,10 +4,9 @@ import { styled } from '@mui/material/styles';
 import image from '../assets/login-bg.jpg'
 import bg from '../assets/topography-bg.jpg'
 import axios from 'axios';
-import CreateTrip from '../components/CreateTrip'
-import TopBar from '../components/TopBar';
-import VehicleForm from '../components/VehicleForm';
-import PreferencesForm from '../components/PreferencesForm';
+import CreateTrip from '../components/newTrip/CreateTrip'
+import TopBar from '../components/additionalFeatures/TopBar';
+import PreferencesForm from '../components/userProfile/PreferencesForm';
 import { useUserContext } from '../hooks/useUserContext';
 
 

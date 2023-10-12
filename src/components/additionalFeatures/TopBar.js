@@ -6,9 +6,9 @@ import Menu from '@mui/material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import Logo from '../assets/rr-logo.png';
+import Logo from '../../assets/rr-logo.png';
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../hooks/useUserContext';
+import { useUserContext } from '../../hooks/useUserContext';
 import Avatar from '@mui/material/Avatar';
 import { Link } from '@mui/material'; // Import Link component
 
@@ -27,7 +27,7 @@ function TopBar() {
   };
 
   const handleProfile = () => {
-    navigate(`/profile/${user._id}`);
+    navigate(`/profile/accountInfo/${user._id}`);
   };
 
   const handleLogout = () => {

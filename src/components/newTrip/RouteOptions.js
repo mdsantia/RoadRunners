@@ -1,12 +1,11 @@
 import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { createTheme, ThemeProvider, Container } from '@mui/material';
-import { useUserContext } from '../hooks/useUserContext';
-import { useDirectionContext } from '../context/DirectionContext';
+import { useUserContext } from '../../hooks/useUserContext';
+import { useDirectionContext } from '../../context/DirectionContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 
 const theme = createTheme({
@@ -38,7 +37,6 @@ function RouteOptions() {
     return (
         <ThemeProvider theme={theme}>
             <Container>
-                <CssBaseline />
                 <List sx={{ paddingTop: '90px' }}>
                     {directions.routes.map((overview, index) => (
                         <ListItem key={index} disablePadding>

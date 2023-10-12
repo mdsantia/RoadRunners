@@ -4,7 +4,7 @@ import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './StrictModeDroppable';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useUserContext } from '../hooks/useUserContext';
+import { useUserContext } from '../../hooks/useUserContext';
 import './CarRanking.css'
 
 function CarRanking({onSelectCar}) {
@@ -73,7 +73,6 @@ function CarRanking({onSelectCar}) {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    console.log(items);
     const newVehicles = items.map((vehicle, index) => {
       return {
         _id: vehicle._id,
@@ -99,11 +98,6 @@ function CarRanking({onSelectCar}) {
           thumb: vehicleDrag.thumb
       }});
       updateVehicles(newVehiclesDrag);
-      // if (response.status === 201) {
-      //   alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.\nPlease enter it manually.");
-      // } else {
-      //   alert("Your vehicle has been saved!");
-      // }
   }).catch(error => {
       console.log(error.response.data.error);
       alert("There was an error saving your vehicle ranking: " + error.response.data.error + ".\nPlease try again.");
