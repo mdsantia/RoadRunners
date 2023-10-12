@@ -3,8 +3,8 @@ import { Button, InputLabel, MenuItem, FormControl, Typography, Divider } from '
 import { Select, Input, createTheme, ThemeProvider } from '@mui/material';
 import { Container } from '@mui/material';
 import axios from 'axios';
-import { useUserContext } from '../hooks/useUserContext';
-import Logo from '../assets/rr-logo.png';
+import { useUserContext } from '../../hooks/useUserContext';
+import Logo from '../../assets/rr-logo.png';
 
 const theme = createTheme({
     typography: {
@@ -23,34 +23,33 @@ const theme = createTheme({
     },
   });
 
-export default function VehicleForm(props) {
-    console.log(props.selectedCar)
+export default function VehicleForm({selectedCar, onSelectCar, showLogo}) {
     React.useEffect(() => {
-        if (props.selectedCar) {
+        if (selectedCar) {
             fetchData('', '', '');
             const timeout = 200; // 1 second timeout
             let timeoutId;
       
             timeoutId = setTimeout(() => {
-                setYear(props.selectedCar.year);
+                setYear(selectedCar.year);
                 setYearFilledOut(true);
             }, timeout);
       
             timeoutId = setTimeout(() => {
-                setMake(props.selectedCar.make);
+                setMake(selectedCar.make);
                 setMakeFilledOut(true);
             }, timeout);
       
             timeoutId = setTimeout(() => {
-                setModel(props.selectedCar.model);
+                setModel(selectedCar.model);
             }, timeout);
       
             timeoutId = setTimeout(() => {
-                setColor(props.selectedCar.color);
+                setColor(selectedCar.color);
               }, timeout);
       
             timeoutId = setTimeout(() => {
-                setMPG(props.selectedCar.mpg);
+                setMPG(selectedCar.mpg);
             }, timeout);
             
             timeoutId = setTimeout(() => {
@@ -61,7 +60,7 @@ export default function VehicleForm(props) {
                 clearTimeout(timeoutId);
               };
         }
-      }, [props.selectedCar]);
+      }, [selectedCar]);
       
     
     const [year, setYear] = React.useState('');
@@ -84,11 +83,11 @@ export default function VehicleForm(props) {
     /* FETCHES DATA FROM CAR DATA API */
     const fetchData = async (year, make, model) => {
         let params = {};
-        if (props.selectedCar) {
+        if (selectedCar) {
             params = {
-                year: props.selectedCar.year,
-                make: props.selectedCar.make,
-                model: props.selectedCar.model,
+                year: selectedCar.year,
+                make: selectedCar.make,
+                model: selectedCar.model,
                 selectedCar: true
             };
         } else {
@@ -159,7 +158,7 @@ export default function VehicleForm(props) {
     const handleSave = () => {
         const params = { 
             email: user.email,
-            _id: props.selectedCar._id,
+            _id: selectedCar._id,
             year: year,
             make: make,
             model: model,
@@ -188,7 +187,7 @@ export default function VehicleForm(props) {
         setColorStatus('');
         setYearFilledOut(false);
         setMakeFilledOut(false);
-        props.onSelectCar(null);
+        onSelectCar(null);
     };
     
     React.useEffect(() => {
@@ -196,7 +195,7 @@ export default function VehicleForm(props) {
     }, [year, make, model]);
     return (
         <ThemeProvider theme={theme}>
-            {props.showLogo && (
+            {showLogo && (
                 <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
             )}            
             <div style={{ marginLeft: '10px', textAlign: 'left' }}>
@@ -320,17 +319,17 @@ export default function VehicleForm(props) {
                 </Container>
                 <br></br>
                 <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
-                    {!props.selectedCar ? (
+                    {!selectedCar ? (
                         <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: 'darkblue', color: 'white' }}>
                             Add Vehicle                    
                         </Button>
                     ):''}
-                    {props.selectedCar ? (
+                    {selectedCar ? (
                         <Button onClick={handleSave} variant="contained" style={{ width: '100px' }} sx={{ backgroundColor: 'darkblue', color: 'white' }}>
                             Save
                         </Button>
                     ):''}
-                    {props.selectedCar ? (
+                    {selectedCar ? (
                         <Button onClick={handleCancel} variant="contained" style={{ width: '100px' }} sx={{ backgroundColor: 'darkblue', color: 'white' }}>
                             Cancel
                         </Button>

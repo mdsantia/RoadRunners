@@ -7,7 +7,7 @@ import { useUserContext } from '../hooks/useUserContext';
 
 import Logo from '../assets/rr-logo.png';
 import image from '../assets/login-bg.jpg';
-import TopBar from '../components/TopBar';
+import TopBar from '../components/additionalFeatures/TopBar';
 
 const Container = styled('div')({
   display: 'flex',

@@ -2,13 +2,13 @@ import React from 'react';
 import axios from 'axios';
 import { Card, Button, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import TopBar from '../components/TopBar';
-import CreateTrip from '../components/CreateTrip'
+import TopBar from '../components/additionalFeatures/TopBar';
+import CreateTrip from '../components/newTrip/CreateTrip'
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import Map from '../components/Map';
-import Itinerary from '../components/Itinerary';
+import Map from '../components/newTrip/Map';
+import Itinerary from '../components/newTrip/Itinerary';
 
 const Container = styled('div')({
     display: 'flex',

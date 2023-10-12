@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, DirectionsService, DirectionsRenderer, LoadScript, Polyline } from '@react-google-maps/api';
-import { DirectionContextProvider } from '../context/DirectionContext';
-import { useDirectionContext } from '../hooks/useDirectionContext';
+import { DirectionContextProvider } from '../../context/DirectionContext';
+import { useDirectionContext } from '../../hooks/useDirectionContext';
 import { GOOGLE_MAPS_API_KEY } from './AddressSearch';
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
   const { directions, center, setCenter, chosenRoute } = useDirectionContext();
-  console.log(directions);
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
 

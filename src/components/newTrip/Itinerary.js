@@ -9,11 +9,11 @@ import RouteIcon from '@mui/icons-material/Route';
 import AttractionsIcon from '@mui/icons-material/Attractions';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Button } from '@mui/material';
-import { useUserContext } from '../hooks/useUserContext';
+import { useUserContext } from '../../hooks/useUserContext';
 import axios from 'axios';
-import PreferencesForm from '../components/PreferencesForm';
+import PreferencesForm from '../userProfile/PreferencesForm';
 import { useNavigate } from 'react-router-dom';
-import VehicleSelectionForm from '../components/VehicleSelectionForm';
+import VehicleSelectionForm from '../newTrip/VehicleSelectionForm';
 import RouteOptions from './RouteOptions';
 
 function TabPanel(props) {

@@ -6,16 +6,17 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import { createTheme, ThemeProvider, Container } from '@mui/material';
-import { useUserContext } from '../hooks/useUserContext';
+import { createTheme, ThemeProvider, Container, Typography } from '@mui/material';
+import { useUserContext } from '../../hooks/useUserContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ListIcon from '@mui/icons-material/List';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import PublicIcon from '@mui/icons-material/Public';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const theme = createTheme({
     typography: {
@@ -34,32 +35,24 @@ const theme = createTheme({
     },
 });
 
-function SideBar() {
-    const pageOptions = ['Account Information', 'Trip Preferences', 'Vehicles', 'Trip History'];
-    const Icons = ['ListIcon', 'FavoriteIcon', 'DirectionsCarIcon', 'PublicIcon'];
+export const pageOptions = ['Account Information', 'Trip Preferences', 'Vehicles', 'Trip History'];
+const Icons = ['AccountCircleIcon', 'FavoriteIcon', 'DirectionsCarIcon', 'PublicIcon'];
+
+function SideBar(props) {
 
     const ComponentMap = {
-        ListIcon,
+        AccountCircleIcon,
         FavoriteIcon,
         DirectionsCarIcon,
         PublicIcon
     };
 
-
     const navigate = useNavigate();
     const {user} = useUserContext();
 
     const handleButton = (event) => {
-        console.log(event);
-        if (event.currentTarget.id === "Account Information") {
-            // navigate(`/accountInfo/${user._id}`");
-        } else if (event.currentTarget.id === "Trip Preferences") {
-            navigate(`/tripPreferences/${user._id}`);
-        } else if (event.currentTarget.id === "Vehicles") {
-            navigate(`/vehicles/${user._id}`);
-        } else if (event.currentTarget.id === "Trip History") {
-            navigate(`/tripHistory/${user._id}`);
-        }
+        const pageType = pageOptions[pageOptions.indexOf(event.currentTarget.id)];
+        navigate(`/profile/${pageType}/${user._id}`);
     }
 
     return (
@@ -74,16 +67,33 @@ function SideBar() {
                     }}
                     >
                     <CssBaseline/>
-                    <List sx={{ paddingTop: '90px' }}>
-        
+                    <List sx={{ paddingTop: '90px' }}>        
                         {pageOptions.map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton id={text} value={text} onClick={(event) => handleButton(event)}>
+                            <ListItem 
+                                key={text} 
+                                disablePadding 
+                                className="list-item"
+                            >
+                                <ListItemButton 
+                                    id={text} 
+                                    value={text} 
+                                    onClick={(event) => { 
+                                        handleButton(event);
+                                    }}
+                                >
                                     <ListItemIcon>
                                         {ComponentMap[Icons[index]] && React.createElement(ComponentMap[Icons[index]])}
                                     </ListItemIcon>
-
-                                    <ListItemText primary={text} />
+                                    <ListItemText 
+                                        primary={ 
+                                            <Typography 
+                                                variant="body1" 
+                                                style={{ fontWeight: text === props.pageType ? 'bold' : 'normal' }}
+                                            >
+                                                {text}
+                                            </Typography>
+                                        }
+                                    />
                                 </ListItemButton>
                             </ListItem>
                         ))}

@@ -12,8 +12,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate } from 'react-router-dom';
-import {useDirectionContext} from '../hooks/useDirectionContext';
-import {useUserContext} from '../hooks/useUserContext';
+import {useDirectionContext} from '../../hooks/useDirectionContext';
+import {useUserContext} from '../../hooks/useUserContext';
 import { directionsCallback } from './Map'; // Import the directionsCallback function
 import dayjs from 'dayjs';
 
