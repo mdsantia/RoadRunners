@@ -194,18 +194,14 @@ export default function VehicleForm({selectedCar, onSelectCar, showLogo}) {
         fetchData(year, make, model);
     }, [year, make, model]);
     return (
-        <ThemeProvider theme={theme}>
-            {showLogo && (
-                <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
-            )}            
-            <div style={{ marginLeft: '10px', textAlign: 'left' }}>
-                <Typography style={{ padding: '20px', margin: '0', fontSize: '25px', fontWeight: 'bold'}}>Vehicle Information</Typography>
+        <ThemeProvider theme={theme}>          
+            <div style={{ textAlign: 'left' }}>
+                <Typography style={{fontSize: '25px', fontWeight: 'bold'}}>Vehicle Information</Typography>
+                <br></br>
                 <Container>
                     <Typography variant="body1">
                         Please enter the year, make, and model of the primary vehicle you would like to use for road trips.
                     </Typography>
-                    <br></br>
-                    <Divider></Divider>
                     <br></br>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
                         <InputLabel id="yearLabel">Year</InputLabel>

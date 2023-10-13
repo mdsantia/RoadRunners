@@ -22,16 +22,6 @@ const theme = createTheme({
   },
 });
 
-const ContentContainer = styled('div')({
-  flex: 1,
-  padding: '20px',
-  paddingTop: '10px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  width: '100%',
-});
-
 export default function VehiclesForm() {
   const [selectedCar, setSelectedCar] = React.useState(null);
   
@@ -41,23 +31,18 @@ export default function VehiclesForm() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container spacing={50}>
+      <Grid container> 
         {/* Middle Content (VehicleForm) */}
         <Grid item xs={12} sm={6} md={6}>
-          <ContentContainer>
             <VehicleInfo
               showAddButton={true}
-              showLogo={false}
               selectedCar={selectedCar}
               onSelectCar={handleSelectCar}
-            />
-          </ContentContainer>
+              />
         </Grid>
         {/* Right Content (Draggable_EX) */}
-        <Grid item xs={12} sm={6} md={6}>
-          <ContentContainer>
+        <Grid item xs={12} sm={6} md={6} sx={{ textAlign: 'right' }}>
             <CarRanking onSelectCar={handleSelectCar}/>
-          </ContentContainer>
         </Grid>
       </Grid>
     </ThemeProvider>
