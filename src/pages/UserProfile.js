@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
-import { Container, Button, Typography, AppBar, Drawer, Grid, Box, createTheme, ThemeProvider } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Container, Typography, AppBar, createTheme, ThemeProvider } from '@mui/material';
 import { useParams } from "react-router-dom";
-import image from '../assets/login-bg.jpg';
-import axios from 'axios';
 import { useUserContext } from '../hooks/useUserContext';
 import TopBar from '../components/additionalFeatures/TopBar';
 import SideBar, { pageOptions } from '../components/userProfile/SideBar';
@@ -28,80 +25,65 @@ const theme = createTheme({
   },
 });
 
-const SidebarContainer = styled('div')({
-  width: '25%',
-});
-
-const ContentContainer = styled('div')({
-  flex: 1,
-  padding: '100px',
-  paddingTop: '80px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  width: '100%',
-});
-
-export default function UserProfile() {
+const UserProfile = () => {
   const id = useParams().id;
-  const {user} = useUserContext();
+  const { user } = useUserContext();
   const pageType = useParams().pageType;
 
-  function getContainer() {
-    if (pageType === pageOptions[0]) { // Account info
-      return (
-        <Container></Container>
-      )
-    }
-    if (pageType === pageOptions[1]) { // Trip Preferences
-      return (
-        <PreferencesForm showSkipButton={false} showDoneButton={true} showLogo={false}/>
-      )
-    }
-    if (pageType === pageOptions[2]) { // Vehicles
-      return (
-        <VehiclesForm/>
-      )
-    }
-    if (pageType === pageOptions[3]) {
-      if (user && user.trips.length > 0) { // Trip History
+  const getContainer = () => {
+    switch (pageType) {
+      case pageOptions[0]: // Account Information
+        return <Container></Container>;
+      case pageOptions[1]: // Trip Preferences
         return (
-          <>  
-            <UserTrips user={user}/>
-          </>
-        )
-      }
-      return (
-        <>
-          <Container paddingTop={20}>
-          <Typography variant="h5" >No trips yet!</Typography>
-          <a href={`/`}>  <Typography variant="h6">Create trips to get started.</Typography> </a>
+          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+            <PreferencesForm showSkipButton={false} showDoneButton={true} showLogo={false} />;
           </Container>
-        </>
-      )
+        );
+      case pageOptions[2]: // Vehicles
+        return (
+          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+            <VehiclesForm />
+          </Container>
+        );
+      case pageOptions[3]: // Trip History
+        if (user && user.trips.length > 0) {
+          return (
+            <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+              <UserTrips user={user} />
+            </Container>
+          );
+        }
+        return (
+          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+            <Typography variant="h5">No trips yet!</Typography>
+            <a href={`/`}><Typography variant="h6">Create trips to get started.</Typography></a>
+          </Container>
+        );
+      default:
+        return null;
     }
-  }
+  };
 
   useEffect(() => {
-    if (!user) {
-      return;
-    }
-    if (user._id !== id) {
+    if (user && user._id !== id) {
       window.location.href = "/";
     }
-  }, [user]);
+  }, [user, id]);
 
   return (
-    <div>
-      <AppBar><TopBar/></AppBar>
-      <Container>
-        <SidebarContainer>
-          <SideBar pageType={pageType}/> 
-        </SidebarContainer>
-        <ContentContainer>
+    <ThemeProvider theme={theme}>
+      <div>
+        <AppBar>
+          <TopBar />
+        </AppBar>
+        <Container>
+          <SideBar pageType={pageType} />
           {getContainer()}
-        </ContentContainer>
-      </Container>    
-    </div>
+        </Container>
+      </div>
+    </ThemeProvider>
   );
-}
+};
+
+export default UserProfile;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Typography, Container } from '@mui/material';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './StrictModeDroppable';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -107,8 +108,11 @@ function CarRanking({onSelectCar}) {
   return (
     <div className="Drag-Exam">
       <header className="Drag-Exam-header">
-        <h4 style={{ color: 'darkblue', textAlign: 'right'}}>Your Vehicles</h4>
-        <div style={{ textAlign: 'right' }}>Drag and drop for ranking.<br></br>Click to load and edit.</div>
+        <Typography style={{ fontSize: '25px', fontWeight: 'bold', color: 'darkblue' }}>Your Vehicles</Typography>
+        <br></br>
+        <Container>
+          <Typography>Drag and drop to rank your vehicles.<br></br>Click on a vehicle to load its information and edit it.</Typography>
+        </Container>
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <StrictModeDroppable droppableId="characters">
             {(provided) => (

@@ -11,7 +11,7 @@ const UserTrips = ({ user }) => {
     }
   return (
     <>
-    <Typography style={{ padding: '20px', margin: '0', fontSize: '25px', fontWeight: 'bold'}}>Trip History</Typography>
+    <Typography style={{ fontSize: '25px', fontWeight: 'bold'}}>Trip History</Typography>
     <Grid container spacing={2}>
       {user.trips.map((trip) => (
         <Grid item xs={12} sm={6} md={4} key={trip.id}>

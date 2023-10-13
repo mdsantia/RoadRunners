@@ -79,7 +79,9 @@ export default function HomePage() {
           )}
           {preferencesOpen && (
             <Dialog fullWidth maxWidth="md" open={preferencesOpen} onClose={handleClosePreferences}>
-              <PreferencesForm showSkipButton={true} showDoneButton={true} showLogo={true} onClose={handleClosePreferences}></PreferencesForm>
+              <DialogContent sx={{ padding: '20px' }}>
+                <PreferencesForm showSkipButton={true} showDoneButton={true} showLogo={true} onClose={handleClosePreferences}></PreferencesForm>
+              </DialogContent>
             </Dialog>
           )}
         </div>

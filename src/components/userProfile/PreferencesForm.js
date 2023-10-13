@@ -165,10 +165,11 @@ export default function PreferencesForm(props) {
     return (
         <ThemeProvider theme={theme}>
             {props.showLogo && (
-                <img src={Logo} alt="Logo" width={200} style={{ padding: '10px'}}/>
+                <img src={Logo} alt="Logo" width={200}/>
             )}
-            <div style={{ marginLeft: '10px', textAlign: 'left' }}>
-                <Typography style={{ padding: '20px', margin: '0', fontSize: '25px', fontWeight: 'bold'}}>Trip Preferences</Typography>
+            <div style={{ textAlign: 'left' }}>
+                <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Trip Preferences</Typography>
+                <br></br>
                 <Container>
                     <Typography variant="body1">
                         Please indicate your trip preferences so that RoadRunners can suggest more personalized routes just for you.
@@ -176,7 +177,7 @@ export default function PreferencesForm(props) {
                     <br></br>
                     <Divider></Divider>
                     <br></br>
-                    <FormControl sx={{ m: 1, minWidth: 500 }}>
+                    {/* <FormControl sx={{ m: 1, minWidth: 500 }}> */}
                         <Grid container spacing={2} alignItems="center">
                             <Grid item xs={12} md={4}>
                             <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
@@ -369,7 +370,7 @@ export default function PreferencesForm(props) {
                                 ))}
                             </Grid>
                         </FormGroup>
-                    </FormControl>
+                    {/* </FormControl> */}
                 </Container>
                 <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
                     {props.showSkipButton && (
