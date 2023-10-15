@@ -23,7 +23,7 @@ const theme = createTheme({
     },
   });
 
-export default function VehicleForm({selectedCar, onSelectCar, showLogo}) {
+export default function VehicleForm({selectedCar, onSelectCar}) {
     React.useEffect(() => {
         if (selectedCar) {
             fetchData('', '', '');
