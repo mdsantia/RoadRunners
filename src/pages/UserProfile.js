@@ -6,25 +6,9 @@ import TopBar from '../components/additionalFeatures/TopBar';
 import SideBar, { pageOptions } from '../components/userProfile/SideBar';
 import PreferencesForm from '../components/userProfile/PreferencesForm';
 import UserTrips from '../components/userProfile/UserTrips';
-import VehiclesForm from '../components/userProfile/VehiclesForm';
+import VehiclesForm from '../components/userProfile/VehicleInfo';
 import PreferencesInfo from '../components/userProfile/PreferencesInfo';
 
-const theme = createTheme({
-  typography: {
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
-});
 
 const UserProfile = () => {
   const id = useParams().id;
@@ -38,7 +22,7 @@ const UserProfile = () => {
       case pageOptions[1]: // Trip Preferences
         return (
           <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
-            <PreferencesInfo showDoneButton={true} />;
+            <PreferencesInfo showEditButton={true} />;
           </Container>
         );
       case pageOptions[2]: // Vehicles
@@ -73,17 +57,15 @@ const UserProfile = () => {
   }, [user, id]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <div>
-        <AppBar>
-          <TopBar />
-        </AppBar>
-        <Container>
-          <SideBar pageType={pageType} />
-          {getContainer()}
-        </Container>
-      </div>
-    </ThemeProvider>
+    <div>
+      <AppBar>
+        <TopBar />
+      </AppBar>
+      <Container>
+        <SideBar pageType={pageType} />
+        {getContainer()}
+      </Container>
+    </div>
   );
 };
 

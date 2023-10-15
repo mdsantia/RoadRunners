@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Container, Typography, AppBar, Grid, createTheme, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useUserContext } from '../../hooks/useUserContext';
-import VehicleInfo from '../additionalFeatures/VehicleInfo';
+import VehicleInfo from './VehicleForm';
 import CarRanking from '../additionalFeatures/CarRanking';
 
 const theme = createTheme({

@@ -35,24 +35,8 @@ import DeckOutlinedIcon from '@mui/icons-material/DeckOutlined';
 import HotelOutlinedIcon from '@mui/icons-material/HotelOutlined';
 import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
+import PreferencesForm from '../userProfile/PreferencesForm';
 
-
-const theme = createTheme({
-    typography: {
-      fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        'Roboto',
-        '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-      ].join(','),
-    },
-});
 
 export default function PreferencesInfo(props) {
     const {user, updateUser} = useUserContext();
@@ -120,7 +104,6 @@ export default function PreferencesInfo(props) {
 
     const handleEdit = async (event) => {
         event.preventDefault();
-
     }
 
     const handleSave = async (event) => {
@@ -134,167 +117,162 @@ export default function PreferencesInfo(props) {
     }
 
     return (
-        <ThemeProvider theme={theme}>
-            <div style={{ textAlign: 'left' }}>
-                <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Your Trip Preferences</Typography>
+        <div style={{ textAlign: 'left' }}>
+            <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Your Trip Preferences</Typography>
+            <br></br>
+            <Container>
+                <Grid container alignItems="center">
+                    <Grid item xs={12} md={6}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
+                        <PaidOutlinedIcon></PaidOutlinedIcon>
+                        <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            style={{ paddingLeft:'10px' }}
+                        >
+                            <span style={{ textDecoration: 'underline' }}>Budget</span>
+                        </Typography>
+                    </div>                                    
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        {budget ? budget : 'N/A'}
+                    </Grid>
+                </Grid>                               
                 <br></br>
-                <Container>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} md={6}>
+                <Grid container alignItems="center">
+                    <Grid item xs={12} md={6}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
+                        <AccessTimeOutlinedIcon></AccessTimeOutlinedIcon>
+                        <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            style={{ paddingLeft: '10px' }}
+                        >
+                            <span style={{ textDecoration: 'underline' }}>Maximum Commute Time Between Stops</span>
+                        </Typography>
+                    </div>                                    
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        {commuteTime ? commuteTime : 'N/A'}
+                    </Grid>
+                </Grid> 
+                <br></br>
+                <Grid container alignItems="center">
+                    <Grid item xs={12} md={6}>
                         <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
-                            <PaidOutlinedIcon></PaidOutlinedIcon>
-                            <Typography
-                                variant="body1"
-                                fontWeight="bold"
-                                style={{ paddingLeft:'10px' }}
-                            >
-                                Preferred Budget for Road Trips
-                            </Typography>
-                        </div>                                    
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            {budget ? budget : 'N/A'}
-                        </Grid>
-                    </Grid>                               
-                    <br></br>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} md={6}>
-                        <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
-                            <AccessTimeOutlinedIcon></AccessTimeOutlinedIcon>
+                            <SickOutlinedIcon></SickOutlinedIcon>
                             <Typography
                                 variant="body1"
                                 fontWeight="bold"
                                 style={{ paddingLeft: '10px' }}
                             >
-                                Preferred Maximum Commute Time Between Stops
-                            </Typography>
-                        </div>                                    
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            {commuteTime ? commuteTime : 'N/A'}
-                        </Grid>
-                    </Grid> 
-                    <br></br>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} md={6}>
-                            <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>
-                                <SickOutlinedIcon></SickOutlinedIcon>
-                                <Typography
-                                    variant="body1"
-                                    fontWeight="bold"
-                                    style={{ paddingLeft: '10px' }}
-                                >
-                                    Susceptibility to Motion Sickness
-                                </Typography> 
-                            </div> 
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            {carsickRating ? carsickRating : 'N/A'}
-                        </Grid>     
+                                <span style={{ textDecoration: 'underline' }}>Susceptibility to Motion Sickness</span>
+                            </Typography> 
+                        </div> 
                     </Grid>
-                    <br></br>
-                    <Divider></Divider>
-                    <br></br>
-                    <Typography variant="body1" fontWeight="bold">
-                        <AttractionsOutlinedIcon style={{ marginRight: '10px' }} />
-                        Preferred Attraction Types
-                    </Typography>
-                    <br></br>
-                    <div style={{ paddingLeft: '50px' }}>
-                        <Grid container>
-                            {Array.from({ length: findTotalColumns(attractionSelection) }).map((_, columnIndex) => (
-                                <Grid item xs={3} key={columnIndex}>
-                                    {attractionSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((attraction, index) => (
-                                        <Typography key={index}>
-                                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                {attractionIcons[attraction] && (
-                                                <div style={{ marginRight: '15px' }}>
-                                                    {attractionIcons[attraction]}
-                                                </div>
-                                                )}
-                                                {attraction}
+                    <Grid item xs={12} md={6}>
+                        {carsickRating ? carsickRating : 'N/A'}
+                    </Grid>     
+                </Grid>
+                <br></br>
+                <Divider></Divider>
+                <br></br>
+                <Typography variant="body1" fontWeight="bold">
+                    <AttractionsOutlinedIcon style={{ marginRight: '10px' }} />
+                    <span style={{ textDecoration: 'underline' }}>Attractions</span>
+                </Typography>
+                <div style={{ paddingLeft: '50px' }}>
+                    <Grid container>
+                        {Array.from({ length: findTotalColumns(attractionSelection) }).map((_, columnIndex) => (
+                            <Grid item xs={3} key={columnIndex}>
+                                {attractionSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((attraction, index) => (
+                                    <Typography key={index}>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            {attractionIcons[attraction] && (
+                                            <div style={{ marginRight: '15px' }}>
+                                                {attractionIcons[attraction]}
                                             </div>
-                                        </Typography>
-                                    ))}
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </div>
-                    <br></br>
-                    <Divider></Divider>
-                    <br></br>
-                    <Typography variant="body1" fontWeight="bold">
-                        <FastfoodOutlinedIcon style={{ marginRight: '10px' }}></FastfoodOutlinedIcon>
-                        Dining Preferences
-                    </Typography>
-                    <br></br>
-                    <div style={{ paddingLeft: '50px' }}>
-                        <Grid container>
-                            {Array.from({ length: findTotalColumns(diningSelection) }).map((_, columnIndex) => (
-                                <Grid item xs={3} key={columnIndex}>
-                                    {diningSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((diningPlace, index) => (
-                                        <Typography key={index}>
-                                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                {diningIcons[diningPlace] && (
-                                                <div style={{ marginRight: '15px' }}>
-                                                    {diningIcons[diningPlace]}
-                                                </div>
-                                                )}
-                                                {diningPlace}
+                                            )}
+                                            {attraction}
+                                        </div>
+                                    </Typography>
+                                ))}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
+                <br></br>
+                <Divider></Divider>
+                <br></br>
+                <Typography variant="body1" fontWeight="bold">
+                    <FastfoodOutlinedIcon style={{ marginRight: '10px' }}></FastfoodOutlinedIcon>
+                    <span style={{ textDecoration: 'underline' }}>Dining</span>
+                </Typography>
+                <div style={{ paddingLeft: '50px' }}>
+                    <Grid container>
+                        {Array.from({ length: findTotalColumns(diningSelection) }).map((_, columnIndex) => (
+                            <Grid item xs={3} key={columnIndex}>
+                                {diningSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((diningPlace, index) => (
+                                    <Typography key={index}>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            {diningIcons[diningPlace] && (
+                                            <div style={{ marginRight: '15px' }}>
+                                                {diningIcons[diningPlace]}
                                             </div>
-                                        </Typography>
-                                    ))}
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </div>
-                    <br></br>
-                    <Divider></Divider>
-                    <br></br>
-                    <Typography variant="body1" fontWeight="bold">
-                        <MapsHomeWorkOutlinedIcon style={{ marginRight: '10px' }}></MapsHomeWorkOutlinedIcon>
-                        Housing Preferences
-                    </Typography>
-                    <br></br>
-                    <div style={{ paddingLeft: '50px' }}>
-                        <Grid container>
-                            {Array.from({ length: findTotalColumns(housingSelection) }).map((_, columnIndex) => (
-                                <Grid item xs={3} key={columnIndex}>
-                                    {housingSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((housingChoice, index) => (
-                                        <Typography key={index}>
-                                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                {housingIcons[housingChoice] && (
-                                                <div style={{ marginRight: '15px' }}>
-                                                    {housingIcons[housingChoice]}
-                                                </div>
-                                                )}
-                                                {housingChoice}
+                                            )}
+                                            {diningPlace}
+                                        </div>
+                                    </Typography>
+                                ))}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
+                <br></br>
+                <Divider></Divider>
+                <br></br>
+                <Typography variant="body1" fontWeight="bold">
+                    <MapsHomeWorkOutlinedIcon style={{ marginRight: '10px' }}></MapsHomeWorkOutlinedIcon>
+                    <span style={{ textDecoration: 'underline' }}>Housing</span>
+                </Typography>
+                <div style={{ paddingLeft: '50px' }}>
+                    <Grid container>
+                        {Array.from({ length: findTotalColumns(housingSelection) }).map((_, columnIndex) => (
+                            <Grid item xs={3} key={columnIndex}>
+                                {housingSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((housingChoice, index) => (
+                                    <Typography key={index}>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            {housingIcons[housingChoice] && (
+                                            <div style={{ marginRight: '15px' }}>
+                                                {housingIcons[housingChoice]}
                                             </div>
-                                        </Typography>
-                                    ))}
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </div>
-                </Container>
-                <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
-                    {props.showEditButton && (
-                        <Button onClick={handleEdit} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
-                            Edit Preferences
-                        </Button>
-                    )}
-                    {props.showSaveButton && (
-                        <Button onClick={handleSave} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
-                            Save Preferences
-                        </Button>
-                    )}
-                    {props.showCancelButton && (
-                        <Button onClick={handleCancel} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
-                            Cancel
-                        </Button>
-                    )}
-                </Container>
-            </div>
-        </ThemeProvider>
+                                            )}
+                                            {housingChoice}
+                                        </div>
+                                    </Typography>
+                                ))}
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
+            </Container>
+            <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
+                {props.showEditButton && (
+                    <Button onClick={handleEdit} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
+                        Edit Preferences
+                    </Button>
+                )}
+                {props.showSaveButton && (
+                    <Button onClick={handleSave} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
+                        Save Preferences
+                    </Button>
+                )}
+                {props.showCancelButton && (
+                    <Button onClick={handleCancel} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
+                        Cancel
+                    </Button>
+                )}
+            </Container>
+        </div>
     );
 }

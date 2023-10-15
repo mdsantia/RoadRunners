@@ -5,23 +5,6 @@ import Logo from '../../assets/rr-logo.png';
 import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
 
-const theme = createTheme({
-    typography: {
-      fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        'Roboto',
-        '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-      ].join(','),
-    },
-});
-
 export default function PreferencesForm(props) {
     const {user, updateUser} = useUserContext();
     const inDashboard = props.type == 'dashboard';
@@ -195,7 +178,7 @@ export default function PreferencesForm(props) {
     }
 
     return (
-        <ThemeProvider theme={theme}>
+        <>
             {props.showLogo && (
                 <img src={Logo} alt="Logo" width={200}/>
             )}
@@ -417,6 +400,6 @@ export default function PreferencesForm(props) {
                     )}
                 </Container>
             </div>
-        </ThemeProvider>
+        </>
     );
 }
