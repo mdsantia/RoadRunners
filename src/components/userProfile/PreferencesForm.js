@@ -39,9 +39,41 @@ export default function PreferencesForm(props) {
     }, [user]);
 
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const attractionOptions = ["Entertainment", "Outdoor/Nature", "Cultural", "Adventure", "Water", "Educational", "Shopping", "Culinary", "Religious", "Family-Friendly"];
-    const diningOptions = ["Fast Food", "Fine Dining", "Casual Dining", "Cafés/Coffee Shops", "Buffets", "Food Trucks", "Family Restaurants", "Vegetarian/Vegan", "Ethnic/International", "Diners"];
-    const housingOptions = ["Hotels", "Motels", "Bed and Breakfasts", "RV Parks & Campgrounds", "Vacation Rentals", "Hostels", "Resorts", "Roadside Inns & Lodges", "Cabins & Cottages"];
+    const attractionOptions = [
+        "Entertainment", 
+        "Outdoor/Nature", 
+        // "Cultural", 
+        "Adventure", 
+        // "Water", 
+        // "Educational", 
+        "Shopping", 
+        // "Culinary", 
+        // "Religious", 
+        // "Family-Friendly"
+    ];
+    const diningOptions = [
+        "Fast Food", 
+        // "Fine Dining", 
+        // "Casual Dining", 
+        "Cafés/Coffee Shops", 
+        // "Buffets", 
+        // "Food Trucks", 
+        "Family Restaurants", 
+        // "Vegetarian/Vegan", 
+        // "Ethnic/International", 
+        // "Diners"
+    ];
+    const housingOptions = [
+        "Hotels", 
+        "Motels", 
+        // "Hostels", 
+        "Airbnb", 
+        // "Vacation Rentals", 
+        // "Resorts", 
+        // "Roadside Inns & Lodges", 
+        // "Cabins", 
+        // "Cottages"
+    ];
     const [budget, setBudget] = React.useState( '');
     const [commuteTime, setCommuteTime] = React.useState( '');
     const [carsickRating, setCarsickRating] = React.useState( '');

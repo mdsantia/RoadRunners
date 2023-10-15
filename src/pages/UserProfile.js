@@ -7,6 +7,7 @@ import SideBar, { pageOptions } from '../components/userProfile/SideBar';
 import PreferencesForm from '../components/userProfile/PreferencesForm';
 import UserTrips from '../components/userProfile/UserTrips';
 import VehiclesForm from '../components/userProfile/VehiclesForm';
+import PreferencesInfo from '../components/userProfile/PreferencesInfo';
 
 const theme = createTheme({
   typography: {
@@ -37,7 +38,7 @@ const UserProfile = () => {
       case pageOptions[1]: // Trip Preferences
         return (
           <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
-            <PreferencesForm showSkipButton={false} showDoneButton={true} showLogo={false} />;
+            <PreferencesInfo showDoneButton={true} />;
           </Container>
         );
       case pageOptions[2]: // Vehicles

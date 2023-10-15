@@ -8,6 +8,8 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useUserContext } from '../../hooks/useUserContext';
 import './CarRanking.css'
 
+const rankNames = ["Primary", "Secondary", ""];
+
 function CarRanking({onSelectCar}) {
   const [vehicles, updateVehicles] = useState([]);
   const {user, updateUser} = useUserContext();
@@ -48,7 +50,6 @@ function CarRanking({onSelectCar}) {
     if (!user) {
       return;
     } 
-    console.log(user)
     const dragVehicles = user.vehicles.map((vehicle, index) => {
       // Create a new object with additional fields
       return {
@@ -70,6 +71,7 @@ function CarRanking({onSelectCar}) {
   async function handleOnDragEnd (result) {
     if (!result.destination) return;
     
+    const oldVehicles = vehicles;
     const items = Array.from(vehicles);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
@@ -85,22 +87,16 @@ function CarRanking({onSelectCar}) {
         ranking: index
     }});
 
+    updateVehicles(items);
     await axios.post('/api/user/vehicleRanking', {
       email: user.email,
       vehicles: newVehicles
     }).then(response => {
       const newUser = response.data;
       updateUser(newUser);
-      const newVehiclesDrag = newVehicles.map((vehicleDrag, index) => {
-        return {
-          ...vehicleDrag,
-          id: vehicleDrag._id,
-          name: `${vehicleDrag.color} ${vehicleDrag.year} ${vehicleDrag.make}`,
-          thumb: vehicleDrag.thumb
-      }});
-      updateVehicles(newVehiclesDrag);
   }).catch(error => {
       console.log(error.response.data.error);
+      updateVehicles(oldVehicles);
       alert("There was an error saving your vehicle ranking: " + error.response.data.error + ".\nPlease try again.");
   });
   }
@@ -114,9 +110,9 @@ function CarRanking({onSelectCar}) {
           <Typography>Drag and drop to rank your vehicles.<br></br>Click on a vehicle to load its information and edit it.</Typography>
         </Container>
         <DragDropContext onDragEnd={handleOnDragEnd}>
-          <StrictModeDroppable droppableId="characters">
+          <StrictModeDroppable droppableId="vehicles">
             {(provided) => (
-              <ul className="characters" style={{ textAlign: 'right'}} {...provided.droppableProps} ref={provided.innerRef}>
+              <ul className="vehicles" style={{ textAlign: 'right'}} {...provided.droppableProps} ref={provided.innerRef}>
                 {vehicles.map(({id, ranking, name, thumb}, index) => {
                   const isClicked = clickedItemId === id;
                   return (
@@ -130,20 +126,28 @@ function CarRanking({onSelectCar}) {
                           onMouseEnter={() => setHoveredItem(id)}
                           onMouseLeave={() => setHoveredItem(null)}
                           style={{
+                            width: '100%',
                             boxShadow: (snapshot.isDragging || isClicked || id === hoveredItem) ? '0 4px 8px rgba(0, 0, 0, 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.2)',
                             cursor: snapshot.isDragging ? 'grabbing' : 'pointer',
                             ...provided.draggableProps.style,
                           }}
                         >
                           <ArrowBackIosNewIcon style={{ fontSize: '36px', textAlign: 'right', cursor:'pointer'}}/>
-                          <div className="characters-thumb">
+                          <div className="vehicles-thumb">
                             <img src={thumb} alt={`${name} Thumb`} />
                           </div>
-                          <p style={{ fontFamily: 'Arial', fontSize: '16px', textAlign: 'right'}}>
-                            {ranking}: { name }
-                            <br />
-                            <DeleteForeverIcon style={{ fontSize: '30px', textAlign: 'right', cursor:'pointer'}} onClick={(event) => handleRemoveCar(id, event)}/>
+                          <div>
+                          <p style={{ fontFamily: 'Arial', fontSize: '20px', textAlign: 'left', fontWeight: 'bold', color: '#8B008B'}}>
+                          {ranking < rankNames.length? `${rankNames[ranking]}`:`${rankNames[rankNames.length - 1]}`}
                           </p>
+                          <p style={{ fontFamily: 'Arial', fontSize: '16px', textAlign: 'right'}}>
+                            { name }
+                            <br />
+                          </p>
+                          </div>
+                          <div className='delete-icon'>
+                            <DeleteForeverIcon style={{ fontSize: '25px', textAlign: 'right', cursor:'pointer'}} onClick={(event) => handleRemoveCar(id, event)}/>
+                          </div>
                         </li>
                       )}
                     </Draggable>
