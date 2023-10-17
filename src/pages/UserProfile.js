@@ -20,6 +20,10 @@ const UserProfile = () => {
     setIsEditingPreferences(true);
   }
 
+  useEffect(() => {
+    setIsEditingPreferences(false);
+  }, [pageType])
+
   const getContainer = () => {
     switch (pageType) {
       case pageOptions[0]: // Account Information

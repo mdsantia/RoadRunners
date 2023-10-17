@@ -41,7 +41,18 @@ import PreferencesForm from '../userProfile/PreferencesForm';
 export default function PreferencesInfo(props) {
     const {user, updateUser} = useUserContext();
     const inDashboard = props.type == 'dashboard';
-
+    const [budget, setBudget] = React.useState('');
+    const [commuteTime, setCommuteTime] = React.useState('');
+    const [carsickRating, setCarsickRating] = React.useState('');
+    const [attractionSelection, setAttractionSelection] = React.useState([]);
+    const [diningSelection, setDiningSelection] = React.useState([]);
+    const [housingSelection, setHousingSelection] = React.useState([]);
+    
+    const numOptionsPerColumn = 3;
+    const findTotalColumns = (optionsList) => {
+        return Math.ceil(optionsList.length / numOptionsPerColumn);
+    }
+    
     React.useEffect(() => {
         if (!user) {
           return;
@@ -53,6 +64,32 @@ export default function PreferencesInfo(props) {
         setDiningSelection(user.preferences.diningSelection ? user.preferences.diningSelection : []);
         setHousingSelection(user.preferences.housingSelection ? user.preferences.housingSelection : []);
     }, [user]);
+
+    const getList = (list, iconList, message) => {
+        if (list.length > 0) {
+            return (
+                Array.from({ length: findTotalColumns(list) }).map((_, columnIndex) => (
+                    <Grid item xs={3} key={columnIndex}>
+                            {list.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((itemObject, index) => (
+                                <Typography key={index}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    {iconList[itemObject] && (
+                                        <div style={{ marginRight: '15px' }}>
+                                        {iconList[itemObject]}
+                                    </div>
+                                    )}
+                                    {itemObject}
+                                </div>
+                                </Typography>
+                            ))}
+                    </Grid>
+                ))
+            )
+        }
+        return (
+            <i>{message}</i>
+        )
+    }
 
     const attractionIcons = {
         'Entertainment': <TheaterComedyOutlinedIcon></TheaterComedyOutlinedIcon>,
@@ -90,18 +127,6 @@ export default function PreferencesInfo(props) {
         'Cottages:': <CottageOutlinedIcon></CottageOutlinedIcon>
     };
 
-    const [budget, setBudget] = React.useState('');
-    const [commuteTime, setCommuteTime] = React.useState('');
-    const [carsickRating, setCarsickRating] = React.useState('');
-    const [attractionSelection, setAttractionSelection] = React.useState([]);
-    const [diningSelection, setDiningSelection] = React.useState([]);
-    const [housingSelection, setHousingSelection] = React.useState([]);
-    
-    const numOptionsPerColumn = 3;
-    const findTotalColumns = (optionsList) => {
-        return Math.ceil(optionsList.length / numOptionsPerColumn);
-    }
-
     return (
         <div style={{ textAlign: 'left' }}>
             <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Your Trip Preferences</Typography>
@@ -121,7 +146,7 @@ export default function PreferencesInfo(props) {
                     </div>                                    
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        {budget ? budget : 'N/A'}
+                        {budget ? budget : <i>No Budget Specified</i>}
                     </Grid>
                 </Grid>                               
                 <br></br>
@@ -139,7 +164,7 @@ export default function PreferencesInfo(props) {
                     </div>                                    
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        {commuteTime ? commuteTime : 'N/A'}
+                        {commuteTime ? commuteTime : <i>No Maximum Commute Time Specified</i>}
                     </Grid>
                 </Grid> 
                 <br></br>
@@ -157,7 +182,7 @@ export default function PreferencesInfo(props) {
                         </div> 
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        {carsickRating ? carsickRating : 'N/A'}
+                        {carsickRating ? carsickRating : <i>No Motion Sickness Rating Specified</i>}
                     </Grid>     
                 </Grid>
                 <br></br>
@@ -169,22 +194,7 @@ export default function PreferencesInfo(props) {
                 </Typography>
                 <div style={{ paddingLeft: '50px' }}>
                     <Grid container>
-                        {Array.from({ length: findTotalColumns(attractionSelection) }).map((_, columnIndex) => (
-                            <Grid item xs={3} key={columnIndex}>
-                                {attractionSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((attraction, index) => (
-                                    <Typography key={index}>
-                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            {attractionIcons[attraction] && (
-                                            <div style={{ marginRight: '15px' }}>
-                                                {attractionIcons[attraction]}
-                                            </div>
-                                            )}
-                                            {attraction}
-                                        </div>
-                                    </Typography>
-                                ))}
-                            </Grid>
-                        ))}
+                        {getList(attractionSelection, attractionIcons, "No Attraction Preferences Specified")}
                     </Grid>
                 </div>
                 <br></br>
@@ -196,22 +206,7 @@ export default function PreferencesInfo(props) {
                 </Typography>
                 <div style={{ paddingLeft: '50px' }}>
                     <Grid container>
-                        {Array.from({ length: findTotalColumns(diningSelection) }).map((_, columnIndex) => (
-                            <Grid item xs={3} key={columnIndex}>
-                                {diningSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((diningPlace, index) => (
-                                    <Typography key={index}>
-                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            {diningIcons[diningPlace] && (
-                                            <div style={{ marginRight: '15px' }}>
-                                                {diningIcons[diningPlace]}
-                                            </div>
-                                            )}
-                                            {diningPlace}
-                                        </div>
-                                    </Typography>
-                                ))}
-                            </Grid>
-                        ))}
+                    {getList(diningSelection, diningIcons, "No Dining Preferences Specified")}
                     </Grid>
                 </div>
                 <br></br>
@@ -223,22 +218,7 @@ export default function PreferencesInfo(props) {
                 </Typography>
                 <div style={{ paddingLeft: '50px' }}>
                     <Grid container>
-                        {Array.from({ length: findTotalColumns(housingSelection) }).map((_, columnIndex) => (
-                            <Grid item xs={3} key={columnIndex}>
-                                {housingSelection.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((housingChoice, index) => (
-                                    <Typography key={index}>
-                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            {housingIcons[housingChoice] && (
-                                            <div style={{ marginRight: '15px' }}>
-                                                {housingIcons[housingChoice]}
-                                            </div>
-                                            )}
-                                            {housingChoice}
-                                        </div>
-                                    </Typography>
-                                ))}
-                            </Grid>
-                        ))}
+                    {getList(housingSelection, housingIcons, "No Housing Preferences Specified")}
                     </Grid>
                 </div>
             </Container>
