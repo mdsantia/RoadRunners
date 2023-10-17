@@ -125,7 +125,7 @@ export default function PreferencesForm(props) {
         }
     }
 
-    const handleSubmit = async (event) => {
+    const handleSave = async (event) => {
         event.preventDefault();
         let validBudget = false;
         let validCommuteTime = false;
@@ -163,6 +163,11 @@ export default function PreferencesForm(props) {
                 props.onClose();
             }
         }
+        props.handleSave();
+    }
+
+    const handleCancel = async () => {
+        props.handleCancel();
     }
 
     const handleSkip = async () => {
@@ -389,13 +394,18 @@ export default function PreferencesForm(props) {
                 </Container>
                 <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
                     {props.showSkipButton && (
-                        <Button onClick={handleSkip} variant="contained" color="primary" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
+                        <Button onClick={handleSkip} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
                             Skip
                         </Button>
                     )}
-                    {props.showDoneButton && (
-                        <Button onClick={handleSubmit} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
-                            Done
+                    {props.showSaveButton && (
+                        <Button onClick={handleSave} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
+                            Save
+                        </Button>
+                    )}
+                    {props.showCancelButton && (
+                        <Button onClick={handleCancel} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
+                            Cancel
                         </Button>
                     )}
                 </Container>

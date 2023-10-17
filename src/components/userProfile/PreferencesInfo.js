@@ -102,20 +102,6 @@ export default function PreferencesInfo(props) {
         return Math.ceil(optionsList.length / numOptionsPerColumn);
     }
 
-    const handleEdit = async (event) => {
-        event.preventDefault();
-    }
-
-    const handleSave = async (event) => {
-        event.preventDefault();
-
-    }
-    
-    const handleCancel = async (event) => {
-        event.preventDefault();
-
-    }
-
     return (
         <div style={{ textAlign: 'left' }}>
             <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Your Trip Preferences</Typography>
@@ -257,21 +243,9 @@ export default function PreferencesInfo(props) {
                 </div>
             </Container>
             <Container style={{ display: 'flex', justifyContent: 'space-between', padding: '20px'}}>
-                {props.showEditButton && (
-                    <Button onClick={handleEdit} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
-                        Edit Preferences
-                    </Button>
-                )}
-                {props.showSaveButton && (
-                    <Button onClick={handleSave} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
-                        Save Preferences
-                    </Button>
-                )}
-                {props.showCancelButton && (
-                    <Button onClick={handleCancel} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
-                        Cancel
-                    </Button>
-                )}
+                <Button onClick={props.handleEdit} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
+                    Edit Preferences
+                </Button>
             </Container>
         </div>
     );
