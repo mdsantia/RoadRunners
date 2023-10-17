@@ -14,6 +14,11 @@ const UserProfile = () => {
   const id = useParams().id;
   const { user } = useUserContext();
   const pageType = useParams().pageType;
+  const [isEditingPreferences, setIsEditingPreferences] = React.useState(false);
+
+  const handleEdit = () => {
+    setIsEditingPreferences(true);
+  }
 
   const getContainer = () => {
     switch (pageType) {
@@ -22,7 +27,18 @@ const UserProfile = () => {
       case pageOptions[1]: // Trip Preferences
         return (
           <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
-            <PreferencesInfo showEditButton={true} />;
+            {isEditingPreferences ? (
+              <PreferencesForm 
+                showSaveButton={true} 
+                showCancelButton={true} 
+                showSkipButton={false} 
+                showLogo={false}
+                handleSave={() => setIsEditingPreferences(false)}
+                handleCancel={() => setIsEditingPreferences(false)}
+              />
+            ) : (
+              <PreferencesInfo handleEdit={handleEdit}/>
+            )}
           </Container>
         );
       case pageOptions[2]: // Vehicles
