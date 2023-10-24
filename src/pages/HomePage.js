@@ -37,7 +37,6 @@ export default function HomePage() {
   const [preferencesOpen, setPreferencesOpen] = React.useState(true);
   const urlParams = new URLSearchParams(window.location.search);
   const firstLogin = urlParams.get('firstLogin');
-  console.log(firstLogin);
 
   const handleClosePreferences = () => {
     setPreferencesOpen(false);

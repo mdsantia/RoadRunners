@@ -5,6 +5,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { Grid, Typography } from '@mui/material';
 import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
+import { useTripContext } from '../../hooks/useTripContext';
+import { useEffect } from 'react';
 
 
 export const GOOGLE_MAPS_API_KEY = 'AIzaSyBQSWehf4LQiWZKhB7NNmh0LEOoWJmV3-Y';
@@ -34,12 +36,19 @@ function loadScript(src, position, id, onLoad) {
   };
 }
 
-export default function AddressSearch({ initial, label, onInputChange }) {
+export default function AddressSearch({label, onInputChange }) {
+  const {tripDetails} = useTripContext();
   const scripts = document.getElementsByTagName('script');
-  const [value, setValue] = React.useState(initial);
+  const [value, setValue] = React.useState(tripDetails ? (label == "Start Location" ? tripDetails.startLocation : tripDetails.endLocation) : null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
+
+  useEffect(() => {
+    if (tripDetails) {
+      setValue(label == "Start Location" ? tripDetails.startLocation : tripDetails.endLocation);
+    }
+  }, [tripDetails]);
 
   const handleInputChange = (newInputValue) => {
     if (newInputValue != null) {

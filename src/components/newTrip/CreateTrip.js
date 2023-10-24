@@ -28,17 +28,26 @@ const StyledCard = styled(Card)({
   backdropFilter: 'blur(5px)', // Apply blur effect to the background
 });
 
-export default function HomePage() {
+export default function CreateTrip() {
   const navigate = useNavigate();
   const {user} = useUserContext
-  const {tripDetails} = useTripContext();
-  const { setDirections, directionsCallback } = useDirectionContext();
+  const {tripDetails, setTripDetails} = useTripContext();
 
-  const [startLocation, setStartLocation] = useState(tripDetails.startLocation?tripDetails.startLocation:null);
-  const [endLocation, setEndLocation] = useState(tripDetails.endLocation?tripDetails.endLocation:null);
-  const [startDate, setStartDate] = useState(tripDetails.startDate?dayjs(tripDetails.startDate):null);
-  const [endDate, setEndDate] = useState(tripDetails.endDate?dayjs(tripDetails.endDate):null);
+  const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
+  const [endLocation, setEndLocation] = useState(tripDetails?tripDetails.endLocation:null);
+  const [startDate, setStartDate] = useState(tripDetails?dayjs(tripDetails.startDate):null);
+  const [endDate, setEndDate] = useState(tripDetails?dayjs(tripDetails.endDate):null);
   const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
+
+  useEffect(() => {
+    if (tripDetails) {
+      setStartLocation(tripDetails.startLocation);
+      setEndLocation(tripDetails.endLocation);
+      setStartDate(dayjs(tripDetails.startDate));
+      setEndDate(dayjs(tripDetails.endDate));
+    }
+  }, [tripDetails]);
+  
 
   const handleSubmit= (event) => {
       //call controller method to create trip
@@ -49,7 +58,7 @@ export default function HomePage() {
           endLocation: endLocation,
           startDate: startDate,
           endDate: endDate,
-          preferences: user.preferences,
+          preferences: user ? user.preferences : null,
         }
         const encodedTripDetails = btoa(JSON.stringify({tripDetails}));
         navigate(`/dashboard/${encodedTripDetails}`);
@@ -63,14 +72,14 @@ export default function HomePage() {
   return (
     <StyledCard>
       <Stack direction="row" spacing={2}>
-        <AddressSearch label="Start Location" initial={startLocation} onInputChange={(value) => setStartLocation(value)}></AddressSearch>
+        <AddressSearch label="Start Location" onInputChange={(value) => setStartLocation(value)}></AddressSearch>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label="Start Date" value={startDate} onChange={(value) => setStartDate(value.format())} />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker label="End Date" value={endDate} onChange={(value) => setEndDate(value.format())} />
         </LocalizationProvider>
-        <AddressSearch label="End Location" initial={endLocation} onInputChange={(value) => setEndLocation(value)}></AddressSearch>
+        <AddressSearch label="End Location" onInputChange={(value) => setEndLocation(value)}></AddressSearch>
         <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }} onClick={handleSubmit}>
           <SearchIcon />
         </Fab>

@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled('div')({
     display: 'flex',
@@ -46,28 +47,35 @@ const Wrapper = styled(Card)({
 
 
 export default function Dashboard() {
-    const tripString = useParams();
+    const {tripString} = useParams();
     const [nonce, setNonce] = useState('');
+    const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
-    const {directionsCallback} = useDirectionContext();
     const { tripDetails, setTripDetails } = useTripContext();
-
-    useEffect(() => {
-        // Decode tripString
-        const decodedTripDetails = JSON.parse(atob(tripString));
-        // console.log('decodedTripString:', decodedTripDetails);
-        setTripDetails(decodedTripDetails);
-    }
-    , tripString);
+    const {directionsCallback} = useDirectionContext();
 
     useEffect(() => {
         // Fake nonce generation for purposes of demonstration
         const uuid = uuidv4();
         // console.log('uuid:', uuid);
         setNonce(`nonce-${uuid}`);
-    }, []);
+        let decodedTripDetails;
+        try {
+            decodedTripDetails = JSON.parse(atob(tripString));
+            setTripDetails(decodedTripDetails.tripDetails);
+        } catch (err) {
+            setTripDetails(null);
+            navigate('/');
+            return;
+        }
+    }, [tripString]);
 
-    
+    useEffect(() => {
+        if (tripDetails) {
+            buildRoadTrip();
+        }
+    }, [tripDetails]);
+
     const buildRoadTrip = () => {
         const roadtripParams = {
             startLocation: tripDetails.startLocation,
