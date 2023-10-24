@@ -10,6 +10,7 @@ import AttractionsIcon from '@mui/icons-material/Attractions';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Button } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
+import { useTripContext } from '../../hooks/useTripContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
 import { useNavigate } from 'react-router-dom';
@@ -53,10 +54,11 @@ function a11yProps(index) {
   };
 }
 
-export default function Itinerary(props) {
+export default function Itinerary() {
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
+  const {tripDetails} = useTripContext();
  
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -81,10 +83,10 @@ export default function Itinerary(props) {
   const saveTrip = async () => {
     await axios.post('/api/user/saveTrip', {
       email: user.email,
-      startLocation: props.startLocation,
-      endLocation: props.endLocation,
-      startDate: props.startDate,
-      endDate: props.endDate,
+      startLocation: tripDetails.startLocation,
+      endLocation: tripDetails.endLocation,
+      startDate: tripDetails.startDate,
+      endDate: tripDetails.endDate,
       vehicleList: [],
     }).then((response) => {
        const newUser = response.data;
@@ -97,7 +99,7 @@ export default function Itinerary(props) {
   }
 
   const handleGenerate = () => {
-    navigate(`/dashboard/${props.startLocation}/${props.endLocation}/${props.startDate}/${props.endDate}`);
+    //navigate(`/dashboard/${props.startLocation}/${props.endLocation}/${props.startDate}/${props.endDate}`);
     window.location.reload();
   }
 

@@ -4,11 +4,14 @@ import { Card, Button, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/additionalFeatures/TopBar';
 import CreateTrip from '../components/newTrip/CreateTrip'
+import {useTripContext} from '../hooks/useTripContext';
+import {useDirectionContext} from '../hooks/useDirectionContext';
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled('div')({
     display: 'flex',
@@ -44,16 +47,54 @@ const Wrapper = styled(Card)({
 
 
 export default function Dashboard() {
-    const { startLocation, endLocation, startDate, endDate } = useParams();
+    const {tripString} = useParams();
     const [nonce, setNonce] = useState('');
+    const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
+    const { tripDetails, setTripDetails } = useTripContext();
+    const {directionsCallback} = useDirectionContext();
 
     useEffect(() => {
         // Fake nonce generation for purposes of demonstration
         const uuid = uuidv4();
         // console.log('uuid:', uuid);
         setNonce(`nonce-${uuid}`);
-    }, []);
+        let decodedTripDetails;
+        try {
+            decodedTripDetails = JSON.parse(atob(tripString));
+            setTripDetails(decodedTripDetails.tripDetails);
+        } catch (err) {
+            setTripDetails(null);
+            navigate('/');
+            return;
+        }
+    }, [tripString]);
+
+    useEffect(() => {
+        if (tripDetails) {
+            buildRoadTrip();
+        }
+    }, [tripDetails]);
+
+    const buildRoadTrip = () => {
+        const roadtripParams = {
+            startLocation: tripDetails.startLocation,
+            endLocation: tripDetails.endLocation,
+            startDate: tripDetails.startDate,
+            endDate: tripDetails.endDate
+        };
+        
+        axios
+        .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
+        .then((res) => {
+            //console.log(res.data);
+            // setDirections(res.data); // Set the directionsResponse in the context
+            directionsCallback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    };
 
       return (
         <div style={{ backgroundColor: '#F3F3F5'}}>
@@ -61,7 +102,7 @@ export default function Dashboard() {
             <Container>
                 <CreateTripContainer>
                     {/* Add your CreateTrip component here */}
-                    <CreateTrip startLocation={startLocation} endLocation={endLocation} startDate={startDate} endDate={endDate}/>
+                    <CreateTrip/>
                 </CreateTripContainer>
                 
                 <MapWrapper ref={mapWrapperRef}>
@@ -69,7 +110,7 @@ export default function Dashboard() {
                     <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
                 </MapWrapper>
                 <Wrapper>
-                <Itinerary startLocation={startLocation} endLocation={endLocation} startDate={startDate} endDate={endDate}></Itinerary>
+                    <Itinerary />
                 </Wrapper>
             </Container>
         </div>
