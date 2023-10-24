@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import Fab from '@mui/material/Fab';
 import AddressSearch from './AddressSearch';
@@ -14,9 +13,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate } from 'react-router-dom';
 import {useDirectionContext} from '../../hooks/useDirectionContext';
 import {useUserContext} from '../../hooks/useUserContext';
-import { directionsCallback } from './Map'; // Import the directionsCallback function
+import {useTripContext} from '../../hooks/useTripContext';
 import dayjs from 'dayjs';
-
 
 const StyledCard = styled(Card)({
   width: 1000,
@@ -30,59 +28,37 @@ const StyledCard = styled(Card)({
   backdropFilter: 'blur(5px)', // Apply blur effect to the background
 });
 
-
-
-export default function HomePage(props) {
+export default function HomePage() {
   const navigate = useNavigate();
-  const {user} = useUserContext();
+  const {user} = useUserContext
+  const {tripDetails} = useTripContext();
   const { setDirections, directionsCallback } = useDirectionContext();
 
-  const [startLocation, setStartLocation] = useState(props.startLocation?props.startLocation:null);
-  const [endLocation, setEndLocation] = useState(props.endLocation?props.endLocation:null);
-  const [startDate, setStartDate] = useState(props.startDate?dayjs(props.startDate):null);
-  const [endDate, setEndDate] = useState(props.endDate?dayjs(props.endDate):null);
+  const [startLocation, setStartLocation] = useState(tripDetails.startLocation?tripDetails.startLocation:null);
+  const [endLocation, setEndLocation] = useState(tripDetails.endLocation?tripDetails.endLocation:null);
+  const [startDate, setStartDate] = useState(tripDetails.startDate?dayjs(tripDetails.startDate):null);
+  const [endDate, setEndDate] = useState(tripDetails.endDate?dayjs(tripDetails.endDate):null);
   const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
-
-  const buildRoadTrip = () => {
-      const roadtripParams = {
-        startLocation: startLocation,
-        endLocation: endLocation,
-        startDate: startDate,
-        endDate: endDate
-      };
-      
-      axios
-        .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
-        .then((res) => {
-          //console.log(res.data);
-          // setDirections(res.data); // Set the directionsResponse in the context
-          directionsCallback(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-  };
 
   const handleSubmit= (event) => {
       //call controller method to create trip
       //redirect to dashboard on success
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
-        console.log("redirecting");
-        console.log("Starting Location:" ,startLocation);
-        console.log("Ending Location:", endLocation);
-        navigate(`/dashboard/${startLocation}/${endLocation}/${startDate}/${endDate}`);
+        const tripDetails = {
+          startLocation: startLocation,
+          endLocation: endLocation,
+          startDate: startDate,
+          endDate: endDate,
+          preferences: user.preferences,
+        }
+        const encodedTripDetails = btoa(JSON.stringify({tripDetails}));
+        navigate(`/dashboard/${encodedTripDetails}`);
         window.location.reload();
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);
       }
   }
-
-  useEffect(() => {
-    if (props && props.startLocation && props.endLocation && props.startDate && props.endDate) {
-      buildRoadTrip();
-    }
-  }, [props]);
 
   return (
     <StyledCard>
