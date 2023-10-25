@@ -18,6 +18,18 @@ const Container = styled('div')({
   flexDirection: 'column',
 });
 
+const ResponsiveTypographyWrapper = styled('div')(({ theme }) => ({
+  textAlign: 'center',
+  fontSize: '50px',
+  color: 'white',
+  fontWeight: 'bold',
+  paddingTop: '90px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '30px',
+    paddingTop: '60px',
+    textAlign:'center',
+  },
+}));
 const ImageCard = styled(Card)({
   position: 'relative',
   maxWidth: 2000,
@@ -90,9 +102,13 @@ export default function HomePage() {
         {/*<Button onClick={() => { newUser() }}
           variant="contained" style={{ backgroundColor: '#e0c404', color: 'white', marginBottom: '20px' }}> Create user </Button> */}
         <ImageCard>
-          <Typography style={{ fontSize: '50px', color: 'white', fontWeight: 'bold', paddingTop: '90px' }}>
-            Your <u>adventure</u> starts here.
-          </Typography>
+     
+        <ResponsiveTypographyWrapper>
+     
+        Your <u>adventure</u> starts here.
+      
+    </ResponsiveTypographyWrapper>
+       
           <CreateTrip></CreateTrip>
         </ImageCard>
       </Container>
