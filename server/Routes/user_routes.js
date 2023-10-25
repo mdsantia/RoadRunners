@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../Models/user_model');
 
 const {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, saveTrip, editVehicle} = require('../Controllers/user_controller');
 

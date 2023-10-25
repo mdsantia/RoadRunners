@@ -18,16 +18,32 @@ const Container = styled('div')({
   flexDirection: 'column',
 });
 
-const ImageCard = styled(Card)({
+const ResponsiveTypographyWrapper = styled('div')(({ theme }) => ({
+  textAlign: 'center',
+  fontSize: '50px',
+  color: 'white',
+  fontWeight: 'bold',
+  paddingTop: '90px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '30px',
+    paddingTop: '60px',
+    textAlign:'center',
+  },
+}));
+const ImageCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   maxWidth: 2000,
-  width: 1200,
+  width: '80%',
   padding: 5,
-  height: 500,
+  height: '58%',
   borderRadius: 25,
   backgroundImage: `url(${image})`,
   backgroundSize: 'cover',
-});
+  [theme.breakpoints.down('sm')]: {
+   width:'90%',
+   height:'90%'
+  },
+}));
 
 const StyledButton = styled(Button)({
   marginBottom: 10,
@@ -90,9 +106,13 @@ export default function HomePage() {
         {/*<Button onClick={() => { newUser() }}
           variant="contained" style={{ backgroundColor: '#e0c404', color: 'white', marginBottom: '20px' }}> Create user </Button> */}
         <ImageCard>
-          <Typography style={{ fontSize: '50px', color: 'white', fontWeight: 'bold', paddingTop: '90px' }}>
-            Your <u>adventure</u> starts here.
-          </Typography>
+     
+        <ResponsiveTypographyWrapper>
+     
+        Your <u>adventure</u> starts here.
+      
+    </ResponsiveTypographyWrapper>
+       
           <CreateTrip></CreateTrip>
         </ImageCard>
       </Container>

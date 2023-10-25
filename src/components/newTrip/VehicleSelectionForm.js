@@ -13,34 +13,33 @@ import {
 
 function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setNumVehicles, setSelectedVehicles }) {
   const [selectedVehiclesMPG, setSelectedVehiclesMPG] = useState([]);
+  const handleNumVehiclesChange = (event) => {
+      const newValue = parseInt(event.target.value, 10);
 
-    const handleNumVehiclesChange = (event) => {
-        const newValue = parseInt(event.target.value, 10);
-
-        if (isNaN(newValue) || newValue > vehicleList.length ) {
-            return;
-        }
-        setNumVehicles(newValue);
-        setSelectedVehicles([]);
-        setSelectedVehiclesMPG([]);
-    };
-
-    const getMinMpg = () => {
-      let min = Infinity;
-      for (let i = 0; i < selectedVehiclesMPG.length; i++) {
-        if (selectedVehiclesMPG[i] == -1)
-          continue;
-        if (selectedVehiclesMPG[i] < min)
-          min = selectedVehiclesMPG[i];
+      if (isNaN(newValue) || newValue > vehicleList.length ) {
+          return;
       }
+      setNumVehicles(newValue);
+      setSelectedVehicles([]);
+      setSelectedVehiclesMPG([]);
+  };
 
-      if (min == Infinity) {
-        return 0;
-      }
-      return min;
+  const getMinMpg = () => {
+    let min = Infinity;
+    for (let i = 0; i < selectedVehiclesMPG.length; i++) {
+      if (selectedVehiclesMPG[i] == -1)
+        continue;
+      if (selectedVehiclesMPG[i] < min)
+        min = selectedVehiclesMPG[i];
     }
 
-    const handleVehicleSelectChange = (event) => {
+    if (min == Infinity) {
+      return 0;
+    }
+    return min;
+  }
+
+  const handleVehicleSelectChange = (event) => {
     if (event.target.value.length <= numVehicles) {
       const selectedValues = event.target.value;
       const selectedMPGValues = selectedValues.map((selectedValue) => {
@@ -49,8 +48,9 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
       });;
       setSelectedVehicles(selectedValues);
       setSelectedVehiclesMPG(selectedMPGValues);
+      console.log(selectedValues);
     }
-    };
+  };
 
   return (
     <FormControl sx={{ m: 1, minWidth: 500 }}>
@@ -100,7 +100,7 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
             sx={{ height: '38px' }}
           >
             {vehicleList.map((vehicle,index ) => (
-              <MenuItem id={index} key={vehicle.mpg} value={vehicle.name} mpg={vehicle.mpg<=0?Infinity:vehicle.mpg}>
+              <MenuItem id={index} key={index} value={vehicle.name} mpg={vehicle.mpg<=0?Infinity:vehicle.mpg}>
                 {vehicle.name}
               </MenuItem>
             ))}

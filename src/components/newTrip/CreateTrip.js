@@ -14,9 +14,10 @@ import { useNavigate } from 'react-router-dom';
 import {useDirectionContext} from '../../hooks/useDirectionContext';
 import {useUserContext} from '../../hooks/useUserContext';
 import {useTripContext} from '../../hooks/useTripContext';
+import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
 
-const StyledCard = styled(Card)({
+const StyledCard = styled(Card)(({ theme }) => ({
   width: 1000,
   margin: 'auto',
   padding: 20,
@@ -26,13 +27,17 @@ const StyledCard = styled(Card)({
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
   backgroundColor: 'rgba(255, 255, 255, 0.2)', // Background color with slight transparency
   backdropFilter: 'blur(5px)', // Apply blur effect to the background
-});
+  [theme.breakpoints.down('sm')]: {
+    width:'55%',
+  },
+  
+}));
 
 export default function CreateTrip() {
   const navigate = useNavigate();
-  const {user} = useUserContext
+  const {user} = useUserContext();
   const {tripDetails, setTripDetails} = useTripContext();
-
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
   const [endLocation, setEndLocation] = useState(tripDetails?tripDetails.endLocation:null);
   const [startDate, setStartDate] = useState(tripDetails?dayjs(tripDetails.startDate):null);
@@ -53,16 +58,28 @@ export default function CreateTrip() {
       //call controller method to create trip
       //redirect to dashboard on success
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
+        console.log(user ? user : null);
+        let selectedVehicles = [];
+        let numVehicles = 0;
+        let vehicle = null;
+        if (user) {
+          if (user.vehicles.length > 0) {
+            numVehicles = 1;
+            vehicle = user.vehicles[0];
+            selectedVehicles.push(`${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`);
+          }
+        }
         const tripDetails = {
           startLocation: startLocation,
           endLocation: endLocation,
           startDate: startDate,
           endDate: endDate,
-          preferences: user ? user.preferences : null,
+          numVehicles: numVehicles,
+          selectedVehicles: selectedVehicles,
         }
         const encodedTripDetails = btoa(JSON.stringify({tripDetails}));
         navigate(`/dashboard/${encodedTripDetails}`);
-        window.location.reload();
+        //window.location.reload();
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);
@@ -71,7 +88,7 @@ export default function CreateTrip() {
 
   return (
     <StyledCard>
-      <Stack direction="row" spacing={2}>
+      <Stack direction={isSmallScreen ? 'column' : 'row'}  spacing={2}>
         <AddressSearch label="Start Location" onInputChange={(value) => setStartLocation(value)}></AddressSearch>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label="Start Date" value={startDate} onChange={(value) => setStartDate(value.format())} />
