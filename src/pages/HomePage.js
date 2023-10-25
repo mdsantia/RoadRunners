@@ -35,12 +35,13 @@ const ImageCard = styled(Card)(({ theme }) => ({
   maxWidth: 2000,
   width: '80%',
   padding: 5,
-  height: 500,
+  height: '58%',
   borderRadius: 25,
   backgroundImage: `url(${image})`,
   backgroundSize: 'cover',
   [theme.breakpoints.down('sm')]: {
    width:'90%',
+   height:'90%'
   },
 }));
 

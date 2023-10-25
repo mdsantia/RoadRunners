@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import {useDirectionContext} from '../../hooks/useDirectionContext';
 import {useUserContext} from '../../hooks/useUserContext';
 import {useTripContext} from '../../hooks/useTripContext';
+import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -27,7 +28,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.2)', // Background color with slight transparency
   backdropFilter: 'blur(5px)', // Apply blur effect to the background
   [theme.breakpoints.down('sm')]: {
-    width:'30%',
+    width:'70%',
   },
   
 }));
@@ -36,7 +37,7 @@ export default function CreateTrip() {
   const navigate = useNavigate();
   const {user} = useUserContext
   const {tripDetails, setTripDetails} = useTripContext();
-
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
   const [endLocation, setEndLocation] = useState(tripDetails?tripDetails.endLocation:null);
   const [startDate, setStartDate] = useState(tripDetails?dayjs(tripDetails.startDate):null);
@@ -75,7 +76,7 @@ export default function CreateTrip() {
 
   return (
     <StyledCard>
-      <Stack direction="row" spacing={2}>
+      <Stack direction={isSmallScreen ? 'column' : 'row'}  spacing={2}>
         <AddressSearch label="Start Location" onInputChange={(value) => setStartLocation(value)}></AddressSearch>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label="Start Date" value={startDate} onChange={(value) => setStartDate(value.format())} />
