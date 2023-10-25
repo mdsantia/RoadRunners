@@ -35,7 +35,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 export default function CreateTrip() {
   const navigate = useNavigate();
-  const {user} = useUserContext
+  const {user} = useUserContext();
   const {tripDetails, setTripDetails} = useTripContext();
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
@@ -58,16 +58,28 @@ export default function CreateTrip() {
       //call controller method to create trip
       //redirect to dashboard on success
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
+        console.log(user ? user : null);
+        let selectedVehicles = [];
+        let numVehicles = 0;
+        let vehicle = null;
+        if (user) {
+          if (user.vehicles.length > 0) {
+            numVehicles = 1;
+            vehicle = user.vehicles[0];
+            selectedVehicles.push(`${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`);
+          }
+        }
         const tripDetails = {
           startLocation: startLocation,
           endLocation: endLocation,
           startDate: startDate,
           endDate: endDate,
-          preferences: user ? user.preferences : null,
+          numVehicles: numVehicles,
+          selectedVehicles: selectedVehicles,
         }
         const encodedTripDetails = btoa(JSON.stringify({tripDetails}));
         navigate(`/dashboard/${encodedTripDetails}`);
-        window.location.reload();
+        //window.location.reload();
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);

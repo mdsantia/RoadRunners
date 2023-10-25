@@ -69,7 +69,7 @@ const checkAndSaveUser = async (req, res) => {
 */
 
 const saveTrip = async (req, res) => {
-    const {email, startDate, endDate, startLocation, endLocation, vehicleList} = req.body;
+    const {email, hash} = req.body;
 
     // Check if user exists
     const user = await User.findOne({email});
@@ -80,13 +80,8 @@ const saveTrip = async (req, res) => {
         return;
     }
 
-    const newTrip = {
-        startDate,
-        endDate,
-        origin: startLocation,
-        destination: endLocation,
-        vehicles: [],
-        lowestMPG: 0,
+    const newTrip = { 
+        hash: hash
     }
 
     // Add trip to user

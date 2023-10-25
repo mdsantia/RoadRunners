@@ -59,6 +59,7 @@ export default function Itinerary() {
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
   const {tripDetails} = useTripContext();
+  const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
  
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -71,9 +72,17 @@ export default function Itinerary() {
 
   React.useEffect(() => {
     if (user) {
-      setVehicleList(user.vehicles);
+      setVehicleList(user.vehicles.map((vehicle) => {return {name: `${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`, mpg: vehicle.mpg}}));
     }
   }, [user]);
+
+  React.useEffect(() => {
+    if (tripDetails) {
+      setNumVehicles(parseInt(tripDetails.numVehicles));
+      setSelectedVehicles(tripDetails.selectedVehicles);
+      setTemporaryPrefs(tripDetails.preferences);
+    }
+  }, [tripDetails]);
 
   const numOptionsPerColumn = 10;
   const findTotalColumns = (optionsList) => {
@@ -83,11 +92,7 @@ export default function Itinerary() {
   const saveTrip = async () => {
     await axios.post('/api/user/saveTrip', {
       email: user.email,
-      startLocation: tripDetails.startLocation,
-      endLocation: tripDetails.endLocation,
-      startDate: tripDetails.startDate,
-      endDate: tripDetails.endDate,
-      vehicleList: [],
+      hash: btoa(JSON.stringify({tripDetails})) 
     }).then((response) => {
        const newUser = response.data;
        updateUser(newUser);
@@ -99,12 +104,15 @@ export default function Itinerary() {
   }
 
   const handleGenerate = () => {
-    //navigate(`/dashboard/${props.startLocation}/${props.endLocation}/${props.startDate}/${props.endDate}`);
+    const newTripDetails = {
+      ...tripDetails,
+      preferences: temporaryPrefs,
+      numVehicles: numVehicles,
+      selectedVehicles: selectedVehicles
+    }
+    const encodedTripDetails = btoa(JSON.stringify({tripDetails: newTripDetails}));
+    navigate(`/dashboard/${encodedTripDetails}`);
     window.location.reload();
-  }
-
-  const formatVehicleList = (vehicleList) => {
-    return vehicleList.map((vehicle) => {return {name: `${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`, mpg: vehicle.mpg}});
   }
 
   return (
@@ -119,13 +127,16 @@ export default function Itinerary() {
       </Box>
       <TabPanel value={value} index={0}>
         <VehicleSelectionForm
-          vehicleList={formatVehicleList(vehicleList)}
+          vehicleList={vehicleList}
           numVehicles={numVehicles}
           selectedVehicles={selectedVehicles}
           setNumVehicles={setNumVehicles}
           setSelectedVehicles={setSelectedVehicles}
         />
-        <PreferencesForm type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
+        <PreferencesForm setDashboardPrefs={setTemporaryPrefs} type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
+        <Button variant="contained" sx={{m:2}} onClick={handleGenerate} >
+          Re-Generate Trip
+        </Button> 
       </TabPanel>
       <TabPanel value={value} index={1}>
         <RouteOptions/>
