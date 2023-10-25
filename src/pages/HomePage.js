@@ -30,16 +30,19 @@ const ResponsiveTypographyWrapper = styled('div')(({ theme }) => ({
     textAlign:'center',
   },
 }));
-const ImageCard = styled(Card)({
+const ImageCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   maxWidth: 2000,
-  width: 1200,
+  width: '80%',
   padding: 5,
   height: 500,
   borderRadius: 25,
   backgroundImage: `url(${image})`,
   backgroundSize: 'cover',
-});
+  [theme.breakpoints.down('sm')]: {
+   width:'90%',
+  },
+}));
 
 const StyledButton = styled(Button)({
   marginBottom: 10,

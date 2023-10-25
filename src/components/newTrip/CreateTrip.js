@@ -16,7 +16,7 @@ import {useUserContext} from '../../hooks/useUserContext';
 import {useTripContext} from '../../hooks/useTripContext';
 import dayjs from 'dayjs';
 
-const StyledCard = styled(Card)({
+const StyledCard = styled(Card)(({ theme }) => ({
   width: 1000,
   margin: 'auto',
   padding: 20,
@@ -26,7 +26,11 @@ const StyledCard = styled(Card)({
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
   backgroundColor: 'rgba(255, 255, 255, 0.2)', // Background color with slight transparency
   backdropFilter: 'blur(5px)', // Apply blur effect to the background
-});
+  [theme.breakpoints.down('sm')]: {
+    width:'30%',
+  },
+  
+}));
 
 export default function CreateTrip() {
   const navigate = useNavigate();
