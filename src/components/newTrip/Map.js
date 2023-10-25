@@ -76,11 +76,12 @@ export default function Map(props) {
     if (directions) {
       // Calculate the new center based on the directions
       var decoded = /* global google */ google.maps.geometry.encoding.decodePath(directions.routes[chosenRoute].overview_polyline.points);
+      console.log(decoded);
       setDecodedPath(decoded);
       calculateCenter(decoded);
       calculateZoom(decoded);
     }
-  }, [directions]);
+  }, [chosenRoute, directions]);
 
   return (
       <GoogleMap
