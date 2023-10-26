@@ -28,7 +28,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.2)', // Background color with slight transparency
   backdropFilter: 'blur(5px)', // Apply blur effect to the background
   [theme.breakpoints.down('sm')]: {
-    width:'55%',
+    width:'65%',
   },
   [theme.breakpoints.down('md')]: {
     width:'55%',
