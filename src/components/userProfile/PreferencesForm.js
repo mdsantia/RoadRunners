@@ -180,7 +180,8 @@ export default function PreferencesForm(props) {
                 props.onClose();
             }
         }
-        props.handleSave();
+        if(props.handleSave) 
+            props.handleSave();
     }
 
     const handleCancel = async () => {

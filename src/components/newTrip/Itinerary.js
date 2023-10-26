@@ -13,9 +13,11 @@ import { useUserContext } from '../../hooks/useUserContext';
 import { useTripContext } from '../../hooks/useTripContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import VehicleSelectionForm from '../newTrip/VehicleSelectionForm';
 import RouteOptions from './RouteOptions';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,6 +58,21 @@ function a11yProps(index) {
 
 export default function Itinerary() {
 
+  /* Feedback Message stuff */
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
+  const showMessage = (message, duration, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarDuration(duration);
+    setSnackbarOpen(true);
+  };
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
   const {tripDetails} = useTripContext();
@@ -89,14 +106,15 @@ export default function Itinerary() {
     return Math.ceil(optionsList.length / numOptionsPerColumn);
   }
 
-  const saveTrip = async () => {
+  const saveTrip = async (isNewTrip) => {
     await axios.post('/api/user/saveTrip', {
       email: user.email,
-      hash: btoa(JSON.stringify({tripDetails})) 
+      hash: btoa(JSON.stringify({tripDetails})),
+      id: isNewTrip ? null : (tripDetails.id ? tripDetails.id : null)
     }).then((response) => {
        const newUser = response.data;
        updateUser(newUser);
-       alert("Trip saved!");
+       isNewTrip ? showMessage('Trip saved successfully!', 2000, 'success') : showMessage('Trip updated successfully!', 2000, 'success');
     }
     ).catch((error) => {
       console.log(error);
@@ -145,10 +163,26 @@ export default function Itinerary() {
         Attraction list
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <Button variant="contained" sx={{m:2}} onClick={saveTrip} >
-          Save Trip
-        </Button>
+        {(tripDetails && tripDetails.id) ?  (
+          <>
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(false)} >
+              Update Trip
+            </Button>
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+              Save as New Trip
+            </Button>   
+          </>
+          ):(     
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+              Save Trip
+            </Button> 
+          )}  
       </TabPanel>
+      <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
+        <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>      
     </Box>
   );
 }

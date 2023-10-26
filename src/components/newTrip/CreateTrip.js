@@ -34,6 +34,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function CreateTrip() {
+  
   const navigate = useNavigate();
   const {user} = useUserContext();
   const {tripDetails, setTripDetails} = useTripContext();
@@ -70,10 +71,12 @@ export default function CreateTrip() {
           }
         }
         const tripDetails = {
+          id: null,
           startLocation: startLocation,
           endLocation: endLocation,
           startDate: startDate,
           endDate: endDate,
+          preferences: user ? user.preferences : null,
           numVehicles: numVehicles,
           selectedVehicles: selectedVehicles,
         }

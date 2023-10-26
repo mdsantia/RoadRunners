@@ -68,7 +68,7 @@ export default function Dashboard() {
             navigate('/');
             return;
         }
-        
+
     }, [tripString]);
 
     useEffect(() => {
