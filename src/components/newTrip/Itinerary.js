@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import RouteIcon from '@mui/icons-material/Route';
-import AttractionsIcon from '@mui/icons-material/Attractions';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Button } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
@@ -18,6 +18,7 @@ import VehicleSelectionForm from '../newTrip/VehicleSelectionForm';
 import RouteOptions from './RouteOptions';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import AttractionsList from '../AttractionsList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -31,7 +32,7 @@ function TabPanel(props) {
       {...other}
       style={{
         overflowY: 'auto', // Add vertical scrollbar when content overflows
-        maxHeight: '400px', // Set a maximum height to control the scrollbar
+        maxHeight: '450px', // Set a maximum height to control the scrollbar
       }}
     >
       {value === index ? (
@@ -139,7 +140,7 @@ export default function Itinerary() {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab icon={<FavoriteIcon />} label="Preferences" {...a11yProps(0)} />
           <Tab icon={<RouteIcon />} label="Routes" {...a11yProps(1)} />
-          <Tab icon={<AttractionsIcon />} label="Attractions" {...a11yProps(2)} />
+          <Tab icon={<AddLocationAltIcon />} label="Stops" {...a11yProps(2)} />
           <Tab icon={<FormatListNumberedIcon />} label="Overview" {...a11yProps(3)} />
         </Tabs>
       </Box>
@@ -160,7 +161,7 @@ export default function Itinerary() {
         <RouteOptions/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Attraction list
+        <AttractionsList></AttractionsList>
       </TabPanel>
       <TabPanel value={value} index={3}>
         {(tripDetails && tripDetails.id) ?  (
