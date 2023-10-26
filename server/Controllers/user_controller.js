@@ -58,39 +58,125 @@ const checkAndSaveUser = async (req, res) => {
 }
 
 /*
-    Saves a trip given the startDate, endDate, startLocation, endLocation, and vehicle list
+    Delete a trip 
+
+    API: /api/user/deleteTrip
+    Method: POST
+    Request: {email, id}
+    Response: {user}
+    responseCode: 200 if trip is deleted
+    responseCode: 400 if user is not found or trip is not found
+*/
+
+const deleteTrip = async (req, res) => {
+    const {email, id} = req.body;
+    // Check if user exists
+    const user = await User.findOne({email});
+
+    if (!user) {
+        console.log(`ERROR in deleteTrip User was not found`.red.bold);
+        res.status(400).json({error: 'User not found'});
+        return;
+    }
+
+    // Delete trip
+    for (let i = 0; i < user.trips.length; i++) {
+        if (user.trips[i]._id == id) {
+            user.trips.splice(i, 1);
+            await user.save();
+            res.status(200).json(user);
+            return;
+        }
+    }
+
+    console.log(`ERROR in deleteTrip Trip was not found`.red.bold);
+    res.status(400).json({error: 'Trip not found'});
+    return;
+}
+
+/* 
+    Clear all trips from a user
+
+    API: /api/user/clearTrips
+    Method: POST
+    Request: {email}
+    Response: {user}
+    responseCode: 200 if trips are cleared
+    responseCode: 400 if user is not found
+*/
+
+const clearTrips = async (req, res) => {
+
+    const {email} = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({email});
+
+    if (!user) {
+        console.log(`ERROR in clearTrips User was not found`.red.bold);
+        res.status(400).json({error: 'User not found'});
+        return;
+    }
+
+    // Clear trips
+    user.trips = [];
+    await user.save();
+    res.status(200).json(user);
+    return;
+}
+
+/*
+    Saves a trip given the hash, and id if it exists (if it exists, it is an update)
 
     API: /api/user/saveTrip
     Method: POST
-    Request: {email, startDate, endDate, startLocation, endLocation, vehicleList}
+    Request: {email, hash, id (optional)}
     Response: {user}
     responseCode: 200 if trip is saved
     responseCode: 400 if user is not found
 */
 
 const saveTrip = async (req, res) => {
-    const {email, startDate, endDate, startLocation, endLocation, vehicleList} = req.body;
-
+    const {email, hash, id} = req.body;
     // Check if user exists
     const user = await User.findOne({email});
-
     if (!user) {
         console.log(`ERROR in saveTrip User was not found`.red.bold);
         res.status(400).json({error: 'User not found'});
         return;
     }
 
-    const newTrip = {
-        startDate,
-        endDate,
-        origin: startLocation,
-        destination: endLocation,
-        vehicles: [],
-        lowestMPG: 0,
+    // They are updating a trip
+    if (id) {
+        for (let i = 0; i < user.trips.length; i++) {
+            if (user.trips[i]._id == id) {
+                const newTrip = {
+                    _id: id,
+                    hash: hash
+                }
+                user.trips[i] = newTrip; 
+                await user.save();
+                res.status(200).json(user);
+                return;
+            }
+        }
+        console.log(`ERROR in saveTrip Trip was not found`.red.bold);
+        res.status(400).json({error: 'Trip not found'});
+        return;
+    } 
+
+    const newTrip = { 
+        hash: hash
     }
 
     // Add trip to user
     user.trips.push(newTrip);
+    await user.save();
+    
+    let tripDetails = JSON.parse(atob(hash)).tripDetails;
+    tripDetails.id = user.trips[user.trips.length - 1]._id;
+    const newHash = btoa(JSON.stringify({tripDetails}));
+    user.trips[user.trips.length - 1].hash = newHash;
     await user.save();
     res.status(200).json(user);
 }
@@ -337,4 +423,4 @@ const getMPG = async (make, model, year) => {
     return mpg;
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking, editVehicle};
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking, editVehicle, deleteTrip, clearTrips};

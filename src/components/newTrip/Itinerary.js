@@ -13,9 +13,11 @@ import { useUserContext } from '../../hooks/useUserContext';
 import { useTripContext } from '../../hooks/useTripContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import VehicleSelectionForm from '../newTrip/VehicleSelectionForm';
 import RouteOptions from './RouteOptions';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,9 +58,25 @@ function a11yProps(index) {
 
 export default function Itinerary() {
 
+  /* Feedback Message stuff */
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
+  const showMessage = (message, duration, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarDuration(duration);
+    setSnackbarOpen(true);
+  };
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
   const {tripDetails} = useTripContext();
+  const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
  
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -71,27 +89,32 @@ export default function Itinerary() {
 
   React.useEffect(() => {
     if (user) {
-      setVehicleList(user.vehicles);
+      setVehicleList(user.vehicles.map((vehicle) => {return {name: `${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`, mpg: vehicle.mpg}}));
     }
   }, [user]);
+
+  React.useEffect(() => {
+    if (tripDetails) {
+      setNumVehicles(parseInt(tripDetails.numVehicles));
+      setSelectedVehicles(tripDetails.selectedVehicles);
+      setTemporaryPrefs(tripDetails.preferences);
+    }
+  }, [tripDetails]);
 
   const numOptionsPerColumn = 10;
   const findTotalColumns = (optionsList) => {
     return Math.ceil(optionsList.length / numOptionsPerColumn);
   }
 
-  const saveTrip = async () => {
+  const saveTrip = async (isNewTrip) => {
     await axios.post('/api/user/saveTrip', {
       email: user.email,
-      startLocation: tripDetails.startLocation,
-      endLocation: tripDetails.endLocation,
-      startDate: tripDetails.startDate,
-      endDate: tripDetails.endDate,
-      vehicleList: [],
+      hash: btoa(JSON.stringify({tripDetails})),
+      id: isNewTrip ? null : (tripDetails.id ? tripDetails.id : null)
     }).then((response) => {
        const newUser = response.data;
        updateUser(newUser);
-       alert("Trip saved!");
+       isNewTrip ? showMessage('Trip saved successfully!', 2000, 'success') : showMessage('Trip updated successfully!', 2000, 'success');
     }
     ).catch((error) => {
       console.log(error);
@@ -99,12 +122,15 @@ export default function Itinerary() {
   }
 
   const handleGenerate = () => {
-    //navigate(`/dashboard/${props.startLocation}/${props.endLocation}/${props.startDate}/${props.endDate}`);
+    const newTripDetails = {
+      ...tripDetails,
+      preferences: temporaryPrefs,
+      numVehicles: numVehicles,
+      selectedVehicles: selectedVehicles
+    }
+    const encodedTripDetails = btoa(JSON.stringify({tripDetails: newTripDetails}));
+    navigate(`/dashboard/${encodedTripDetails}`);
     window.location.reload();
-  }
-
-  const formatVehicleList = (vehicleList) => {
-    return vehicleList.map((vehicle) => {return {name: `${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`, mpg: vehicle.mpg}});
   }
 
   return (
@@ -119,13 +145,16 @@ export default function Itinerary() {
       </Box>
       <TabPanel value={value} index={0}>
         <VehicleSelectionForm
-          vehicleList={formatVehicleList(vehicleList)}
+          vehicleList={vehicleList}
           numVehicles={numVehicles}
           selectedVehicles={selectedVehicles}
           setNumVehicles={setNumVehicles}
           setSelectedVehicles={setSelectedVehicles}
         />
-        <PreferencesForm type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
+        <PreferencesForm setDashboardPrefs={setTemporaryPrefs} type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
+        <Button variant="contained" sx={{m:2}} onClick={handleGenerate} >
+          Re-Generate Trip
+        </Button> 
       </TabPanel>
       <TabPanel value={value} index={1}>
         <RouteOptions/>
@@ -134,10 +163,26 @@ export default function Itinerary() {
         Attraction list
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <Button variant="contained" sx={{m:2}} onClick={saveTrip} >
-          Save Trip
-        </Button>
+        {(tripDetails && tripDetails.id) ?  (
+          <>
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(false)} >
+              Update Trip
+            </Button>
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+              Save as New Trip
+            </Button>   
+          </>
+          ):(     
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+              Save Trip
+            </Button> 
+          )}  
       </TabPanel>
+      <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
+        <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>      
     </Box>
   );
 }

@@ -29,31 +29,12 @@ const Vehicle = new Schema({
         type: Number,
         required: true
     }
-
 });
 
 const Trip = new Schema({
-    origin: {
+    hash: {
         type: String,
         required: true
-    },
-    destination: {
-        type: String,
-        required: true
-    },
-    startDate: {
-        type: Date,
-        required: true
-    },
-    endDate: {
-        type: Date,
-        required: true
-    },
-    lowestMpg: {
-        type: Number,
-    },
-    vehicles: {
-        type: [Vehicle],
     },
 });
 

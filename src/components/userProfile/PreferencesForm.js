@@ -4,10 +4,12 @@ import { Button, FormControl, Select, MenuItem, Grid, Divider, createTheme, Them
 import Logo from '../../assets/rr-logo.png';
 import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
+import { useTripContext } from '../../hooks/useTripContext';
 
 export default function PreferencesForm(props) {
     const {user, updateUser} = useUserContext();
     const inDashboard = props.type == 'dashboard';
+    const {tripDetails} = useTripContext();
 
     React.useEffect(() => {
         if (!user) {
@@ -20,6 +22,21 @@ export default function PreferencesForm(props) {
         setDiningSelection(user.preferences.diningSelection ? user.preferences.diningSelection : []);
         setHousingSelection(user.preferences.housingSelection ? user.preferences.housingSelection : []);
     }, [user]);
+
+    React.useEffect(() => {
+        if (!tripDetails || !inDashboard) {
+            return;
+        }
+        if (!tripDetails.preferences) {
+            return;
+        }
+        setBudget(tripDetails.preferences.budget ? tripDetails.preferences.budget : budget);
+        setCommuteTime(tripDetails.preferences.commuteTime ? tripDetails.preferences.commuteTime : commuteTime);
+        setCarsickRating(tripDetails.preferences.carsickRating ? tripDetails.preferences.carsickRating : carsickRating);
+        setAttractionSelection(tripDetails.preferences.attractionSelection ? tripDetails.preferences.attractionSelection : attractionSelection);
+        setDiningSelection(tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : diningSelection);
+        setHousingSelection(tripDetails.preferences.housingSelection ? tripDetails.preferences.housingSelection : housingSelection);
+    }, [tripDetails]);
 
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const attractionOptions = [
@@ -163,7 +180,8 @@ export default function PreferencesForm(props) {
                 props.onClose();
             }
         }
-        props.handleSave();
+        if(props.handleSave) 
+            props.handleSave();
     }
 
     const handleCancel = async () => {
@@ -182,6 +200,33 @@ export default function PreferencesForm(props) {
         props.onClose();
     }
 
+    const handleDashboardSave = async (event) => {
+        event.preventDefault();
+        let validBudget = false;
+        let validCommuteTime = false;
+        if (budget.length !== 0) {
+            validBudget = checkBudgetFormat(budget);
+        } else {
+            validBudget = true;
+        }
+        if (commuteTime.length !== 0) {
+            validCommuteTime = checkCommuteTimeFormat(commuteTime);
+        } else {
+            validCommuteTime = true;
+        }
+        if (validBudget && validCommuteTime) {
+            const preferences = {
+                budget: budget,
+                commuteTime: commuteTime,
+                carsickRating: carsickRating,
+                attractionSelection: attractionSelection,
+                diningSelection: diningSelection,
+                housingSelection: housingSelection
+            }
+            props.setDashboardPrefs(preferences);
+        }
+    }
+
     return (
         <>
             {props.showLogo && (
@@ -191,9 +236,15 @@ export default function PreferencesForm(props) {
                 <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Trip Preferences</Typography>
                 <br></br>
                 <Container>
-                    <Typography variant="body1">
-                        Please indicate your trip preferences so that RoadRunners can suggest more personalized routes just for you.
-                    </Typography>
+                    {inDashboard ? (
+                        <Typography variant="body1">
+                            Changing these preferences will only affect this current trip and not your profile preferences.
+                        </Typography>
+                    ) : (
+                        <Typography variant="body1">
+                            Please indicate your trip preferences so that RoadRunners can suggest more personalized routes just for you.
+                        </Typography>
+                    )}
                     <br></br>
                     <Divider></Divider>
                     <br></br>
@@ -406,6 +457,11 @@ export default function PreferencesForm(props) {
                     {props.showCancelButton && (
                         <Button onClick={handleCancel} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
                             Cancel
+                        </Button>
+                    )}
+                    {inDashboard && (
+                        <Button onClick={handleDashboardSave} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
+                            Confirm
                         </Button>
                     )}
                 </Container>
