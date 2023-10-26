@@ -18,7 +18,7 @@ import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: 1000,
+  width: "80%",
   margin: 'auto',
   padding: 20,
   marginTop: 20,
@@ -28,6 +28,9 @@ const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.2)', // Background color with slight transparency
   backdropFilter: 'blur(5px)', // Apply blur effect to the background
   [theme.breakpoints.down('sm')]: {
+    width:'55%',
+  },
+  [theme.breakpoints.down('md')]: {
     width:'55%',
   },
   
