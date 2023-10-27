@@ -131,7 +131,7 @@ export default function PreferencesInfo(props) {
         <div style={{ textAlign: 'left' }}>
             <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Your Trip Preferences</Typography>
             <br></br>
-            <Container>
+            <Container maxWidth="xl">
                 <Grid container alignItems="center">
                     <Grid item xs={12} md={6}>
                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%' }}>

@@ -26,11 +26,11 @@ const UserProfile = () => {
 
   const getContainer = () => {
     switch (pageType) {
-      case pageOptions[0]: // Account Information
+      case pageOptions[0]: // Account
         return <Container></Container>;
       case pageOptions[1]: // Trip Preferences
         return (
-          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+          <Container maxWidth="xl">
             {isEditingPreferences ? (
               <PreferencesForm 
                 showSaveButton={true} 
@@ -47,20 +47,20 @@ const UserProfile = () => {
         );
       case pageOptions[2]: // Vehicles
         return (
-          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+          <Container maxWidth="xl">
             <VehiclesForm />
           </Container>
         );
       case pageOptions[3]: // Trip History
         if (user && user.trips.length > 0) {
           return (
-            <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+            <Container maxWidth="xl">
               <UserTrips user={user} />
             </Container>
           );
         }
         return (
-          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+          <Container maxWidth="xl">
             <Typography variant="h5">No trips yet!</Typography>
             <a href={`/`}><Typography variant="h6">Create trips to get started.</Typography></a>
           </Container>
@@ -77,15 +77,10 @@ const UserProfile = () => {
   }, [user, id]);
 
   return (
-    <div>
-      <AppBar>
-        <TopBar />
-      </AppBar>
-      <Container>
-        <SideBar pageType={pageType} />
-        {getContainer()}
-      </Container>
-    </div>
+    <>
+    <TopBar />
+    <SideBar pageType={pageType} container={getContainer()}/>
+    </>
   );
 };
 
