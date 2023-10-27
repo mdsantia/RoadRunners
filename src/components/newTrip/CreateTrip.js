@@ -18,7 +18,7 @@ import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: 1000,
+  width: "80%",
   margin: 'auto',
   padding: 20,
   marginTop: 20,
@@ -30,10 +30,14 @@ const StyledCard = styled(Card)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     width:'55%',
   },
+  [theme.breakpoints.down('md')]: {
+    width:'55%',
+  },
   
 }));
 
 export default function CreateTrip() {
+  
   const navigate = useNavigate();
   const {user} = useUserContext();
   const {tripDetails, setTripDetails} = useTripContext();
@@ -70,10 +74,12 @@ export default function CreateTrip() {
           }
         }
         const tripDetails = {
+          id: null,
           startLocation: startLocation,
           endLocation: endLocation,
           startDate: startDate,
           endDate: endDate,
+          preferences: user ? user.preferences : null,
           numVehicles: numVehicles,
           selectedVehicles: selectedVehicles,
         }

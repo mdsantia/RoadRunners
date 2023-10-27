@@ -12,7 +12,7 @@ import PreferencesInfo from '../components/userProfile/PreferencesInfo';
 
 const UserProfile = () => {
   const id = useParams().id;
-  const { user } = useUserContext();
+  const { user, updateUser } = useUserContext();
   const pageType = useParams().pageType;
   const [isEditingPreferences, setIsEditingPreferences] = React.useState(false);
 
@@ -55,7 +55,7 @@ const UserProfile = () => {
         if (user && user.trips.length > 0) {
           return (
             <Container maxWidth="xl">
-              <UserTrips user={user} />
+              <UserTrips user={user} updateUser={updateUser}/>
             </Container>
           );
         }

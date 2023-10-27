@@ -83,7 +83,7 @@ export default function AddressSearch({label, onInputChange }) {
   return (
     <Autocomplete
       id="google-map-demo"
-      sx={{ width: 250 }}
+      sx={{ minWidth: '25%' }}
       getOptionLabel={(option) =>
         typeof option === 'string' ? option : option.description
       }

@@ -6,16 +6,19 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import RouteIcon from '@mui/icons-material/Route';
-import AttractionsIcon from '@mui/icons-material/Attractions';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Button } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useTripContext } from '../../hooks/useTripContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import VehicleSelectionForm from '../newTrip/VehicleSelectionForm';
 import RouteOptions from './RouteOptions';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import AttractionsList from '../AttractionsList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -29,7 +32,7 @@ function TabPanel(props) {
       {...other}
       style={{
         overflowY: 'auto', // Add vertical scrollbar when content overflows
-        maxHeight: '400px', // Set a maximum height to control the scrollbar
+        maxHeight: '450px', // Set a maximum height to control the scrollbar
       }}
     >
       {value === index ? (
@@ -55,6 +58,21 @@ function a11yProps(index) {
 }
 
 export default function Itinerary() {
+
+  /* Feedback Message stuff */
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
+  const showMessage = (message, duration, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarDuration(duration);
+    setSnackbarOpen(true);
+  };
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
@@ -89,14 +107,15 @@ export default function Itinerary() {
     return Math.ceil(optionsList.length / numOptionsPerColumn);
   }
 
-  const saveTrip = async () => {
+  const saveTrip = async (isNewTrip) => {
     await axios.post('/api/user/saveTrip', {
       email: user.email,
-      hash: btoa(JSON.stringify({tripDetails})) 
+      hash: btoa(JSON.stringify({tripDetails})),
+      id: isNewTrip ? null : (tripDetails.id ? tripDetails.id : null)
     }).then((response) => {
        const newUser = response.data;
        updateUser(newUser);
-       alert("Trip saved!");
+       isNewTrip ? showMessage('Trip saved successfully!', 2000, 'success') : showMessage('Trip updated successfully!', 2000, 'success');
     }
     ).catch((error) => {
       console.log(error);
@@ -121,7 +140,7 @@ export default function Itinerary() {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab icon={<FavoriteIcon />} label="Preferences" {...a11yProps(0)} />
           <Tab icon={<RouteIcon />} label="Routes" {...a11yProps(1)} />
-          <Tab icon={<AttractionsIcon />} label="Attractions" {...a11yProps(2)} />
+          <Tab icon={<AddLocationAltIcon />} label="Stops" {...a11yProps(2)} />
           <Tab icon={<FormatListNumberedIcon />} label="Overview" {...a11yProps(3)} />
         </Tabs>
       </Box>
@@ -142,13 +161,29 @@ export default function Itinerary() {
         <RouteOptions/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Attraction list
+        <AttractionsList></AttractionsList>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <Button variant="contained" sx={{m:2}} onClick={saveTrip} >
-          Save Trip
-        </Button>
+        {(tripDetails && tripDetails.id) ?  (
+          <>
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(false)} >
+              Update Trip
+            </Button>
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+              Save as New Trip
+            </Button>   
+          </>
+          ):(     
+            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+              Save Trip
+            </Button> 
+          )}  
       </TabPanel>
+      <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
+        <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>      
     </Box>
   );
 }

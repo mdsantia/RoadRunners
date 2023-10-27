@@ -103,7 +103,7 @@ const getYears = async (req, res) => {
 const getMakes = async (req, res) => {
   findUniqueMakes(req.query.year)
   .then((uniqueMakes) => {
-    console.log(`Unique Car in '${req.query.year}': ${uniqueMakes}`.green.bold);
+    //console.log(`Unique Car in '${req.query.year}': ${uniqueMakes}`.green.bold);
     res.status(201).json(uniqueMakes);
   })
   .catch((error) => {
@@ -116,7 +116,7 @@ const getMakes = async (req, res) => {
 const getModels = async (req, res) => {
   findUniqueModelsForMake(req.query.year, req.query.make)
   .then((uniqueModels) => {
-    console.log(`Unique models for year '${req.query.year}' with make '${req.query.make}':${uniqueModels}`.green.bold);
+    //console.log(`Unique models for year '${req.query.year}' with make '${req.query.make}':${uniqueModels}`.green.bold);
     res.status(201).json(uniqueModels);
   })
   .catch((error) => {
@@ -131,7 +131,7 @@ const getMPG = async (req, res) => {
   getDatabaseData("Vehicles", req.query.year, query)
   .then((vehicleData)=> {
     const vehicleMPG = vehicleData['mpgData'];
-    console.log(`The MPG for your given car is: ${vehicleMPG}`.green.bold);
+    //console.log(`The MPG for your given car is: ${vehicleMPG}`.green.bold);
     res.status(201).json(vehicleMPG);
   })
   .catch((error) => {
