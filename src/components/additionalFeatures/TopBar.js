@@ -40,7 +40,7 @@ function TopBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'white', height: '75px' }}>
+    <AppBar position="fixed" sx={{ backgroundColor: 'white', height: '75px' }}>
       <Container maxWidth="xl">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Link href="/" underline="none"> {/* Make the logo clickable */}
