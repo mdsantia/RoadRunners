@@ -140,7 +140,7 @@ function SideBar(props) {
                     Menu Options
                 </Typography>
                 <IconButton onClick={handleDrawerClose}>
-                    {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                    {theme.direction === 'ltr' ? <ChevronLeftIcon sx={{ color: 'white' }} /> : <ChevronRightIcon sx={{ color: 'white' }}/>}
                 </IconButton>
             </DrawerHeader>
             <Divider />
