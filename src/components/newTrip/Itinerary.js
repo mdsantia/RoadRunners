@@ -18,7 +18,7 @@ import VehicleSelectionForm from '../newTrip/VehicleSelectionForm';
 import RouteOptions from './RouteOptions';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import AttractionsList from '../AttractionsList';
+import AttractionsList from '../newTrip/AttractionsList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

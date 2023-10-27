@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Typography, TextField, FormGroup, FormControlLabel, Checkbox, Container } from '@mui/material';
-import { Button, FormControl, Select, MenuItem, Grid, Divider, createTheme, ThemeProvider } from '@mui/material';
+import { Button, Select, MenuItem, Grid, Divider, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import Logo from '../../assets/rr-logo.png';
 import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
@@ -171,7 +172,6 @@ export default function PreferencesForm(props) {
             } ).then((res) => {
                 const newUser = res.data;
                 updateUser(newUser);
-                alert("Your preferences have been updated!");
                 console.log("printing new user:", newUser)
             }).catch((err) => {
                 console.log(err);
@@ -180,8 +180,9 @@ export default function PreferencesForm(props) {
                 props.onClose();
             }
         }
-        if(props.handleSave) 
+        if(props.handleSave) {
             props.handleSave();
+        }
     }
 
     const handleCancel = async () => {
@@ -463,7 +464,7 @@ export default function PreferencesForm(props) {
                         <Button onClick={handleDashboardSave} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
                             Confirm
                         </Button>
-                    )}
+                    )} 
                 </Container>
             </div>
         </>
