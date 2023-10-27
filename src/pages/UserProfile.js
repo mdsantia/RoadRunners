@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, AppBar, createTheme, ThemeProvider } from '@mui/material';
+import { Container, Typography, AppBar, createTheme, ThemeProvider, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import { useParams } from "react-router-dom";
 import { useUserContext } from '../hooks/useUserContext';
 import TopBar from '../components/additionalFeatures/TopBar';
@@ -15,6 +16,19 @@ const UserProfile = () => {
   const { user, updateUser } = useUserContext();
   const pageType = useParams().pageType;
   const [isEditingPreferences, setIsEditingPreferences] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
+  const showMessage = (message, duration, severity) => {
+      setSnackbarMessage(message);
+      setSnackbarSeverity(severity);
+      setSnackbarDuration(duration);
+      setSnackbarOpen(true);
+  };
+  const closeSnackbar = () => {
+      setSnackbarOpen(false);
+  };
 
   const handleEdit = () => {
     setIsEditingPreferences(true);
@@ -37,7 +51,10 @@ const UserProfile = () => {
                 showCancelButton={true} 
                 showSkipButton={false} 
                 showLogo={false}
-                handleSave={() => setIsEditingPreferences(false)}
+                handleSave={() => {
+                  setIsEditingPreferences(false);
+                  showMessage('Your preferences have been updated!', 2000, 'success');
+                }}
                 handleCancel={() => setIsEditingPreferences(false)}
               />
             ) : (
@@ -80,6 +97,11 @@ const UserProfile = () => {
     <>
     <TopBar />
     <SideBar pageType={pageType} container={getContainer()}/>
+    <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
+      <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
+        {snackbarMessage}
+      </MuiAlert>
+    </Snackbar> 
     </>
   );
 };
