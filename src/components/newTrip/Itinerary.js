@@ -116,6 +116,11 @@ export default function Itinerary() {
        const newUser = response.data;
        updateUser(newUser);
        isNewTrip ? showMessage('Trip saved successfully!', 2000, 'success') : showMessage('Trip updated successfully!', 2000, 'success');
+       if(isNewTrip){
+        const encodedTripDetails = newUser.trips[newUser.trips.length - 1].hash;
+        navigate(`/dashboard/${encodedTripDetails}`);
+        
+       }
     }
     ).catch((error) => {
       console.log(error);
