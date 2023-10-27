@@ -125,7 +125,7 @@ export default function Dashboard() {
       return (
         <div style={{ backgroundColor: '#F3F3F5'}}>
             <TopBar></TopBar>
-            <Container>
+            <Container sx={{ marginTop: '75px' }}>
                 <CreateTripContainer>
                     {/* Add your CreateTrip component here */}
                     <CreateTrip/>
