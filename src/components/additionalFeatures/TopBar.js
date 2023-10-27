@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../hooks/useUserContext';
 import Avatar from '@mui/material/Avatar';
 import { Link } from '@mui/material'; // Import Link component
+import { pageOptions } from '../userProfile/SideBar';
 
 function TopBar() {
   const { user, logout } = useUserContext();
@@ -27,7 +28,7 @@ function TopBar() {
   };
 
   const handleProfile = () => {
-    navigate(`/profile/accountInfo/${user._id}`);
+    navigate(`/profile/${pageOptions[0]}/${user._id}`);
   };
 
   const handleLogout = () => {
