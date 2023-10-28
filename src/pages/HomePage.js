@@ -17,6 +17,7 @@ const Container = styled('div')({
   alignItems: 'center',
   height: '80vh',
   flexDirection: 'column',
+  marginTop: '75px',
 });
 
 const ResponsiveTypographyWrapper = styled('div')(({ theme }) => ({
@@ -75,7 +76,7 @@ export default function HomePage() {
 
   const { user } = useUserContext();
   return (
-    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100vh'}}>
+    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100%'}}>
       <div style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: 'cover',
