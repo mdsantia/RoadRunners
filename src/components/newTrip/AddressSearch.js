@@ -8,9 +8,6 @@ import { debounce } from '@mui/material/utils';
 import { useTripContext } from '../../hooks/useTripContext';
 import { useEffect } from 'react';
 
-
-export const GOOGLE_MAPS_API_KEY = 'AIzaSyBQSWehf4LQiWZKhB7NNmh0LEOoWJmV3-Y';
-
 function loadScript(src, position, id, onLoad) {
   if (!position) {
     return;

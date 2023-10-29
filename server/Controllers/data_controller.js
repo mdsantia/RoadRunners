@@ -1,10 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
-
-const user = "mdsantia";
-const pwd = "PkLnDkpIynsO9YR8";
-
-const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
+const { mongoURI } = require('../constants');
 
 // Moved the MongoDB client initialization outside of the function
 const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });

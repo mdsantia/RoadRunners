@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { UserContextProvider } from './context/UserContext'
 import { DirectionContextProvider } from './context/DirectionContext';
 import { TripContextProvider } from './context/TripContext';
-import { GOOGLE_MAPS_API_KEY } from './components/newTrip/AddressSearch';
+import { GOOGLE_MAPS_API_KEY } from './Constants';
 import { LoadScript } from '@react-google-maps/api';
 const GOOGLE_MAPS_LIBRARIES = ['places', 'geometry'];
 

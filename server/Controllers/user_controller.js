@@ -3,9 +3,6 @@ const { MongoClient } = require('mongodb');
 const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../Models/user_model');
-const Vehicle = require('../Models/user_model');
-const Preferences = require('../Models/user_model');
-const Trip = require('../Models/user_model');
 const axios = require('axios');
 
 /*

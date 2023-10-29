@@ -34,8 +34,6 @@ const StyledButton = styled(Button)({
 export default function LoginPage() {
   const {user, setUser, logout } = useUserContext();
 
-  const clientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
-
   const handleGoogleSignIn = async (response) => {
     // Implement Google Sign In Logic here
     console.log("Encoded JWT ID Token:" + response.credential + "\nDECODED: ");
@@ -68,7 +66,7 @@ export default function LoginPage() {
     script.onload = () => {
       /* global google */
       google.accounts.id.initialize({
-        client_id: clientID,    
+        client_id: AccountsClientID,    
         callback: handleGoogleSignIn
       });
 
