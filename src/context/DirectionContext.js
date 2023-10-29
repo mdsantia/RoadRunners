@@ -18,6 +18,7 @@ export const directionReducer = (state, action) => {
 }
 
 export const DirectionContextProvider = ({ children }) => {
+  const [stops, setStops] = useState(null);
   const [directions, setDirections] = useState(null);
   const [directionSet, setDirectionSet] = useState(false);
   const [center, setCenter] = useState(null);
@@ -30,10 +31,8 @@ export const DirectionContextProvider = ({ children }) => {
     if (response !== null) {
       if (response.status === 'OK') {
         // Store the directions data in state
-        // console.log(response);
-        // setCenter(response.routes[0].overview_path[response.routes[0].overview_path.length / 2]);
-        setDirections(response);
-        // Set color of polyline to red
+        setDirections(response.route);
+        setStops(response.stops);
         setDirectionSet(true);
       } else {
         console.error(`Directions request failed due to ${response.status}`);
@@ -45,6 +44,7 @@ export const DirectionContextProvider = ({ children }) => {
     <DirectionContext.Provider
       value={{
         directions,
+        stops,
         center,
         setCenter,
         directionSet,
