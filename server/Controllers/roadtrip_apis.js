@@ -39,9 +39,8 @@ async function getGeoLocation(address) {
   }
 }
 
-async function getMidLocations(address, radius) {
+async function getStops(location, radius, keyword, preferences) {
   try {
-    const location = await getGeoLocation(address);
     const locationString = `${location.lat},${location.lng}`;
     endpoint = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
     params = {
@@ -59,7 +58,7 @@ async function getMidLocations(address, radius) {
       return ({
         name: place.name,
         location: place.geometry.location,
-        category: "restaurant",
+        category: "landmark",
         locationString: `${place.geometry.location.lat},${place.geometry.location.lng}`, 
         rating: place.rating});})
     return list; // Corrected access to place names
@@ -68,15 +67,8 @@ async function getMidLocations(address, radius) {
   }
 }
 
-
-function getStops(origin, destination) {
-
-}
-
-
 module.exports = {
   callDirectionService,
   getStops,
   getGeoLocation,
-  getMidLocations,
 };
