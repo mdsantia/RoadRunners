@@ -39,15 +39,15 @@ async function getGeoLocation(address) {
   }
 }
 
-async function getStops(location, radius, keyword, preferences) {
+async function getStops(location, radius, keyword, preferences, type) {
   try {
     const locationString = `${location.lat},${location.lng}`;
     endpoint = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
     params = {
       location: locationString,
       radius: radius,
-      keyword: "Restaurant",
-      // type: "Attractions",
+      keyword: keyword,
+      type: type,
       // minprice: , 
       // maxprice: ,
       // rankby: 'prominance'/'distance',
@@ -58,7 +58,7 @@ async function getStops(location, radius, keyword, preferences) {
       return ({
         name: place.name,
         location: place.geometry.location,
-        category: "landmark",
+        category: type,
         locationString: `${place.geometry.location.lat},${place.geometry.location.lng}`, 
         rating: place.rating});})
     return list; // Corrected access to place names

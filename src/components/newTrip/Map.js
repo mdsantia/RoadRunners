@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, Polyline, Marker } from '@react-google-maps/api';
+import { GoogleMap, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
 import { useDirectionContext } from '../../hooks/useDirectionContext';
 import HotelIcon from '@mui/icons-material/Hotel';
 import LandscapeIcon from '@mui/icons-material/Landscape';
@@ -7,6 +7,8 @@ import MuseumIcon from '@mui/icons-material/Museum';
 import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import { renderToStaticMarkup } from 'react-dom/server';
+
 const icons = {
   'gas station': <LocalGasStationIcon />,
   'landmark': <LandscapeIcon />,
@@ -18,9 +20,18 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { directions, center, setCenter, chosenRoute, stops } = useDirectionContext();
+  const { directions, center, setCenter, chosenRoute, stops, testStops } = useDirectionContext();
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+
+  function materialUIIconToImage(icon) {
+    const svgString = renderToStaticMarkup(<icon />);
+    const image = new Image();
+    image.src = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
+    return image;
+  } 
+  const custRestaurantIcon = materialUIIconToImage(RestaurantIcon);
 
   function calculateCenter(decoded) {
     let sumLat = 0;
@@ -137,6 +148,36 @@ export default function Map(props) {
               label={String(index + 1)} // Use index as the label
             />
           ))}
+
+        {testStops && 
+          testStops.map((restaurant, index) => (
+          <Marker
+            key={index}
+            name={restaurant.name}
+            position={restaurant.location}
+            // icon={{
+            //   url: custRestaurantIcon.src,
+            //   scaledSize: new window.google.maps.Size(30, 30),
+            // }}
+            onClick={() => {
+              setSelectedMarker(restaurant);
+            }}
+          />
+        ))}
+
+        {selectedMarker && (
+           <InfoWindow
+            position={selectedMarker.location}
+            onCloseClick={() => {
+              setSelectedMarker(null);
+            }}
+          >
+            <div>
+              <h2>{selectedMarker.name}</h2>
+              <p>{selectedMarker.rating}</p>
+            </div>
+          </InfoWindow>
+        )}
       </GoogleMap>
     </>
   );
