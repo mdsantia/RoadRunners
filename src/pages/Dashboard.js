@@ -116,6 +116,7 @@ export default function Dashboard() {
             //console.log(res.data);
             // setDirections(res.data); // Set the directionsResponse in the context
             directionsCallback(res.data);
+            console.log(res.data.testStops);
         })
         .catch((err) => {
             console.log(err);

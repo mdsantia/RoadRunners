@@ -44,7 +44,7 @@ async function buildARoute(req) {
     // unitSystem: google.maps.UnitSystem.IMPERIAL,
   };
   
-  const result = await roadtrip_apis.getMidLocations(startLocation, 100000);
+  const result = await roadtrip_apis.getStops(await roadtrip_apis.getGeoLocation(startLocation), 100000, "Restaurant", null, 'food');
 
   if (result.message) {
     throw new Error(result.message);
@@ -80,6 +80,21 @@ async function buildARoute(req) {
   return {route: routeToWaypoint, stops: stops};
 }
 
+async function getGasStationsAlongRoute(route) {
+  const gasStations = [];
+  const routeSteps = route.routes[0].legs[0].steps;
+  for (let i = 0; i < routeSteps.length; i++) {
+    const step = routeSteps[i];
+    const stepStart = step.start_location;
+    const stepDistance = step.distance.value;
+    const stepGasStations = await roadtrip_apis.getStops(stepStart, stepDistance, "Gas Station", null, 'gas_station');
+    for (station of stepGasStations) {
+      gasStations.push(station);
+    }
+  }
+  return gasStations;
+}
+
 const newRoadTrip = async (req, res) => {
   const { startLocation, endLocation, startDate, endDate } = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
@@ -90,11 +105,13 @@ const newRoadTrip = async (req, res) => {
   try {
     const route = await buildARoute(req);
     result.route = route.route;
+    result.testStops = await getGasStationsAlongRoute(route.route);
     result.status = route.route.status;
     result.stops.push(route.stops);
   } catch (error) {
     console.error(`Error getting directions by request: ${error}`.red.bold);
     res.status(409).json({ message: error });
+    return;
   }
   for (let i = 1; i < 4; i++) {
     req.query.routeOption = i;
@@ -105,8 +122,10 @@ const newRoadTrip = async (req, res) => {
       break;
     }
     result.route.routes.push(newOption.route.routes[0]);
-    result.stops.push(newOption.stops);
   }
+
+  //const testStops = await roadtrip_apis.getStops(await roadtrip_apis.getGeoLocation(startLocation), 1000, "Fastfood", 'Fast food', 'food'); 
+  //result.testStops = testStops;
 
   res.status(201).json(result);
 };

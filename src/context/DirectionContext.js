@@ -23,6 +23,7 @@ export const DirectionContextProvider = ({ children }) => {
   const [directionSet, setDirectionSet] = useState(false);
   const [center, setCenter] = useState(null);
   const [chosenRoute, setChosenRoute] = useState(0);
+  const [testStops, setTestStops] = useState(null);
 
   const directionsCallback = (response) => {
     if (directionSet) {
@@ -34,6 +35,7 @@ export const DirectionContextProvider = ({ children }) => {
         setDirections(response.route);
         setStops(response.stops);
         setDirectionSet(true);
+        setTestStops(response.testStops);
       } else {
         console.error(`Directions request failed due to ${response.status}`);
       }
@@ -50,7 +52,8 @@ export const DirectionContextProvider = ({ children }) => {
         directionSet,
         directionsCallback,
         chosenRoute,
-        setChosenRoute
+        setChosenRoute, 
+        testStops
       }}
     >
       {children}
