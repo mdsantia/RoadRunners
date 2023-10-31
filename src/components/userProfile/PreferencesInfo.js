@@ -71,7 +71,7 @@ export default function PreferencesInfo(props) {
                 Array.from({ length: findTotalColumns(list) }).map((_, columnIndex) => (
                     <Grid item xs={3} key={columnIndex}>
                             {list.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((itemObject, index) => (
-                                <Typography key={index}>
+                                <Typography component='div' key={index}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     {iconList[itemObject] && (
                                         <div style={{ marginRight: '15px' }}>
