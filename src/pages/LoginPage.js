@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
 import { useUserContext } from '../hooks/useUserContext';
+import { AccountsClientID } from '../Constants';
 
 import Logo from '../assets/rr-logo.png';
 import image from '../assets/login-bg.jpg';
@@ -33,8 +34,6 @@ const StyledButton = styled(Button)({
 
 export default function LoginPage() {
   const {user, setUser, logout } = useUserContext();
-
-  const clientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
 
   const handleGoogleSignIn = async (response) => {
     // Implement Google Sign In Logic here
@@ -68,7 +67,7 @@ export default function LoginPage() {
     script.onload = () => {
       /* global google */
       google.accounts.id.initialize({
-        client_id: clientID,    
+        client_id: AccountsClientID,    
         callback: handleGoogleSignIn
       });
 

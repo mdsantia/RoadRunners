@@ -28,17 +28,17 @@ const theme = createTheme({
 function RouteOptions() {
     const navigate = useNavigate();
     const { user } = useUserContext();
-    const { directions, setChosenRoute, chosenRoute } = useDirectionContext();
+    const { routes, updateChosenRoute, chosenRoute } = useDirectionContext();
 
     const handleButton = (event) => {
-        setChosenRoute(parseInt(event.currentTarget.id));
-    }
+        updateChosenRoute(parseInt(event.currentTarget.id));
+    };
 
     return (
         <ThemeProvider theme={theme}>
             <Container>
                 <List sx={{ paddingTop: '90px' }}>
-                    {directions.routes.map((overview, index) => (
+                    {routes && routes.map((path, index) => (
                         <ListItem key={index} disablePadding>
                             <ListItemButton
                                 id={index}
@@ -51,7 +51,7 @@ function RouteOptions() {
                                 }}
                             >
                                 <ListItemText
-                                    primary={`Index: ${index}, Distance: ${overview.legs[0].distance.text} & Duration: ${overview.legs[0].duration.text}`} //\nThrough ${overview.legs[0].waypointorder}`}
+                                    primary={`Index: ${index}, Distance: ${path.distance.text} & Duration: ${path.duration.text}`}
                                 />
                             </ListItemButton>
                         </ListItem>

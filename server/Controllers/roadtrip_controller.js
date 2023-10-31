@@ -1,184 +1,148 @@
 const express = require('express');
-const PolylineCodec = require('@googlemaps/polyline-codec');
 const router = express.Router();
 const mongoose = require('mongoose');
-const axios = require('axios');
+const roadtrip_apis = require('./roadtrip_apis');
+const joining = require('./roadtrip_joining');
+const polyline = require('polyline');
 
-const apiKey = 'AIzaSyBQSWehf4LQiWZKhB7NNmh0LEOoWJmV3-Y';
+function motionSickness(scale) {
+  /* Notes on motion sickness */
+  /* 
+  1. Avoid Winding Roads: Try to avoid routes with a lot of sharp turns and winding roads.
 
-async function callDirectionService (request) {
-  const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
+  2. Use Highways: Highways tend to have smoother and straighter roads compared to local streets.
 
-  try {
-    const response = await axios.get(baseUrl, {
-      params: request,
-    });
-    
-    if (response.data.status === 'OK') {
-      const route = response.data;
-      return route;
-    } else {
-      console.error(`Error getting directions by request: ${response.data.status}`.red.bold);
-      return {message: response.data.status};
-    }
-  } catch (error) {
-    console.error(`Error getting directions: ${error.message}`.red.bold);
-    return {message: error.message};
-  }
-}
+  3. Plan for Frequent Stops: Frequent stops can help people prone to carsickness.
 
-function updatedBounds (route1, route2) {
-  const bounds1 = route1.bounds;
-  const bounds2 = route2.bounds;
-  return {
-  northeast: {
-    lat: Math.max(bounds1.northeast.lat, bounds2.northeast.lat),
-    lng: Math.max(bounds1.northeast.lng, bounds2.northeast.lng),
-  },
-  southwest: {
-    lat: Math.min(bounds1.southwest.lat, bounds2.southwest.lat),
-    lng: Math.min(bounds1.southwest.lng, bounds2.southwest.lng),
-  }};
-}
+  4. Avoid Heavy Traffic: Stop-and-go traffic can make carsickness worse. You can check real-time traffic conditions on Google Maps and try to avoid congested areas.
 
-function updateDistance_Duration (route1, route2) {
-  route1 = route1.legs[0];
-  route2 = route2.legs[0];
-  const totalDistance = {
-    text: `${Math.floor((route1.distance.value + route2.distance.value) / 1609.344)} mi`,
-    value: route1.distance.value + route2.distance.value,
-  };
-  
-  const totalDuration = {
-    text: `${Math.floor((route1.duration.value + route2.duration.value) / 3600)} hours ${Math.floor(((route1.duration.value + route2.duration.value) % 3600) / 60)} mins`,
-    value: route1.duration.value + route2.duration.value,
-  };
+  5. Select the Right Vehicle: If you have the option, choose a vehicle with a smoother ride. Larger and more stable vehicles can often provide a more comfortable journey.
 
-  return {distance: totalDistance, duration: totalDuration};
-}
+  6. Opt for Daytime Driving: If possible, drive during the day. 
 
-function combineRoutes(routeToWaypoint, routeFromWaypoint) { //assuming length exists
-  // Combine the routes.
-  const completeRoute = routeToWaypoint; 
-  /*  Object is of the structure
-  bounds: {
-    northeast: { lat: 41.878114, lng: -87.6292114 },
-    southwest: { lat: 40.5460122, lng: -88.9001043 }
-  },
-  copyrights: 'Map data ©2023 Google',
-  Let us update bounds*/
+  7. Proper Ventilation: Ensure good ventilation in the vehicle.
 
-  completeRoute.bounds = updatedBounds(routeToWaypoint, routeFromWaypoint);
+  8. Drive Smoothly: Try to maintain a steady speed and avoid sudden acceleration or braking. 
 
-  /*
-  legs: [
-    {
-      distance: [Object],
-      duration: [Object],
-      end_address: 'Chicago, IL, USA',
-      end_location: [Object],
-      start_address: 'Illinois, USA',
-      start_location: [Object],
-      steps: [Array],
-      traffic_speed_entry: [],
-      via_waypoint: []
-    }
-  ], */
-
-  const newDur_Dis = updateDistance_Duration(routeToWaypoint, routeFromWaypoint)
-
-  completeRoute.legs[0].distance = newDur_Dis.distance;
-  completeRoute.legs[0].duration = newDur_Dis.duration;
-
-  completeRoute.legs[0].end_address = routeFromWaypoint.legs[0].end_address;
-  completeRoute.legs[0].end_location = routeFromWaypoint.legs[0].end_location;
-  completeRoute.legs[0].steps = [...routeToWaypoint.legs[0].steps, ...routeFromWaypoint.legs[0].steps];
-
-  /*
-  overview_polyline: {
-    points: ''
-  },
+  9. Use Medication: If carsickness is a chronic issue for a passenger, consider over-the-counter motion sickness medication. Consult a healthcare professional for recommendations.
   */
-
-  const decodedPoints1 = PolylineCodec.decode(
-    routeToWaypoint.overview_polyline.points
-  );
   
-  // Decode the encoded points from the second route's `overview_polyline`.
-  const decodedPoints2 = PolylineCodec.decode(
-    routeFromWaypoint.overview_polyline.points
-  );
-  
-  const points = [...decodedPoints1, ...decodedPoints2].filter(Boolean);
-
-  const encodedPoints = PolylineCodec.encode(points);
-
-  completeRoute.overview_polyline = {
-    points: encodedPoints
-  },
-
-  /*
-  summary: 'I-55 N',
-  warnings: [],
-  waypoint_order: []
-  to update these last three*/
-
-  completeRoute.summary = completeRoute.summary.concat(` and ${routeFromWaypoint.summary}`);
-  completeRoute.warnings = [...routeToWaypoint.warnings, ...routeFromWaypoint.warnings];
-  completeRoute.waypoint_order = [...routeToWaypoint.waypoint_order, ...routeFromWaypoint.waypoint_order];
-
-  return completeRoute;
 }
 
-const newRoadTrip = async (req, res) => {
-  const { startLocation, endLocation, startDate, endDate } = req.query;
-  console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
+async function buildARoute(req) {
+  const { startLocation, endLocation, startDate, endDate, routeOption } = req.query;
+  let stops = [{name: startLocation, category: "A", location: await roadtrip_apis.getGeoLocation(startLocation)}];
 
   var request =  {
     origin: startLocation,
     destination: endLocation,
-    provideRouteAlternatives: true,
+    // provideRouteAlternatives: true,
     travelMode: 'DRIVING',
     drivingOptions: {
       departureTime: startDate, // + time
       trafficModel: 'pessimistic'
     },
     // unitSystem: google.maps.UnitSystem.IMPERIAL,
-    key: apiKey
   };
+  
+  const result = await roadtrip_apis.getStops(await roadtrip_apis.getGeoLocation(startLocation), 100000, "Restaurant", null, 'food');
 
-  const route = await callDirectionService(request);
-
-  if (route.message) {
-    res.status(409).json({ message: route.message });
+  if (result.message) {
+    throw new Error(result.message);
   }
   
-  request.destination = 'Bloomington-Normal, IL, IL, USA';
+  stops.push(result[routeOption]);
+  request.destination = result[routeOption].locationString;
   
-  const routeToWaypoint = await callDirectionService(request);
+  const routeToWaypoint = await roadtrip_apis.callDirectionService(request);
 
   if (routeToWaypoint.message) {
-    res.status(409).json({ message: route.message });
+    throw new Error(routeToWaypoint.message);
   }
   
   request.origin = request.destination;
   request.destination = endLocation;
   
-  const routeFromWaypoint = await callDirectionService(request);
+  const routeFromWaypoint = await roadtrip_apis.callDirectionService(request);
   
   if (routeFromWaypoint.message) {
-    res.status(409).json({ message: route.message });
+    throw new Error(result.message);
   }
 
-  const completeRoute = combineRoutes(routeToWaypoint.routes[0], routeFromWaypoint.routes[0]);
+  const completeRoute = joining.combineRoutes(routeToWaypoint.routes[0], routeFromWaypoint.routes[0]);
   
   if (completeRoute.message) {
-    res.status(409).json({ message: completeRoute.message });
+    throw new Error(result.message);
   }
   
-  route.routes.push(completeRoute);
-  
-  res.status(201).json(route);
+  routeToWaypoint.routes[0] = completeRoute;
+  stops.push({name: endLocation, category: "B", location: await roadtrip_apis.getGeoLocation(endLocation)});
+
+  return {route: routeToWaypoint, stops: stops};
+}
+
+async function getGasStationsAlongRoute(route) {
+  const gasStations = [];
+  const routeSteps = route.routes[0].legs[0].steps;
+  for (let i = 0; i < routeSteps.length; i++) {
+    const step = routeSteps[i];
+    const stepStart = step.start_location;
+    const stepDistance = step.distance.value;
+    const stepGasStations = await roadtrip_apis.getStops(stepStart, stepDistance, "Gas Station", null, 'gas_station');
+    for (station of stepGasStations) {
+      gasStations.push(station);
+    }
+  }
+  return gasStations;
+}
+
+const newRoadTrip = async (req, res) => {
+  const { startLocation, endLocation, startDate, endDate } = req.query;
+  console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
+
+  const result = {routes: []};
+
+  req.query.routeOption = 0;
+  try {
+    const route = await buildARoute(req);
+    const decoded = polyline.decode(route.route.routes[0].overview_polyline.points);
+    const path = decoded.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    const obj = {
+      decodedPath: path,
+      stops: route.stops,
+      distance: route.route.routes[0].legs[0].distance,
+      duration: route.route.routes[0].legs[0].duration,
+    }
+    result.routes.push(obj);
+  } catch (error) {
+    console.error(`Error getting directions by request: ${error}`.red.bold);
+    res.status(409).json({ message: error });
+    return;
+  }
+  for (let i = 1; i < 4; i++) {
+    req.query.routeOption = i;
+    let newOption = null;
+    try {
+      newOption = await buildARoute(req);
+    } catch (error) {
+      break;
+    }
+    const decoded = polyline.decode(newOption.route.routes[0].overview_polyline.points);
+    const path = decoded.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    const obj = {
+      decodedPath: path,
+      stops: newOption.stops,
+      distance: newOption.route.routes[0].legs[0].distance,
+      duration: newOption.route.routes[0].legs[0].duration,
+    }
+    result.routes.push(obj);
+  }
+
+  res.status(201).json(result);
 };
   
 module.exports = {newRoadTrip};
