@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Button, Typography, Dialog, DialogContent } from '@mui/material';
+import { Card, Button, Typography, Dialog, DialogContent, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import { styled } from '@mui/material/styles';
 import image from '../assets/login-bg.jpg'
 import bg from '../assets/topography-bg.jpg'
@@ -16,6 +17,7 @@ const Container = styled('div')({
   alignItems: 'center',
   height: '80vh',
   flexDirection: 'column',
+  marginTop: '75px',
 });
 
 const ResponsiveTypographyWrapper = styled('div')(({ theme }) => ({
@@ -53,14 +55,28 @@ export default function HomePage() {
   const [preferencesOpen, setPreferencesOpen] = React.useState(true);
   const urlParams = new URLSearchParams(window.location.search);
   const firstLogin = urlParams.get('firstLogin');
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
+  const showMessage = (message, duration, severity) => {
+      setSnackbarMessage(message);
+      setSnackbarSeverity(severity);
+      setSnackbarDuration(duration);
+      setSnackbarOpen(true);
+  };
+  const closeSnackbar = () => {
+      setSnackbarOpen(false);
+  };
 
   const handleClosePreferences = () => {
     setPreferencesOpen(false);
+    showMessage('Your preferences have been saved!', 2000, 'success')
   }
 
   const { user } = useUserContext();
   return (
-    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100vh'}}>
+    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', height: '100%'}}>
       <div style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: 'cover',
@@ -116,6 +132,11 @@ export default function HomePage() {
           <CreateTrip></CreateTrip>
         </ImageCard>
       </Container>
+      <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
+        <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 }

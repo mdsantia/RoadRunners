@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, AppBar, createTheme, ThemeProvider } from '@mui/material';
+import { Container, Typography, AppBar, createTheme, ThemeProvider, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import { useParams } from "react-router-dom";
 import { useUserContext } from '../hooks/useUserContext';
 import TopBar from '../components/additionalFeatures/TopBar';
@@ -15,6 +16,19 @@ const UserProfile = () => {
   const { user, updateUser } = useUserContext();
   const pageType = useParams().pageType;
   const [isEditingPreferences, setIsEditingPreferences] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
+  const showMessage = (message, duration, severity) => {
+      setSnackbarMessage(message);
+      setSnackbarSeverity(severity);
+      setSnackbarDuration(duration);
+      setSnackbarOpen(true);
+  };
+  const closeSnackbar = () => {
+      setSnackbarOpen(false);
+  };
 
   const handleEdit = () => {
     setIsEditingPreferences(true);
@@ -26,18 +40,21 @@ const UserProfile = () => {
 
   const getContainer = () => {
     switch (pageType) {
-      case pageOptions[0]: // Account Information
+      case pageOptions[0]: // Account
         return <Container></Container>;
       case pageOptions[1]: // Trip Preferences
         return (
-          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+          <Container maxWidth="xl">
             {isEditingPreferences ? (
               <PreferencesForm 
                 showSaveButton={true} 
                 showCancelButton={true} 
                 showSkipButton={false} 
                 showLogo={false}
-                handleSave={() => setIsEditingPreferences(false)}
+                handleSave={() => {
+                  setIsEditingPreferences(false);
+                  showMessage('Your preferences have been updated!', 2000, 'success');
+                }}
                 handleCancel={() => setIsEditingPreferences(false)}
               />
             ) : (
@@ -47,20 +64,20 @@ const UserProfile = () => {
         );
       case pageOptions[2]: // Vehicles
         return (
-          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+          <Container maxWidth="xl">
             <VehiclesForm />
           </Container>
         );
       case pageOptions[3]: // Trip History
         if (user && user.trips.length > 0) {
           return (
-            <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+            <Container maxWidth="xl">
               <UserTrips user={user} updateUser={updateUser}/>
             </Container>
           );
         }
         return (
-          <Container sx={{paddingTop: '90px', marginLeft: '100px'}}>
+          <Container maxWidth="xl">
             <Typography variant="h5">No trips yet!</Typography>
             <a href={`/`}><Typography variant="h6">Create trips to get started.</Typography></a>
           </Container>
@@ -77,15 +94,15 @@ const UserProfile = () => {
   }, [user, id]);
 
   return (
-    <div>
-      <AppBar>
-        <TopBar />
-      </AppBar>
-      <Container>
-        <SideBar pageType={pageType} />
-        {getContainer()}
-      </Container>
-    </div>
+    <>
+    <TopBar />
+    <SideBar pageType={pageType} container={getContainer()}/>
+    <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
+      <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
+        {snackbarMessage}
+      </MuiAlert>
+    </Snackbar> 
+    </>
   );
 };
 
