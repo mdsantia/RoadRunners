@@ -68,14 +68,16 @@ export default function AttractionsList() {
       location: 'Vancouver,British Columbia',
       price: '200',
       rating: '2.0',
-      reviews: '500'
+      reviews: '500',
+      link:'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
     },
     {
       name: 'Fairmont Hotel Vancouver',
       location: 'Vancouver,British Columbia',
       price: '400',
       rating: '3.0',
-      reviews: '1000'
+      reviews: '1000',
+      link:'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
     },
     {
       name: 'Shangri-La False Creek',
@@ -100,6 +102,7 @@ export default function AttractionsList() {
       price: '10.00',
       rating: '4.00',
       reviews:'400',
+      link: 'https://www.niagarafallsstatepark.com/'
     },
     {
       name: 'Six Flags Canada',
@@ -125,6 +128,7 @@ export default function AttractionsList() {
         price: '0',
         rating: '4.00',
         reviews:'400',
+        links:'https://www.mallofamerica.com/'
       },
       {
         name: 'Science Centre',
@@ -132,6 +136,7 @@ export default function AttractionsList() {
         price: '5.00',
         rating: '4.00',
         reviews: '500',
+        links:'https://www.mallofamerica.com/'
       },
       {
         name: 'National Art Gallery',
@@ -139,6 +144,7 @@ export default function AttractionsList() {
         price: '25.00',
         rating: '4.00',
         reviews: '200',
+        links:'https://www.mallofamerica.com/'
       },
      
     ];
@@ -151,6 +157,7 @@ export default function AttractionsList() {
           price: '$$$',
           rating: '4.00',
           reviews:'400',
+          link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
         },
         {
           name: 'Yatagarusu',
@@ -158,6 +165,7 @@ export default function AttractionsList() {
           price: '$$',
           rating: '4.00',
           reviews: '500',
+          link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
         },
         {
           name: 'Chipotle',
@@ -165,6 +173,7 @@ export default function AttractionsList() {
           price: '$',
           rating: '4.00',
           reviews: '200',
+          link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
         },
        
       ];
@@ -176,18 +185,21 @@ export default function AttractionsList() {
           time: 'Fri, 7-11pm',
           venue: 'United Centre',
           location:'Chicago, IL',
+          link:'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
         },
         {
           name: 'Taylor Swift',
           time: 'Sat, 9-11pm',
           venue: 'United Centre',
           location:'Chicago, IL',
+          link:'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
         },
         {
           name: 'John Mayer',
           time: 'Sat, 6-9pm',
           venue: 'Navy Pier',
           location:'Chicago, IL',
+          link:'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
         },
        
       ];
@@ -198,16 +210,19 @@ export default function AttractionsList() {
             name: 'Speedway',
             location: '265 State St',
             hours: 'open 24 hours',
+            link:'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
           },
           {
             name: 'Exxon',
             location: '265 Pete St',
             hours: 'open 24 hours',
+            link:'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
           },
           {
             name: 'BP',
             location: '265 Tim St',
             hours: 'open 24 hours',
+            link:'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
           },
          
         ];

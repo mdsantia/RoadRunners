@@ -34,7 +34,12 @@ export default function LiveEvents({data}) {
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                 <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
-                        {data.name} 
+                <a href={data.link} target="_blank" rel="noopener noreferrer"
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                            onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
+                            {data.name}
+                        </a>
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
                        {data.location}

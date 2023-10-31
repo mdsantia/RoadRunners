@@ -21,33 +21,38 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function LiveEvents({data}) {
+export default function LiveEvents({ data }) {
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
-                sx={{ height: 140 , flex: '0 0 40%'  }}
+                sx={{ height: 140, flex: '0 0 40%' }}
                 image={LandMarkImage}
                 title="LandMarkImage"
             />
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
-                        {data.name} 
+                    <Grid item xs={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
+                        <a href={data.link} target="_blank" rel="noopener noreferrer"
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                            onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
+                            {data.name}
+                        </a>
                     </Grid>
-                    <Grid item xs={12} sx={{color:'grey'}}>
-                       {data.time}
+                    <Grid item xs={12} sx={{ color: 'grey' }}>
+                        {data.time}
                     </Grid>
-                    <Grid item xs={12} sx={{color:'grey'}}>
-                        {data.venue} 
+                    <Grid item xs={12} sx={{ color: 'grey' }}>
+                        {data.venue}
                     </Grid>
-                    <Grid item xs={12} sx={{fontWeight:'bold'}}>
-                      {data.location}
+                    <Grid item xs={12} sx={{ fontWeight: 'bold' }}>
+                        {data.location}
                     </Grid>
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
-            <Checkbox  {...label} icon={<AddLocationAltOutlinedIcon></AddLocationAltOutlinedIcon>} checkedIcon={<AddLocationAltIcon></AddLocationAltIcon>} />
+                <Checkbox  {...label} icon={<AddLocationAltOutlinedIcon></AddLocationAltOutlinedIcon>} checkedIcon={<AddLocationAltIcon></AddLocationAltIcon>} />
             </CardActions>
         </Item>
     );

@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function HotelCard({data}) {
+export default function HotelCard({ data }) {
     return (
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
@@ -31,13 +31,18 @@ export default function HotelCard({data}) {
             />
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                    <Grid item md={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
-                        {data.name} 
+                    <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
+                    <a href={data.link} target="_blank" rel="noopener noreferrer" 
+        style={{ textDecoration: 'none', color: 'inherit' }}
+        onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+        onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
+        {data.name}
+    </a>
                     </Grid>
-                    <Grid item xs={12} sx={{color:'grey'}}>
-                        {data.rating} <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon> ({data.reviews})
+                    <Grid item xs={12} sx={{ color: 'grey' }}>
+                        {data.rating} <StarRateIcon sx={{ verticalAlign: 'text-bottom', color: 'gold' }}></StarRateIcon> ({data.reviews})
                     </Grid>
-                    <Grid item xs={12} sx={{fontWeight:'bold'}}>
+                    <Grid item xs={12} sx={{ fontWeight: 'bold' }}>
                         ${data.price}/night
                     </Grid>
                 </Grid>
