@@ -15,6 +15,8 @@ import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import HotelCard from '../StopsComponents/Hotels';
 import Landmarks from '../StopsComponents/Landmarks';
 import Attractions from '../StopsComponents/Attractions';
+import Restaurants from '../StopsComponents/Restaurants';
+import LiveEvents from '../StopsComponents/LiveEvents';
 
 
 function TabPanel(props) {
@@ -140,6 +142,55 @@ export default function AttractionsList() {
      
     ];
 
+      //Restaurant Dummy Data
+      const RestaurantsData = [
+        {
+          name: 'BRU',
+          cuisine: 'American',
+          price: '$$$',
+          rating: '4.00',
+          reviews:'400',
+        },
+        {
+          name: 'Yatagarusu',
+          cusine: 'Japenese',
+          price: '$$',
+          rating: '4.00',
+          reviews: '500',
+        },
+        {
+          name: 'Chipotle',
+          cusine: 'Fast Food',
+          price: '$',
+          rating: '4.00',
+          reviews: '200',
+        },
+       
+      ];
+
+       //Live Events Dummy Data
+       const LiveEventsData = [
+        {
+          name: 'Doja Cat',
+          time: 'Fri, 7-11pm',
+          venue: 'United Centre',
+          location:'Chicago, IL',
+        },
+        {
+          name: 'Taylor Swift',
+          time: 'Sat, 9-11pm',
+          venue: 'United Centre',
+          location:'Chicago, IL',
+        },
+        {
+          name: 'John Mayer',
+          time: 'Sat, 6-9pm',
+          venue: 'Navy Pier',
+          location:'Chicago, IL',
+        },
+       
+      ];
+
 
   return (
     <Box
@@ -185,10 +236,20 @@ export default function AttractionsList() {
         ))}
       </TabPanel>
       <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        Restaurants
+      {RestaurantsData.map((restaurant, index) => (
+          <Restaurants
+          key={index}
+          data={restaurant} 
+          />
+        ))}
       </TabPanel>
-      <TabPanel value={value} index={4}>
-        Live Events
+      <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} > 
+      {LiveEventsData.map((event, index) => (
+          <LiveEvents
+          key={index}
+          data={event} 
+          />
+        ))}
       </TabPanel>
       <TabPanel value={value} index={5}>
         Gas Stations
