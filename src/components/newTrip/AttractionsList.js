@@ -14,6 +14,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import HotelCard from '../StopsComponents/Hotels';
 import Landmarks from '../StopsComponents/Landmarks';
+import Attractions from '../StopsComponents/Attractions';
 
 
 function TabPanel(props) {
@@ -117,18 +118,21 @@ export default function AttractionsList() {
     const AttractionData = [
       {
         name: 'Mall Of America',
+        category: 'Shopping',
         price: '0',
         rating: '4.00',
         reviews:'400',
       },
       {
         name: 'Science Centre',
+        category: 'Family',
         price: '5.00',
         rating: '4.00',
         reviews: '500',
       },
       {
         name: 'National Art Gallery',
+        category: 'Museum',
         price: '25.00',
         rating: '4.00',
         reviews: '200',
@@ -174,7 +178,7 @@ export default function AttractionsList() {
       </TabPanel>
       <TabPanel value={value} index={2}style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {AttractionData.map((attraction, index) => (
-          <Landmarks 
+          <Attractions
           key={index}
           data={attraction} 
           />

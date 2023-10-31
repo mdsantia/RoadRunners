@@ -36,7 +36,7 @@ export default function Landmarks({data}) {
                 <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1.4rem'}}>
                         {data.name} 
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={8} sx={{color:'grey'}}>
                         {data.rating} <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon> ({data.reviews})
                     </Grid>
                     <Grid item xs={8} sx={{fontWeight:'bold'}}>
