@@ -120,7 +120,7 @@ export default function Map(props) {
         options={{
           streetViewControl: false,
           mapTypeControl: false,
-          fullscreenControl: false,
+          fullscreenControl: false
         }}
       >
 
