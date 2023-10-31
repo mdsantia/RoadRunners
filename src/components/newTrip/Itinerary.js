@@ -30,10 +30,7 @@ function TabPanel(props) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
-      style={{
-        overflowY: 'auto', // Add vertical scrollbar when content overflows
-        maxHeight: '450px', // Set a maximum height to control the scrollbar
-      }}
+     
     >
       {value === index ? (
         <Box sx={{ p: 3 }}>
@@ -135,7 +132,7 @@ export default function Itinerary() {
   }
 
   return (
-    <Box sx={{ width: '100%', paddingTop: '15%' }}>
+    <Box sx={{ width: '100%', paddingTop: '14%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab icon={<FavoriteIcon />} label="Preferences" {...a11yProps(0)} />
@@ -145,6 +142,10 @@ export default function Itinerary() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
+        <Box     style={{
+        overflowY: 'auto', // Add vertical scrollbar when content overflows
+        maxHeight: '450px', // Set a maximum height to control the scrollbar
+      }}>
         <VehicleSelectionForm
           vehicleList={vehicleList}
           numVehicles={numVehicles}
@@ -156,6 +157,7 @@ export default function Itinerary() {
         <Button variant="contained" sx={{m:2}} onClick={handleGenerate} >
           Re-Generate Trip
         </Button> 
+        </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <RouteOptions/>

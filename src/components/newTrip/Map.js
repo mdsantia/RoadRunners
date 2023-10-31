@@ -92,6 +92,8 @@ export default function Map(props) {
           streetViewControl: false,
           mapTypeControl: false,
           fullscreenControl: false
+          
+          
         }}
       >
 
