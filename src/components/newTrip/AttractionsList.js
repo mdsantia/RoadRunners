@@ -12,8 +12,8 @@ import MuseumIcon from '@mui/icons-material/Museum';
 import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import HotelCard from './StopsComponents/Hotels';
-import Landmarks from './StopsComponents/Landmarks';
+import HotelCard from '../StopsComponents/Hotels';
+import Landmarks from '../StopsComponents/Landmarks';
 
 
 function TabPanel(props) {
