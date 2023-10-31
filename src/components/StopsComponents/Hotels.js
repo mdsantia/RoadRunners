@@ -23,15 +23,15 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function HotelCard({data}) {
     return (
-        <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: 600, margin: '0 auto', marginTop: '3%' }}>
+        <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
-                sx={{ height: 140, flex: '0 0 30%' }}
+                sx={{ height: 140, flex: '0 0 40%' }}
                 image={LandMarkImage}
                 title="LandMarkImage"
             />
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                    <Grid item md={12} sx={{fontWeight:'bold', fontSize:'1.4rem'}}>
+                    <Grid item md={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
                         {data.name} 
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
@@ -42,8 +42,8 @@ export default function HotelCard({data}) {
                     </Grid>
                 </Grid>
             </CardContent>
-            <CardActions sx={{ justifyContent: 'center', flex: '0 0 30%' }}>
-                <Checkbox  {...label} icon={<AddLocationAltOutlinedIcon></AddLocationAltOutlinedIcon>} checkedIcon={<AddLocationAltIcon></AddLocationAltIcon>} />
+            <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
+                <Checkbox{...label} icon={<AddLocationAltOutlinedIcon></AddLocationAltOutlinedIcon>} checkedIcon={<AddLocationAltIcon></AddLocationAltIcon>} />
             </CardActions>
         </Item>
     );

@@ -6,11 +6,12 @@ import CardMedia from '@mui/material/CardMedia';
 import Checkbox from '@mui/material/Checkbox';
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
-import LandMarkImage from '../../assets/doja.jpeg';
+import LandMarkImage from '../../assets/exxon.png';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import StarRateIcon from '@mui/icons-material/StarRate';
+
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -36,14 +37,12 @@ export default function LiveEvents({data}) {
                         {data.name} 
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
-                       {data.time}
+                       {data.location}
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
-                        {data.venue} 
+                        {data.hours} 
                     </Grid>
-                    <Grid item xs={12} sx={{fontWeight:'bold'}}>
-                      {data.location}
-                    </Grid>
+                  
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>

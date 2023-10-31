@@ -17,6 +17,7 @@ import Landmarks from '../StopsComponents/Landmarks';
 import Attractions from '../StopsComponents/Attractions';
 import Restaurants from '../StopsComponents/Restaurants';
 import LiveEvents from '../StopsComponents/LiveEvents';
+import GasStations from '../StopsComponents/GasStations'
 
 
 function TabPanel(props) {
@@ -153,14 +154,14 @@ export default function AttractionsList() {
         },
         {
           name: 'Yatagarusu',
-          cusine: 'Japenese',
+          cuisine: 'Asian',
           price: '$$',
           rating: '4.00',
           reviews: '500',
         },
         {
           name: 'Chipotle',
-          cusine: 'Fast Food',
+          cuisine: 'Fast Food',
           price: '$',
           rating: '4.00',
           reviews: '200',
@@ -191,6 +192,26 @@ export default function AttractionsList() {
        
       ];
 
+        //Restaurant Dummy Data
+        const GasStationData = [
+          {
+            name: 'Speedway',
+            location: '265 State St',
+            hours: 'open 24 hours',
+          },
+          {
+            name: 'Exxon',
+            location: '265 Pete St',
+            hours: 'open 24 hours',
+          },
+          {
+            name: 'BP',
+            location: '265 Tim St',
+            hours: 'open 24 hours',
+          },
+         
+        ];
+
 
   return (
     <Box
@@ -202,7 +223,7 @@ export default function AttractionsList() {
         value={value}
         onChange={handleChange}
         aria-label="Vertical tabs example"
-        sx={{ borderRight: 1, borderColor: 'divider' }}
+        sx={{ borderRight: 1, borderColor: 'divider', width:'40%'}}
       >
         <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
         <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
@@ -251,8 +272,13 @@ export default function AttractionsList() {
           />
         ))}
       </TabPanel>
-      <TabPanel value={value} index={5}>
-        Gas Stations
+      <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      {GasStationData.map((gas, index) => (
+          <GasStations
+          key={index}
+          data={gas} 
+          />
+        ))}
       </TabPanel>
 
     </Box>

@@ -12,7 +12,6 @@ import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import StarRateIcon from '@mui/icons-material/StarRate';
 
-
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -22,31 +21,32 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function Landmarks({data}) {
+export default function LandMarks({data}) {
     return (
 
-        <Card sx={{maxWidth: 300 , marginTop:'3%'}}>
+        <Item sx={{ display: 'flex', alignItems: 'left', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
-                sx={{ height: 140 }}
+                sx={{ height: 140 , flex: '0 0 40%'  }}
                 image={LandMarkImage}
                 title="LandMarkImage"
             />
-            <CardContent>
-                <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1.4rem'}}>
+            <CardContent sx={{ flex: '1' }}>
+                <Grid container spacing={0.5} justifyContent="left" alignItems="left">
+                <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
                         {data.name} 
                     </Grid>
-                    <Grid item xs={8} sx={{color:'grey'}}>
-                        {data.rating} <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon> ({data.reviews})
+
+                    <Grid item xs={12} sx={{color:'grey'}}>
+                        {data.rating} <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon> {data.reviews}
                     </Grid>
-                    <Grid item xs={8} sx={{fontWeight:'bold'}}>
+                    <Grid item xs={12} sx={{fontWeight:'bold'}}>
                       ${data.price}
                     </Grid>
                 </Grid>
             </CardContent>
-            <CardActions sx={{ justifyContent: 'center' }}>
+            <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
             <Checkbox  {...label} icon={<AddLocationAltOutlinedIcon></AddLocationAltOutlinedIcon>} checkedIcon={<AddLocationAltIcon></AddLocationAltIcon>} />
             </CardActions>
-        </Card>
+        </Item>
     );
 }
