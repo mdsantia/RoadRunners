@@ -7,6 +7,7 @@ import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
 import { useTripContext } from '../../hooks/useTripContext';
 import { useEffect } from 'react';
+import { GOOGLE_MAPS_API_KEY } from '../../Constants';
 
 function loadScript(src, position, id, onLoad) {
   if (!position) {
