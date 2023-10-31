@@ -79,7 +79,7 @@ export default function Itinerary() {
   const {tripDetails} = useTripContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
  
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
