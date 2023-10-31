@@ -39,6 +39,21 @@ async function getGeoLocation(address) {
   }
 }
 
+async function decodePolyline(polyline) {
+  const endpoint = 'https://maps.googleapis.com/maps/api/directions/json';
+  const params = {
+    polyline: polyline,
+    key: GoogleApiKey,
+  };
+  try {
+    const response = await axios.get(endpoint, { params: params });
+    const location = response.data.results[0].geometry.location;
+    return location;
+  } catch (error) {
+    throw new Error(error.message);
+  } 
+}
+
 async function getStops(location, radius, keyword, preferences, type) {
   try {
     const locationString = `${location.lat},${location.lng}`;
@@ -71,4 +86,5 @@ module.exports = {
   callDirectionService,
   getStops,
   getGeoLocation,
+  decodePolyline
 };

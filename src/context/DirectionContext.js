@@ -18,42 +18,39 @@ export const directionReducer = (state, action) => {
 }
 
 export const DirectionContextProvider = ({ children }) => {
+  const [routes, setRoutes] = useState(null); 
   const [stops, setStops] = useState(null);
-  const [directions, setDirections] = useState(null);
-  const [directionSet, setDirectionSet] = useState(false);
   const [center, setCenter] = useState(null);
   const [chosenRoute, setChosenRoute] = useState(0);
-  const [testStops, setTestStops] = useState(null);
+  const [decoded, setDecoded] = useState(null);
+
+  const updateChosenRoute = (route) => {
+    setChosenRoute(route);
+    setStops(routes[route].stops);
+    setDecoded(routes[route].decodedPath);
+  }
 
   const directionsCallback = (response) => {
-    if (directionSet) {
-      return;
-    }
     if (response !== null) {
-      if (response.status === 'OK') {
         // Store the directions data in state
-        setDirections(response.route);
-        setStops(response.stops);
-        setDirectionSet(true);
-        setTestStops(response.testStops);
-      } else {
-        console.error(`Directions request failed due to ${response.status}`);
-      }
+        setRoutes(response.routes);
+        const route = response.routes[chosenRoute ? chosenRoute : 0];
+        setStops(route.stops);
+        setDecoded(route.decodedPath);
     }
   };
 
     return ( 
     <DirectionContext.Provider
       value={{
-        directions,
+        routes,
         stops,
         center,
         setCenter,
-        directionSet,
         directionsCallback,
         chosenRoute,
-        setChosenRoute, 
-        testStops
+        updateChosenRoute, 
+        decoded
       }}
     >
       {children}

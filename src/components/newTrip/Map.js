@@ -20,7 +20,7 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { directions, center, setCenter, chosenRoute, stops, testStops } = useDirectionContext();
+  const { routes, center, setCenter, chosenRoute, stops, decoded} = useDirectionContext();
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -37,8 +37,8 @@ export default function Map(props) {
     let sumLat = 0;
     let sumLng = 0;
     for (const point of decoded) {
-      sumLat += point.lat();
-      sumLng += point.lng();
+      sumLat += point.lat;
+      sumLng += point.lng;
     }
 
     // Calculate the average latitude and longitude
@@ -69,10 +69,10 @@ export default function Map(props) {
     let minLon = Infinity;
 
     for (const point of decoded) {
-      maxLat = Math.max(maxLat, point.lat());
-      minLat = Math.min(minLat, point.lat());
-      maxLon = Math.max(maxLon, point.lng());
-      minLon = Math.min(minLon, point.lng());
+      maxLat = Math.max(maxLat, point.lat);
+      minLat = Math.min(minLat, point.lat);
+      maxLon = Math.max(maxLon, point.lng);
+      minLon = Math.min(minLon, point.lng);
     }
 
     const latRad1 = (maxLat * Math.PI) / 180;
@@ -103,16 +103,13 @@ export default function Map(props) {
   }, []);
 
   useEffect(() => {
-    if (directions) {
+    if (routes && chosenRoute !== null && decoded) {
       // Calculate the new center based on the directions
-      var decoded = /* global google */ google.maps.geometry.encoding.decodePath(
-        directions.routes[chosenRoute].overview_polyline.points
-      );
       setDecodedPath(decoded);
       calculateCenter(decoded);
       calculateZoom(decoded);
     }
-  }, [chosenRoute, directions]);
+  }, [chosenRoute, routes, decoded]);
 
   return (
     <>
@@ -127,7 +124,7 @@ export default function Map(props) {
         }}
       >
 
-        {directions && (
+        {routes && (
           <Polyline
             path={decodedPath}
             options={{
@@ -139,7 +136,7 @@ export default function Map(props) {
         )}
 
         {stops &&
-          stops[chosenRoute].map((marker, index) => (
+          stops.map((marker, index) => (
             <Marker
               key={index}
               name={marker.name}
@@ -147,24 +144,10 @@ export default function Map(props) {
               // icon={getStopIcon(marker)}
               label={String(index + 1)} // Use index as the label
             />
-          ))}
-
-        {testStops && 
-          testStops.map((restaurant, index) => (
-          <Marker
-            key={index}
-            name={restaurant.name}
-            position={restaurant.location}
-            // icon={{
-            //   url: custRestaurantIcon.src,
-            //   scaledSize: new window.google.maps.Size(30, 30),
-            // }}
-            onClick={() => {
-              setSelectedMarker(restaurant);
-            }}
-          />
-        ))}
-
+          ))
+        }
+        
+        {/*
         {selectedMarker && (
            <InfoWindow
             position={selectedMarker.location}
@@ -177,7 +160,7 @@ export default function Map(props) {
               <p>{selectedMarker.rating}</p>
             </div>
           </InfoWindow>
-        )}
+          )} */}
       </GoogleMap>
     </>
   );

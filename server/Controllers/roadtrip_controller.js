@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const roadtrip_apis = require('./roadtrip_apis');
 const joining = require('./roadtrip_joining');
+const polyline = require('polyline');
 
 function motionSickness(scale) {
   /* Notes on motion sickness */
@@ -99,15 +100,22 @@ const newRoadTrip = async (req, res) => {
   const { startLocation, endLocation, startDate, endDate } = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
 
-  const result = {route: null, stops:[]};
+  const result = {routes: []};
 
   req.query.routeOption = 0;
   try {
     const route = await buildARoute(req);
-    result.route = route.route;
-    result.testStops = await getGasStationsAlongRoute(route.route);
-    result.status = route.route.status;
-    result.stops.push(route.stops);
+    const decoded = polyline.decode(route.route.routes[0].overview_polyline.points);
+    const path = decoded.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    const obj = {
+      decodedPath: path,
+      stops: route.stops,
+      distance: route.route.routes[0].legs[0].distance,
+      duration: route.route.routes[0].legs[0].duration,
+    }
+    result.routes.push(obj);
   } catch (error) {
     console.error(`Error getting directions by request: ${error}`.red.bold);
     res.status(409).json({ message: error });
@@ -121,11 +129,18 @@ const newRoadTrip = async (req, res) => {
     } catch (error) {
       break;
     }
-    result.route.routes.push(newOption.route.routes[0]);
+    const decoded = polyline.decode(newOption.route.routes[0].overview_polyline.points);
+    const path = decoded.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    const obj = {
+      decodedPath: path,
+      stops: newOption.stops,
+      distance: newOption.route.routes[0].legs[0].distance,
+      duration: newOption.route.routes[0].legs[0].duration,
+    }
+    result.routes.push(obj);
   }
-
-  //const testStops = await roadtrip_apis.getStops(await roadtrip_apis.getGeoLocation(startLocation), 1000, "Fastfood", 'Fast food', 'food'); 
-  //result.testStops = testStops;
 
   res.status(201).json(result);
 };
