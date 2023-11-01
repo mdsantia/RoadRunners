@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { createTheme, ThemeProvider, Container, Typography, Grid } from '@mui/material';
+import { Container, Typography, Grid } from '@mui/material';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useDashboardContext } from '../../context/DashboardContext';
@@ -13,7 +13,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 function RouteOptions() {
     const navigate = useNavigate();
     const { user } = useUserContext();
-    const { routes, updateChosenRoute, chosenRoute } = useDirectionContext();
+    const { routes, updateChosenRoute, chosenRoute } = useDashboardContext();
     const [expanded, setExpanded] = React.useState([]); // Initialize expanded state for each accordion
 
     const handleChange = (index) => (event, isExpanded) => {
