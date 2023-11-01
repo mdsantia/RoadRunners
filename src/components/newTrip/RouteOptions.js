@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { createTheme, ThemeProvider, Container } from '@mui/material';
+import { createTheme, ThemeProvider, Container, Typography } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useDirectionContext } from '../../context/DirectionContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
@@ -45,14 +45,17 @@ function RouteOptions() {
                                 value={index}
                                 onClick={(event) => handleButton(event)}
                                 sx={{
-                                    backgroundColor: index === chosenRoute ? '#000' : 'transparent', // Change the background color
+                                    backgroundColor: index === chosenRoute ? 'darkblue' : 'transparent', // Change the background color
                                     color: index === chosenRoute ? '#fff' : 'inherit', // Change the text color
                                     borderRadius:4,
                                 }}
                             >
-                                <ListItemText
+                                <ListItemText sx={{ fontStyle: 'italic' }}>Route #{index}</ListItemText>
+                                <ListItemText>Distance: {path.distance.text}</ListItemText>
+                                <ListItemText>Duration: {path.duration.text}</ListItemText>
+                                {/* <ListItemText
                                     primary={`Index: ${index}, Distance: ${path.distance.text} & Duration: ${path.duration.text}`}
-                                />
+                                /> */}
                             </ListItemButton>
                         </ListItem>
                     ))}
