@@ -10,10 +10,9 @@ import Stack from '@mui/material/Stack';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useNavigate } from 'react-router-dom';
-import {useDirectionContext} from '../../hooks/useDirectionContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {useDashboardContext} from '../../hooks/useDashboardContext';
 import {useUserContext} from '../../hooks/useUserContext';
-import {useTripContext} from '../../hooks/useTripContext';
 import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
 
@@ -37,16 +36,22 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function CreateTrip() {
-  
+  const location = useLocation();
   const navigate = useNavigate();
   const {user} = useUserContext();
-  const {tripDetails, setTripDetails} = useTripContext();
+  const {tripDetails, resetTo} = useDashboardContext();
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
   const [endLocation, setEndLocation] = useState(tripDetails?tripDetails.endLocation:null);
   const [startDate, setStartDate] = useState(tripDetails?dayjs(tripDetails.startDate):null);
   const [endDate, setEndDate] = useState(tripDetails?dayjs(tripDetails.endDate):null);
   const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
+
+  useEffect(() => {
+    // This code will run whenever the URL changes
+    // console.log('URL changed:', location.pathname);
+    resetTo(null);
+  }, [location]);
 
   useEffect(() => {
     if (tripDetails) {
@@ -85,7 +90,8 @@ export default function CreateTrip() {
         }
         const encodedTripDetails = btoa(JSON.stringify({tripDetails}));
         navigate(`/dashboard/${encodedTripDetails}`);
-        //window.location.reload();
+        resetTo(tripDetails);
+        // window.location.reload();
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);

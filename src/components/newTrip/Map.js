@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
-import { useDirectionContext } from '../../hooks/useDirectionContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 import HotelIcon from '@mui/icons-material/Hotel';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import MuseumIcon from '@mui/icons-material/Museum';
@@ -20,9 +20,10 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { routes, center, setCenter, chosenRoute, stops, decoded} = useDirectionContext();
+  const { polyline, center, setCenter, chosenRoute, stops, allStops } = useDashboardContext();
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
+  const [decoded, setDecoed] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   function materialUIIconToImage(icon) {
@@ -34,21 +35,9 @@ export default function Map(props) {
   const custRestaurantIcon = materialUIIconToImage(RestaurantIcon);
 
   function calculateCenter(decoded) {
-    let sumLat = 0;
-    let sumLng = 0;
-    for (const point of decoded) {
-      sumLat += point.lat;
-      sumLng += point.lng;
-    }
-
-    // Calculate the average latitude and longitude
-    const avgLat = sumLat / decoded.length;
-    const avgLng = sumLng / decoded.length;
-    const newCenter = {
-      lat: avgLat,
-      lng: avgLng,
-    };
-    setCenter(newCenter);
+    const midIdx = Math.floor(decoded.length / 2);
+    const midPoint = decoded[midIdx];
+    setCenter(midPoint);
   }
 
   const getStopIcon = (marker) => {
@@ -103,13 +92,13 @@ export default function Map(props) {
   }, []);
 
   useEffect(() => {
-    if (routes && chosenRoute !== null && decoded) {
+    if (chosenRoute !== null) {
       // Calculate the new center based on the directions
-      setDecodedPath(decoded);
-      calculateCenter(decoded);
-      calculateZoom(decoded);
+      // setDecodedPath(decoded);
+      // calculateCenter(decoded);
+      // calculateZoom(decoded);
     }
-  }, [chosenRoute, routes, decoded]);
+  }, [chosenRoute, ]);//routes, decoded]);
 
   return (
     <>
@@ -124,9 +113,9 @@ export default function Map(props) {
         }}
       >
 
-        {routes && (
+        {polyline && (
           <Polyline
-            path={decodedPath}
+            path={polyline}
             options={{
               strokeColor: 'blue',
               strokeOpacity: 0.8,
@@ -145,6 +134,38 @@ export default function Map(props) {
               label={String(index + 1)} // Use index as the label
             />
           ))
+        }
+
+        {allStops &&
+          allStops.map((marker, index) => (
+            <Marker
+              key={index}
+              name={marker.name}
+              position={marker.location}
+              // icon={getStopIcon(marker)}
+              icon={{
+                path: /* global google */ google.maps.SymbolPath.CIRCLE,
+                fillColor: 'blue',
+                fillOpacity: 1,
+                scale: 10,
+                strokeColor: 'white',
+                strokeWeight: 2,
+              }}
+              label={String(index + 1)} // Use index as the label
+            />
+          ))
+        }
+
+        {center &&
+          <Marker
+            position={center}
+            icon={{
+              url: 'https://i.imgur.com/7teZKif.png',
+              scaledSize: new window.google.maps.Size(50, 50),
+              origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(25, 25),
+            }}
+          />
         }
         
         {/*

@@ -2,14 +2,10 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const colors = require("colors");
 const mongoose = require('mongoose');
+const {mongoURI} = require('./Constants');
 
 const app = express();
 const port = 5010;
-
-const user = "mdsantia";
-const pwd = "efx777db3Fz8xHQi";
-// set up mongoose and DB
-const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
 // Moved the MongoDB client initialization outside of the function
 const connectDB = async () => {
   try {
@@ -39,4 +35,3 @@ app.use('/api/roadtrip', roadtripRoutes);
 app.use('/api/vehiclesData', vehiclesData);
  
 app.listen(port, console.log(`Server is running on PORT ${port}....`.yellow.bold));
-module.exports = {user, pwd}

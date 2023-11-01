@@ -61,19 +61,22 @@ async function getStops(location, radius, keyword, preferences, type) {
     params = {
       location: locationString,
       radius: radius,
-      keyword: keyword,
       type: type,
       // minprice: , 
       // maxprice: ,
       // rankby: 'prominance'/'distance',
       key: GoogleApiKey
     };
+    if (keyword) 
+      params.keyword = keyword;
     const results = await axios.get(endpoint, { params: params });
     const list = results.data.results.map((place) => {
       return ({
         name: place.name,
         location: place.geometry.location,
         category: type,
+        icon: place.icon,
+        place_id: place.place_id,
         locationString: `${place.geometry.location.lat},${place.geometry.location.lng}`, 
         rating: place.rating});})
     return list; // Corrected access to place names

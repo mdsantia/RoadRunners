@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { createTheme, ThemeProvider, Container, Typography, Grid } from '@mui/material';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
-import { useDirectionContext } from '../../context/DirectionContext';
+import { useDashboardContext } from '../../context/DashboardContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -21,7 +21,6 @@ function RouteOptions() {
         newExpanded[index] = isExpanded;
         setExpanded(newExpanded);
     };
-
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
     };
@@ -75,6 +74,7 @@ function RouteOptions() {
                             </ListItemButton>
                         </ListItem>
                     ))}
+                    {!routes && <p>Loading...</p>}
                 </List>
             </Container>
         </div>

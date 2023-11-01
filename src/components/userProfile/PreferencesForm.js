@@ -5,12 +5,12 @@ import MuiAlert from '@mui/material/Alert';
 import Logo from '../../assets/rr-logo.png';
 import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
-import { useTripContext } from '../../hooks/useTripContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 
 export default function PreferencesForm(props) {
     const {user, updateUser} = useUserContext();
-    const inDashboard = props.type == 'dashboard';
-    const {tripDetails} = useTripContext();
+    const inDashboard = props.type === 'dashboard';
+    const {tripDetails} = useDashboardContext();
 
     React.useEffect(() => {
         if (!user) {
@@ -75,9 +75,9 @@ export default function PreferencesForm(props) {
         // "Cabins", 
         // "Cottages"
     ];
-    const [budget, setBudget] = React.useState( '');
-    const [commuteTime, setCommuteTime] = React.useState( '');
-    const [carsickRating, setCarsickRating] = React.useState( '');
+    const [budget, setBudget] = React.useState('');
+    const [commuteTime, setCommuteTime] = React.useState('');
+    const [carsickRating, setCarsickRating] = React.useState('');
     const [attractionSelection, setAttractionSelection] = React.useState([]);
     const [diningSelection, setDiningSelection] = React.useState([]);
     const [housingSelection, setHousingSelection] = React.useState([]);
