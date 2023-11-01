@@ -7,6 +7,7 @@ import { useUserContext } from '../../hooks/useUserContext';
 import Logo from '../../assets/rr-logo.png';
 
 export default function VehicleForm({selectedCar, onSelectCar}) {
+    const fuelGradeOptions = ["87 (Regular)", "88-90 (Midgrade)", "91-94 (Premium)"];
     React.useEffect(() => {
         if (selectedCar) {
             fetchData('', '', '');
@@ -36,21 +37,21 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
             }, timeout);
             
             timeoutId = setTimeout(() => {
-
+                setFuelGrade(selectedCar.fuelGrade);
             }, timeout);
             
             return () => {
                 clearTimeout(timeoutId);
-              };
+            };
         }
-      }, [selectedCar]);
-      
+    }, [selectedCar]);
     
     const [year, setYear] = React.useState('');
     const [make, setMake] = React.useState('');
     const [model, setModel] = React.useState('');
     const [color, setColor] = React.useState('');
     const [mpg, setMPG] = React.useState('');
+    const [fuelGrade, setFuelGrade] = React.useState('');
     const [yearList, setYearList] = React.useState([])
     const [makeList, setMakeList] = React.useState([]);
     const [modelList, setModelList] = React.useState([]);
@@ -164,6 +165,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
         setModel('');
         setColor('');
         setMPG('');
+        setFuelGrade('');
         setYearStatus('');
         setMakeStatus('');
         setModelStatus('');
@@ -182,7 +184,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
             <br></br>
             <Container>
                 <Typography variant="body1">
-                    Please enter the year, make, and model of the primary vehicle you would like to use for road trips.
+                    Please enter the year, make, and model of the vehicle you would like to use for road trips.
                 </Typography>
                 <br></br>
                 <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
@@ -293,6 +295,24 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
                         }}
                         >                   
                     </Input>
+                </FormControl>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
+                    <InputLabel id="fuelGradeLabel">Fuel Grade (Not Required)</InputLabel>
+                    <Select
+                        name="fuelGrade"
+                        value={fuelGrade}
+                        sx={{ height: '38px' }}
+                        onChange={(event) => {
+                            setFuelGrade(event.target.value);
+                        }}
+                        fullWidth
+                    >
+                        {fuelGradeOptions.map((fuelGradeOption, index) => (
+                            <MenuItem key={index} value={fuelGradeOption}>
+                                {fuelGradeOption}
+                            </MenuItem>
+                        ))}
+                    </Select> 
                 </FormControl>
             </Container>
             <br></br>
