@@ -31,7 +31,6 @@ function motionSickness(scale) {
 
 function calculateMidpoint(decoded) {
   const midIdx = Math.floor(decoded.length / 2);
-  const midpoint = decoded[midIdx];
   return decoded[midIdx];
 }
 
@@ -56,7 +55,6 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   };
   const route = await roadtrip_apis.callDirectionService(request);
   const midpoint = calculateMidpoint(decodePath(route));
-  console.log(midpoint);
   const [amusement_parksResults, museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult] = await Promise.all([
     roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
     roadtrip_apis.getStops(midpoint, radius, null, null, 'museum'),
@@ -69,10 +67,15 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   combinedStops.sort((a, b) => {
     return b.rating - a.rating;
   });
-  allStops.push(combinedStops.slice(0, 4));
+  combinedStops.slice(0, 4).forEach(stop => {
+    if (!allStops.some(existingStop => existingStop.place_id == stop.place_id)) {
+      allStops.push(stop);
+    }
+  });
+  const selectedStop = combinedStops[0];
+  selectedStops.push(selectedStop);
   if (idx < 2) {
-    const mid = `${midpoint.lat},${midpoint.lng}`;
-    console.log(mid);
+    const mid = `${selectedStop.location.lat},${selectedStop.location.lng}`;
     await Promise.all([
       computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
       computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius)

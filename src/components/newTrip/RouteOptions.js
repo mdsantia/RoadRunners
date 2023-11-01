@@ -56,6 +56,7 @@ function RouteOptions() {
                             </ListItemButton>
                         </ListItem>
                     ))}
+                    {!routes && <p>Loading...</p>}
                 </List>
             </Container>
         </ThemeProvider>

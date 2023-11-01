@@ -75,6 +75,8 @@ async function getStops(location, radius, keyword, preferences, type) {
         name: place.name,
         location: place.geometry.location,
         category: type,
+        icon: place.icon,
+        place_id: place.place_id,
         locationString: `${place.geometry.location.lat},${place.geometry.location.lng}`, 
         rating: place.rating});})
     return list; // Corrected access to place names
