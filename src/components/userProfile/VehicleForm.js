@@ -197,7 +197,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
                         required
                         onChange={(event) => {
                             setYear(event.target.value);
-                            if (event.target.value == "") {
+                            if (event.target.value === "") {
                                 handleCancel();
                             } else {
                                 setYearFilledOut(true);

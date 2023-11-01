@@ -29,56 +29,96 @@ function motionSickness(scale) {
   
 }
 
-async function buildARoute(req) {
-  const { startLocation, endLocation, startDate, endDate, routeOption } = req.query;
-  let stops = [{name: startLocation, category: "A", location: await roadtrip_apis.getGeoLocation(startLocation)}];
+function calculateMidpoint(decoded) {
+  const midIdx = Math.floor(decoded.length / 2);
+  return decoded[midIdx];
+}
 
+function decodePath(route) {
+  const decoded = polyline.decode(route.routes[0].overview_polyline.points);
+  const path = decoded.map((point) => {
+    return { lat: point[0], lng: point[1] };
+  });
+
+  return path;
+}
+
+async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius) {
   var request =  {
-    origin: startLocation,
-    destination: endLocation,
-    // provideRouteAlternatives: true,
+    origin: left,
+    destination: right,
     travelMode: 'DRIVING',
     drivingOptions: {
       departureTime: startDate, // + time
       trafficModel: 'pessimistic'
     },
-    // unitSystem: google.maps.UnitSystem.IMPERIAL,
   };
-  
-  const result = await roadtrip_apis.getStops(await roadtrip_apis.getGeoLocation(startLocation), 100000, "Restaurant", null, 'food');
+  const route = await roadtrip_apis.callDirectionService(request);
+  const midpoint = calculateMidpoint(decodePath(route));
+  const [amusement_parksResults, museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult] = await Promise.all([
+    roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
+    roadtrip_apis.getStops(midpoint, radius, null, null, 'museum'),
+    roadtrip_apis.getStops(midpoint, radius, null, null, 'bowling_alley'),
+    roadtrip_apis.getStops(midpoint, radius, null, null, 'tourist_attraction'),
+    roadtrip_apis.getStops(midpoint, radius, null, null, 'stadium')
+  ]);
 
-  if (result.message) {
-    throw new Error(result.message);
+  const combinedStops = amusement_parksResults.concat(museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult);
+  combinedStops.sort((a, b) => {
+    return b.rating - a.rating;
+  });
+  combinedStops.slice(0, 4).forEach(stop => {
+    if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
+      allStops.push(stop);
+    }
+  });
+  const selectedStop = combinedStops[0];
+  selectedStops.push(selectedStop);
+  if (idx < 2) {
+    const mid = selectedStop.locationString;
+    await Promise.all([
+      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
+      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius)
+    ]);
+  }
+}
+
+async function buildARoute(req) {
+  const { startLocation, endLocation, startDate } = req.query;
+  const stops = [];
+  const radius = 50000; // 50 km
+  const allStops = [];
+  
+  let left = await roadtrip_apis.getGeoLocation(startLocation); 
+  left = `${left.lat},${left.lng}`;
+  let right = await roadtrip_apis.getGeoLocation(endLocation);
+  right = `${right.lat},${right.lng}`;
+  
+  await Promise.all([
+    computeStops(left, right, stops, allStops, 0, startDate, radius),
+  ]);
+  
+  for (let i = 0; i < stops.length - 1; i++) {
+    var request =  {
+      origin: stops[i].locationString,
+      destination: stops[i + 1].locationString,
+      travelMode: 'DRIVING',
+      drivingOptions: {
+        departureTime: startDate, // + time
+        trafficModel: 'pessimistic'
+      },
+    };
+    const route = await roadtrip_apis.callDirectionService(request);
+    const decoded = polyline.decode(route.routes[0].overview_polyline.points);
+    const path = decoded.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    stops[i].routeFromHere = path;
+    stops[i].distance = route.routes[0].legs[0].distance.value;
+    stops[i].duration = route.routes[0].legs[0].duration.value;
   }
   
-  stops.push(result[routeOption]);
-  request.destination = result[routeOption].locationString;
-  
-  const routeToWaypoint = await roadtrip_apis.callDirectionService(request);
-
-  if (routeToWaypoint.message) {
-    throw new Error(routeToWaypoint.message);
-  }
-  
-  request.origin = request.destination;
-  request.destination = endLocation;
-  
-  const routeFromWaypoint = await roadtrip_apis.callDirectionService(request);
-  
-  if (routeFromWaypoint.message) {
-    throw new Error(result.message);
-  }
-
-  const completeRoute = joining.combineRoutes(routeToWaypoint.routes[0], routeFromWaypoint.routes[0]);
-  
-  if (completeRoute.message) {
-    throw new Error(result.message);
-  }
-  
-  routeToWaypoint.routes[0] = completeRoute;
-  stops.push({name: endLocation, category: "B", location: await roadtrip_apis.getGeoLocation(endLocation)});
-
-  return {route: routeToWaypoint, stops: stops};
+  return({stops: stops, allStops: allStops});
 }
 
 async function getGasStationsAlongRoute(route) {
@@ -100,7 +140,23 @@ const newRoadTrip = async (req, res) => {
   const { startLocation, endLocation, startDate, endDate } = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
 
-  const result = {routes: []};
+  const result = {options: [], allStops: []};
+  let promises = [];
+  for (let i = 0; i < 5; i++) {
+    req.optionNumber = i;
+    promises.push(buildARoute(req));
+  }
+  const options = await Promise.all(promises);
+  options.forEach(option => {
+    result.options.push(option.stops);
+    option.allStops.forEach(stop => {
+      if (!result.allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
+        result.allStops.push(stop);
+      }
+    });
+  })
+  res.status(201).json(result);
+  /*const result = {routes: []};
 
   req.query.routeOption = 0;
   try {
@@ -129,10 +185,7 @@ const newRoadTrip = async (req, res) => {
     } catch (error) {
       break;
     }
-    const decoded = polyline.decode(newOption.route.routes[0].overview_polyline.points);
-    const path = decoded.map((point) => {
-      return { lat: point[0], lng: point[1] };
-    });
+    const decoded = decodePath(newOption);
     const obj = {
       decodedPath: path,
       stops: newOption.stops,
@@ -142,7 +195,7 @@ const newRoadTrip = async (req, res) => {
     result.routes.push(obj);
   }
 
-  res.status(201).json(result);
+  res.status(201).json(result);*/
 };
   
 module.exports = {newRoadTrip};

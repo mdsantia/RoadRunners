@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { mongoURI } = require('../constants');
+const { mongoURI } = require('../Constants');
 
 // Moved the MongoDB client initialization outside of the function
 const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });

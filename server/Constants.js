@@ -1,14 +1,15 @@
 /* MongoDB Constants */
 
 const mongoUser = "mdsantia";
-const mongoPwd = "PkLnDkpIynsO9YR8";
+const mongoPwd = "efx777db3Fz8xHQi";
 
 const mongoURI = `mongodb+srv://${mongoUser}:${mongoPwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
 
 /* Google Constants */
-const GoogleApiKey = 'AIzaSyBQSWehf4LQiWZKhB7NNmh0LEOoWJmV3-Y';
+const GoogleApiKey = 'AIzaSyANyesuTDbnZjMYHkkHfa0-ywXNX2esSwI';
 
 module.exports = {
     mongoURI,
+    // vehiclesURI,
     GoogleApiKey
 }
