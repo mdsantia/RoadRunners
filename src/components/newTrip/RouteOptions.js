@@ -21,7 +21,6 @@ function RouteOptions() {
         newExpanded[index] = isExpanded;
         setExpanded(newExpanded);
     };
-
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
     };
