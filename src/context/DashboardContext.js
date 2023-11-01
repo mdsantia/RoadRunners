@@ -18,6 +18,7 @@ export const directionReducer = (state, action) => {
 }
 
 export const DashboardContextProvider = ({ children }) => {
+  const [polyline, setPolyline] = useState(null);
   const [options, setOptions] = useState(null); 
   const [stops, setStops] = useState(null);
   const [center, setCenter] = useState(null);
@@ -25,12 +26,24 @@ export const DashboardContextProvider = ({ children }) => {
   const [allStops, setAllStops] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
 
+  function buildPolyline(stopsList) {
+    let poly = [];
+    console.log(stopsList);
+    // for (let i = 0; i < stopsList.length - 1; i++) {
+    //   poly.push(...stopsList[i].routeFromHere);
+    // }
+    // console.log(poly);
+    setPolyline(stopsList[0].routeFromHere);
+  }
+
   const updateChosenRoute = (route) => {
     setChosenRoute(route);
+    buildPolyline(options[route]);
     setStops(options[route]);
   }
 
   const resetTo = (tripDetails) => {
+    setPolyline(null);
     setOptions(null);
     setStops(null);
     setChosenRoute(0);
@@ -43,13 +56,16 @@ export const DashboardContextProvider = ({ children }) => {
         // Store the directions data in state
         setOptions(response.options)
         setAllStops(response.allStops);
-        setStops(response.options[chosenRoute ? chosenRoute : 0]);
+        const stopsList = response.options[chosenRoute ? chosenRoute : 0];
+        setStops(stopsList);
+        buildPolyline(stopsList);
     }
   };
 
     return ( 
     <DashboardContext.Provider
       value={{
+        polyline,
         stops,
         allStops,
         center,

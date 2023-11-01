@@ -20,7 +20,7 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { center, setCenter, chosenRoute, stops, allStops} = useDashboardContext();
+  const { polyline, center, setCenter, chosenRoute, stops, allStops } = useDashboardContext();
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
   const [decoded, setDecoed] = useState(null);
@@ -113,16 +113,16 @@ export default function Map(props) {
         }}
       >
 
-        {/* {routes && (
+        {polyline && (
           <Polyline
-            path={decodedPath}
+            path={polyline}
             options={{
               strokeColor: 'blue',
               strokeOpacity: 0.8,
               strokeWeight: 4,
             }}
           />
-        )} */}
+        )}
 
         {stops &&
           stops.map((marker, index) => (
@@ -143,6 +143,14 @@ export default function Map(props) {
               name={marker.name}
               position={marker.location}
               // icon={getStopIcon(marker)}
+              icon={{
+                path: /* global google */ google.maps.SymbolPath.CIRCLE,
+                fillColor: 'blue',
+                fillOpacity: 1,
+                scale: 10,
+                strokeColor: 'white',
+                strokeWeight: 2,
+              }}
               label={String(index + 1)} // Use index as the label
             />
           ))

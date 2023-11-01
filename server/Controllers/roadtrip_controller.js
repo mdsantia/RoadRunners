@@ -68,7 +68,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     return b.rating - a.rating;
   });
   combinedStops.slice(0, 4).forEach(stop => {
-    if (!allStops.some(existingStop => existingStop.place_id == stop.place_id)) {
+    if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
       allStops.push(stop);
     }
   });
@@ -150,7 +150,7 @@ const newRoadTrip = async (req, res) => {
   options.forEach(option => {
     result.options.push(option.stops);
     option.allStops.forEach(stop => {
-      if (!result.allStops.some(existingStop => existingStop.place_id == stop.place_id)) {
+      if (!result.allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
         result.allStops.push(stop);
       }
     });

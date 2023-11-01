@@ -37,14 +37,14 @@ function loadScript(src, position, id, onLoad) {
 export default function AddressSearch({label, onInputChange }) {
   const {tripDetails} = useDashboardContext();
   const scripts = document.getElementsByTagName('script');
-  const [value, setValue] = React.useState(tripDetails ? (label == "Start Location" ? tripDetails.startLocation : tripDetails.endLocation) : null);
+  const [value, setValue] = React.useState(tripDetails ? (label === "Start Location" ? tripDetails.startLocation : tripDetails.endLocation) : null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
 
   useEffect(() => {
     if (tripDetails) {
-      setValue(label == "Start Location" ? tripDetails.startLocation : tripDetails.endLocation);
+      setValue(label === "Start Location" ? tripDetails.startLocation : tripDetails.endLocation);
     }
   }, [tripDetails]);
 
