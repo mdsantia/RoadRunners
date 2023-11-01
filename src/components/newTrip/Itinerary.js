@@ -18,7 +18,7 @@ import RouteOptions from './RouteOptions';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
-import {useDirectionContext} from '../../context/DirectionContext'
+import {useDashboardContext} from '../../context/DashboardContext'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,7 +73,7 @@ export default function Itinerary() {
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
-  const {tripDetails} = useDirectionContext();
+  const {tripDetails} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
  
   const [value, setValue] = React.useState(1);

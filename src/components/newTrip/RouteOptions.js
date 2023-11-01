@@ -5,7 +5,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { createTheme, ThemeProvider, Container } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
-import { useDirectionContext } from '../../context/DirectionContext';
+import { useDashboardContext } from '../../context/DashboardContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 
 const theme = createTheme({
@@ -28,7 +28,7 @@ const theme = createTheme({
 function RouteOptions() {
     const navigate = useNavigate();
     const { user } = useUserContext();
-    const { routes, updateChosenRoute, chosenRoute } = useDirectionContext();
+    const { routes, updateChosenRoute, chosenRoute } = useDashboardContext();
 
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));

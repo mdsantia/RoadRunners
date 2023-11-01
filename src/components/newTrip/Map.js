@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
-import { useDirectionContext } from '../../hooks/useDirectionContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 import HotelIcon from '@mui/icons-material/Hotel';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import MuseumIcon from '@mui/icons-material/Museum';
@@ -20,7 +20,7 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { center, setCenter, chosenRoute, stops, allStops} = useDirectionContext();
+  const { center, setCenter, chosenRoute, stops, allStops} = useDashboardContext();
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
   const [decoded, setDecoed] = useState(null);

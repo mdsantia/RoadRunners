@@ -7,7 +7,7 @@ import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
 import { useEffect } from 'react';
 import { GOOGLE_MAPS_API_KEY } from '../../Constants';
-import { useDirectionContext } from '../../context/DirectionContext';
+import { useDashboardContext } from '../../context/DashboardContext';
 
 function loadScript(src, position, id, onLoad) {
   if (!position) {
@@ -35,7 +35,7 @@ function loadScript(src, position, id, onLoad) {
 }
 
 export default function AddressSearch({label, onInputChange }) {
-  const {tripDetails} = useDirectionContext();
+  const {tripDetails} = useDashboardContext();
   const scripts = document.getElementsByTagName('script');
   const [value, setValue] = React.useState(tripDetails ? (label == "Start Location" ? tripDetails.startLocation : tripDetails.endLocation) : null);
   const [inputValue, setInputValue] = React.useState('');

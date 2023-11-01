@@ -11,7 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {useDirectionContext} from '../../hooks/useDirectionContext';
+import {useDashboardContext} from '../../hooks/useDashboardContext';
 import {useUserContext} from '../../hooks/useUserContext';
 import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
@@ -39,7 +39,7 @@ export default function CreateTrip() {
   const location = useLocation();
   const navigate = useNavigate();
   const {user} = useUserContext();
-  const {tripDetails, resetTo} = useDirectionContext();
+  const {tripDetails, resetTo} = useDashboardContext();
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
   const [endLocation, setEndLocation] = useState(tripDetails?tripDetails.endLocation:null);

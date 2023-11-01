@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-export const DirectionContext = createContext();
+export const DashboardContext = createContext();
 
 export const directionReducer = (state, action) => {
     switch (action.type) {
@@ -17,7 +17,7 @@ export const directionReducer = (state, action) => {
     }
 }
 
-export const DirectionContextProvider = ({ children }) => {
+export const DashboardContextProvider = ({ children }) => {
   const [options, setOptions] = useState(null); 
   const [stops, setStops] = useState(null);
   const [center, setCenter] = useState(null);
@@ -48,7 +48,7 @@ export const DirectionContextProvider = ({ children }) => {
   };
 
     return ( 
-    <DirectionContext.Provider
+    <DashboardContext.Provider
       value={{
         stops,
         allStops,
@@ -62,10 +62,10 @@ export const DirectionContextProvider = ({ children }) => {
       }}
     >
       {children}
-    </DirectionContext.Provider>
+    </DashboardContext.Provider>
     )
 }
 
-export function useDirectionContext() {
-  return useContext(DirectionContext);
+export function useDashboardContext() {
+  return useContext(DashboardContext);
 }
