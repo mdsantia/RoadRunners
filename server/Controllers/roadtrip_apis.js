@@ -1,29 +1,35 @@
 /* API HELPER FUNCTIONS FOR ROADTRIP BUILDING */
 const axios = require('axios');
 const { GoogleApiKey } = require('../Constants');
-const dijkstra = require('dijkstrajs');
+const graphlib = require('graphlib');
 
 function buildGraph(stops) {
-  const graph = {};
+  const graph = new graphlib.Graph();
 
   // Create nodes for each stop
+  stops.forEach((stop, index) => {
+    graph.setNode(index, { name: stop.name });
+  });
+
+  // Create edges with distances between stops
   for (let i = 0; i < stops.length; i++) {
-    graph[i] = {};
-    for (let j = 0; j < stops.length; j++) {
-      if (i !== j) {
-        // Calculate the distance between stops[i] and stops[j] (you can use a distance function)
-        const distance = calculateDistance(stops[i].location.lat, stops[i].location.lng, stops[j].location.lat, stops[j].location.lng);
-        graph[i][j] = distance;
-      }
+    for (let j = i + 1; j < stops.length; j++) {
+      const distance = calculateDistance(stops[i].location.lat, stops[i].location.lng, stops[j].location.lat, stops[j].location.lng);
+      graph.setEdge(i, j, distance);
     }
   }
 
   return graph;
 }
 
+function edgeWeightFunc(edge) {
+  return edge.distance;
+}
+
 function get_shortest_path(stops) {
   const graph = buildGraph(stops);
-  const path = dijkstra.find_path(graph, 0, stops.length - 1);
+  const shortestPath = graphlib.alg.dijkstra(graph, 0, edgeWeightFunc);
+  const path = graphlib.alg.predecessorPath(graph, 0, stops.length - 1);
   return path;
 }
 async function callDirectionService (request) {
