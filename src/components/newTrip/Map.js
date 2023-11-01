@@ -34,21 +34,9 @@ export default function Map(props) {
   const custRestaurantIcon = materialUIIconToImage(RestaurantIcon);
 
   function calculateCenter(decoded) {
-    let sumLat = 0;
-    let sumLng = 0;
-    for (const point of decoded) {
-      sumLat += point.lat;
-      sumLng += point.lng;
-    }
-
-    // Calculate the average latitude and longitude
-    const avgLat = sumLat / decoded.length;
-    const avgLng = sumLng / decoded.length;
-    const newCenter = {
-      lat: avgLat,
-      lng: avgLng,
-    };
-    setCenter(newCenter);
+    const midIdx = Math.floor(decoded.length / 2);
+    const midPoint = decoded[midIdx];
+    setCenter(midPoint);
   }
 
   const getStopIcon = (marker) => {
@@ -145,6 +133,18 @@ export default function Map(props) {
               label={String(index + 1)} // Use index as the label
             />
           ))
+        }
+
+        {center &&
+          <Marker
+            position={center}
+            icon={{
+              url: 'https://i.imgur.com/7teZKif.png',
+              scaledSize: new window.google.maps.Size(50, 50),
+              origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(25, 25),
+            }}
+          />
         }
         
         {/*

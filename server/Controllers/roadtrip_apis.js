@@ -61,13 +61,14 @@ async function getStops(location, radius, keyword, preferences, type) {
     params = {
       location: locationString,
       radius: radius,
-      keyword: keyword,
       type: type,
       // minprice: , 
       // maxprice: ,
       // rankby: 'prominance'/'distance',
       key: GoogleApiKey
     };
+    if (keyword) 
+      params.keyword = keyword;
     const results = await axios.get(endpoint, { params: params });
     const list = results.data.results.map((place) => {
       return ({
