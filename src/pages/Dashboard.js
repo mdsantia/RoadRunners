@@ -96,7 +96,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (tripDetails) {
-            buildRoadTrip();
+            //buildRoadTrip();
         }
     }, [tripDetails]);
 

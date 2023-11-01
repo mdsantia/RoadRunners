@@ -21,7 +21,11 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function HotelCard({ data }) {
+
+
+export default function HotelCard({ data, selected, onSelectionChange }) {
+    
+
     return (
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
@@ -48,8 +52,14 @@ export default function HotelCard({ data }) {
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
-                <Checkbox{...label} icon={<AddLocationAltOutlinedIcon></AddLocationAltOutlinedIcon>} checkedIcon={<AddLocationAltIcon></AddLocationAltIcon>} />
-            </CardActions>
+            <Checkbox
+          {...label}
+          icon={<AddLocationAltOutlinedIcon />}
+          checkedIcon={<AddLocationAltIcon />}
+          checked={selected} 
+          onChange={onSelectionChange} 
+        />
+            </CardActions>  
         </Item>
     );
 }
