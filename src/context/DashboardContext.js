@@ -25,7 +25,6 @@ export const DashboardContextProvider = ({ children }) => {
   const [chosenRoute, setChosenRoute] = useState(0);
   const [allStops, setAllStops] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
-  const [loaded, setLoaded] = useState(false);
 
   function buildPolyline(stopsList) {
     let poly = [];
@@ -44,20 +43,12 @@ export const DashboardContextProvider = ({ children }) => {
   }
 
   const resetTo = (tripDetails) => {
+    setPolyline(null);
+    setOptions(null);
+    setStops(null);
+    setChosenRoute(0);
+    setAllStops(null);
     setTripDetails(tripDetails);
-    if (tripDetails.options) {
-      buildPolyline(tripDetails.stops);
-      setOptions(tripDetails);
-      setStops(tripDetails.stops);
-      setChosenRoute(0);
-      setAllStops(tripDetails.allStops);
-    }
-  }
-
-  const loadNewPage = (tripDetails) => {
-    console.log(tripDetails);
-    setLoaded(true);
-    resetTo(tripDetails);
   }
 
   const directionsCallback = (response) => {
@@ -68,9 +59,6 @@ export const DashboardContextProvider = ({ children }) => {
         const stopsList = response.options[chosenRoute ? chosenRoute : 0];
         setStops(stopsList);
         buildPolyline(stopsList);
-        tripDetails.stops = stopsList;
-        tripDetails.allStops = response.allStops;
-        tripDetails.chosenRoute = chosenRoute;
     }
   };
 
@@ -86,10 +74,7 @@ export const DashboardContextProvider = ({ children }) => {
         chosenRoute,
         updateChosenRoute,
         resetTo,
-        tripDetails, 
-        setTripDetails,
-        loaded,
-        loadNewPage
+        tripDetails, setTripDetails
       }}
     >
       {children}

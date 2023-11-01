@@ -20,7 +20,7 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { polyline, center, chosenRoute, stops, allStops, updateChosenRoute } = useDashboardContext();
+  const { polyline, center, setCenter, chosenRoute, stops, allStops } = useDashboardContext();
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
   const [decoded, setDecoed] = useState(null);
@@ -37,7 +37,7 @@ export default function Map(props) {
   function calculateCenter(decoded) {
     const midIdx = Math.floor(decoded.length / 2);
     const midPoint = decoded[midIdx];
-    // setCenter(midPoint);
+    setCenter(midPoint);
   }
 
   const getStopIcon = (marker) => {
@@ -94,12 +94,11 @@ export default function Map(props) {
   useEffect(() => {
     if (chosenRoute !== null) {
       // Calculate the new center based on the directions
-      updateChosenRoute(chosenRoute);
       // setDecodedPath(decoded);
       // calculateCenter(decoded);
       // calculateZoom(decoded);
     }
-  }, [chosenRoute]);//routes, decoded]);
+  }, [chosenRoute, ]);//routes, decoded]);
 
   return (
     <>

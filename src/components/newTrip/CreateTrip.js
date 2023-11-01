@@ -36,6 +36,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function CreateTrip() {
+  const location = useLocation();
   const navigate = useNavigate();
   const {user} = useUserContext();
   const {tripDetails, resetTo} = useDashboardContext();
@@ -45,6 +46,12 @@ export default function CreateTrip() {
   const [startDate, setStartDate] = useState(tripDetails?dayjs(tripDetails.startDate):null);
   const [endDate, setEndDate] = useState(tripDetails?dayjs(tripDetails.endDate):null);
   const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
+
+  useEffect(() => {
+    // This code will run whenever the URL changes
+    // console.log('URL changed:', location.pathname);
+    resetTo(null);
+  }, [location]);
 
   useEffect(() => {
     if (tripDetails) {
@@ -60,6 +67,7 @@ export default function CreateTrip() {
       //call controller method to create trip
       //redirect to dashboard on success
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
+        console.log(user ? user : null);
         let selectedVehicles = [];
         let numVehicles = 0;
         let vehicle = null;
