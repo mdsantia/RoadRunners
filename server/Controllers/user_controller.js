@@ -192,7 +192,7 @@ const saveTrip = async (req, res) => {
     
     */
 const addVehicle = async (req, res) => {
-    const {email, make, model, year, color, mpgGiven } = req.body;
+    const {email, make, model, year, color, mpgGiven, fuelGrade } = req.body;
     var mpg = mpgGiven;
     
     // Check if user exists
@@ -210,7 +210,8 @@ const addVehicle = async (req, res) => {
         model,
         year,
         color,
-        mpg 
+        mpg,
+        fuelGrade
     };
 
     let i = 0;
@@ -247,7 +248,7 @@ const addVehicle = async (req, res) => {
     
     */
 const editVehicle = async (req, res) => {
-    const {email, _id, make, model, year, color, mpgGiven } = req.body;
+    const {email, _id, make, model, year, color, mpgGiven, fuelGrade } = req.body;
     // Check if user exists
     const user = await User.findOne({email});
     if (!user) {
@@ -276,7 +277,8 @@ const editVehicle = async (req, res) => {
         model,
         color,
         ranking: i,
-        mpg
+        mpg,
+        fuelGrade
     }
     // Add editted vehicle to user
     user.vehicles[i] = newVehicle;
