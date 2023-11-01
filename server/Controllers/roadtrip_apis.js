@@ -1,37 +1,7 @@
 /* API HELPER FUNCTIONS FOR ROADTRIP BUILDING */
 const axios = require('axios');
 const { GoogleApiKey } = require('../Constants');
-const graphlib = require('graphlib');
 
-function buildGraph(stops) {
-  const graph = new graphlib.Graph();
-
-  // Create nodes for each stop
-  stops.forEach((stop, index) => {
-    graph.setNode(index, { name: stop.name });
-  });
-
-  // Create edges with distances between stops
-  for (let i = 0; i < stops.length; i++) {
-    for (let j = i + 1; j < stops.length; j++) {
-      const distance = calculateDistance(stops[i].location.lat, stops[i].location.lng, stops[j].location.lat, stops[j].location.lng);
-      graph.setEdge(i, j, distance);
-    }
-  }
-
-  return graph;
-}
-
-function edgeWeightFunc(edge) {
-  return edge.distance;
-}
-
-function get_shortest_path(stops) {
-  const graph = buildGraph(stops);
-  const shortestPath = graphlib.alg.dijkstra(graph, 0, edgeWeightFunc);
-  const path = graphlib.alg.predecessorPath(graph, 0, stops.length - 1);
-  return path;
-}
 async function callDirectionService (request) {
   const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
   request.key = GoogleApiKey;
@@ -134,6 +104,5 @@ module.exports = {
   getStops,
   getGeoLocation,
   decodePolyline,
-  calculateDistance,
-  get_shortest_path
+  calculateDistance
 };

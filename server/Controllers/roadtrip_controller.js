@@ -82,7 +82,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   }
   const selectedStop = tempStops[0];
   selectedStops.push(selectedStop);
-  if (idx < 3) {
+  if (idx < 2) {
     const mid = selectedStop.locationString;
     await Promise.all([
       computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
@@ -125,21 +125,39 @@ async function buildARoute(req) {
   endObj.location = right;
   right = `${right.lat},${right.lng}`;
   endObj.locationString = right;
-
-  stops.push(startObj);
   
   await Promise.all([
     computeStops(left, right, stops, allStops, 0, startDate, radius),
   ]);
 
-  stops.push(endObj);
+  const sortedStops = [startObj];
+  let current = startObj;
 
-  const sortedStops = roadtrip_apis.get_shortest_path(stops);
+  /* Simple greedy sorting */
+  while (stops.length > 1) {
+    console.log(JSON.stringify(current)+'\n\n');
+    let minDist = Infinity;
+    let next = null;
+    for (let i = 0; i < stops.length; i++) {
+      const distance = roadtrip_apis.calculateDistance(current.location.lat, current.location.lng,
+        stops[i].location.lat, stops[i].location.lng);
+      if (distance < minDist) {
+        minDist = distance;
+        next = i;
+      }
+    }
+    current = stops[next];
+    stops.splice(next, 1);
+    sortedStops.push(current);
+  }
+
+  sortedStops.push(stops[0]);
+  sortedStops.push(endObj);
   
-  for (let i = 0; i < stops.length - 1; i++) {
+  for (let i = 0; i < sortedStops.length - 1; i++) {
      var request =  {
-      origin: stops[i].locationString,
-      destination: stops[i + 1].locationString,
+      origin: sortedStops[i].locationString,
+      destination: sortedStops[i + 1].locationString,
       travelMode: 'DRIVING',
       drivingOptions: {
         departureTime: startDate, // + time
@@ -151,12 +169,12 @@ async function buildARoute(req) {
     const path = decoded.map((point) => {
       return { lat: point[0], lng: point[1] };
     });
-    stops[i].routeFromHere = path;
-    stops[i].distance = route.routes[0].legs[0].distance.value;
-    stops[i].duration = route.routes[0].legs[0].duration.value;
+    sortedStops[i].routeFromHere = path;
+    sortedStops[i].distance = route.routes[0].legs[0].distance.value;
+    sortedStops[i].duration = route.routes[0].legs[0].duration.value;
   }
 
-  return({stops: stops, allStops: allStops});
+  return({stops: sortedStops, allStops: allStops});
 }
 
 async function getGasStationsAlongRoute(route) {
@@ -194,46 +212,6 @@ const newRoadTrip = async (req, res) => {
     });
   })
   res.status(201).json(result);
-  /*const result = {routes: []};
-
-  req.query.routeOption = 0;
-  try {
-    const route = await buildARoute(req);
-    const decoded = polyline.decode(route.route.routes[0].overview_polyline.points);
-    const path = decoded.map((point) => {
-      return { lat: point[0], lng: point[1] };
-    });
-    const obj = {
-      decodedPath: path,
-      stops: route.stops,
-      distance: route.route.routes[0].legs[0].distance,
-      duration: route.route.routes[0].legs[0].duration,
-    }
-    result.routes.push(obj);
-  } catch (error) {
-    console.error(`Error getting directions by request: ${error}`.red.bold);
-    res.status(409).json({ message: error });
-    return;
-  }
-  for (let i = 1; i < 4; i++) {
-    req.query.routeOption = i;
-    let newOption = null;
-    try {
-      newOption = await buildARoute(req);
-    } catch (error) {
-      break;
-    }
-    const decoded = decodePath(newOption);
-    const obj = {
-      decodedPath: path,
-      stops: newOption.stops,
-      distance: newOption.route.routes[0].legs[0].distance,
-      duration: newOption.route.routes[0].legs[0].duration,
-    }
-    result.routes.push(obj);
-  }
-
-  res.status(201).json(result);*/
 };
   
 module.exports = {newRoadTrip};

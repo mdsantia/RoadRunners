@@ -28,12 +28,12 @@ export const DashboardContextProvider = ({ children }) => {
 
   function buildPolyline(stopsList) {
     let poly = [];
-    console.log(stopsList);
-    // for (let i = 0; i < stopsList.length - 1; i++) {
-    //   poly.push(...stopsList[i].routeFromHere);
-    // }
+    // console.log(stopsList);
+    for (let i = 0; i < stopsList.length - 1; i++) {
+      poly.push(...stopsList[i].routeFromHere);
+    }
     // console.log(poly);
-    setPolyline(stopsList[0].routeFromHere);
+    setPolyline(poly);
   }
 
   const updateChosenRoute = (route) => {
