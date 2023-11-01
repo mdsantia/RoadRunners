@@ -23,10 +23,19 @@ export const DirectionContextProvider = ({ children }) => {
   const [center, setCenter] = useState(null);
   const [chosenRoute, setChosenRoute] = useState(0);
   const [allStops, setAllStops] = useState(null);
+  const [tripDetails, setTripDetails] = useState(null);
 
   const updateChosenRoute = (route) => {
     setChosenRoute(route);
     setStops(options[route]);
+  }
+
+  const resetTo = (tripDetails) => {
+    setOptions(null);
+    setStops(null);
+    setChosenRoute(0);
+    setAllStops(null);
+    setTripDetails(tripDetails);
   }
 
   const directionsCallback = (response) => {
@@ -47,7 +56,9 @@ export const DirectionContextProvider = ({ children }) => {
         setCenter,
         directionsCallback,
         chosenRoute,
-        updateChosenRoute
+        updateChosenRoute,
+        resetTo,
+        tripDetails, setTripDetails
       }}
     >
       {children}
