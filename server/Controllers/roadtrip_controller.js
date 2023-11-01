@@ -71,10 +71,11 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   });
   allStops.push(combinedStops.slice(0, 4));
   if (idx < 2) {
-    const mid = `${midpoint.lat},${midpoint.lng}`
+    const mid = `${midpoint.lat},${midpoint.lng}`;
+    console.log(mid);
     await Promise.all([
-      computeStops(left, mid, selectedStops, allStops, idx + 1),
-      computeStops(mid, right, selectedStops, allStops, idx + 1)
+      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
+      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius)
     ]);
   }
 }
