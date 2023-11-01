@@ -86,44 +86,13 @@ async function buildARoute(req) {
   const radius = 50000;
   const allStops = [];
 
-  var request =  {
-    origin: startLocation,
-    destination: endLocation,
-    travelMode: 'DRIVING',
-    drivingOptions: {
-      departureTime: startDate, // + time
-      trafficModel: 'pessimistic'
-    },
-  };
-
-  const route = await roadtrip_apis.callDirectionService(request);
-  const midpoint = calculateMidpoint(decodePath(route));
-  stops.push({idx: 0, name: startLocation});
-  // Use Promise.all to await all the API calls concurrently
-  const [amusement_parksResults, museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult] = await Promise.all([
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'museum'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'bowling_alley'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'tourist_attraction'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'stadium')
-  ]);
-
-  const combinedStops = amusement_parksResults.concat(museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult);
-  combinedStops.sort((a, b) => {
-    return b.rating - a.rating;
-  });
-  const selectedStops = combinedStops.slice(0, 4);
-  allStops.push(selectedStops);
-
   let left = await roadtrip_apis.getGeoLocation(startLocation); 
   left = `${left.lat},${left.lng}`;
   let right = await roadtrip_apis.getGeoLocation(endLocation);
   right = `${right.lat},${right.lng}`;
-  const mid = `${midpoint.lat},${midpoint.lng}`;
 
   await Promise.all([
-    computeStops(left, mid, selectedStops, allStops, 0, startDate, radius),
-    computeStops(mid, right, selectedStops, allStops, 0, startDate, radius)
+    computeStops(left, right, stops, allStops, 0, startDate, radius),
   ]);
   
   return(allStops);
