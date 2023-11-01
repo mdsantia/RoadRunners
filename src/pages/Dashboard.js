@@ -6,12 +6,11 @@ import TopBar from '../components/additionalFeatures/TopBar';
 import CreateTrip from '../components/newTrip/CreateTrip'
 import {useDashboardContext} from '../hooks/useDashboardContext';
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
-import { Row } from 'react-bootstrap';
 
 const Container = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -71,11 +70,12 @@ const Wrapper = styled(Card)(({ theme }) => ({
 
 
 export default function Dashboard() {
+    const location = useLocation();
     const {tripString} = useParams();
     const [nonce, setNonce] = useState('');
     const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
-    const { tripDetails, setTripDetails, directionsCallback } = useDashboardContext();
+    const { tripDetails, setTripDetails, directionsCallback, loaded, loadNewPage } = useDashboardContext();
 
     useEffect(() => {
         // Fake nonce generation for purposes of demonstration
@@ -83,22 +83,18 @@ export default function Dashboard() {
         // console.log('uuid:', uuid);
         setNonce(`nonce-${uuid}`);
         let decodedTripDetails;
-        try {
-            decodedTripDetails = JSON.parse(atob(tripString));
-            setTripDetails(decodedTripDetails.tripDetails);
-        } catch (err) {
-            setTripDetails(null);
-            navigate('/');
-            return;
+        if (!loaded) {
+            try {
+                decodedTripDetails = JSON.parse(atob(tripString));
+                loadNewPage(decodedTripDetails.tripDetails);
+            } catch (err) {
+                setTripDetails(null);
+                navigate('/');
+                return;
+            }
         }
 
-    }, [tripString]);
-
-    useEffect(() => {
-        if (tripDetails) {
-            buildRoadTrip();
-        }
-    }, [tripDetails]);
+    }, [loaded, location]);
 
     const buildRoadTrip = () => {
         const roadtripParams = {
