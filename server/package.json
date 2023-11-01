@@ -13,6 +13,7 @@
   "dependencies": {
     "@googlemaps/polyline-codec": "^1.0.28",
     "colors": "^1.4.0",
+    "dijkstrajs": "^1.0.3",
     "mongoose": "^7.5.2",
     "polyline": "^0.2.0"
   }

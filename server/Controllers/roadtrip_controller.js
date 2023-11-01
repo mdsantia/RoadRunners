@@ -67,19 +67,27 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   combinedStops.sort((a, b) => {
     return b.rating - a.rating;
   });
-  combinedStops.slice(0, 4).forEach(stop => {
+  // Only add stops that are not already in the list and the first 4 stops
+  let numStops = 0;
+  let tempStops = [];
+  let i = 0;
+  while (numStops < 4 && i < combinedStops.length) {
+    const stop = combinedStops[i];
     if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
       allStops.push(stop);
+      numStops++;
+      tempStops.push(stop);
     }
-  });
-  const selectedStop = combinedStops[0];
+    i++;
+  }
+  const selectedStop = tempStops[0];
   selectedStops.push(selectedStop);
-  if (idx < 2) {
+  if (idx < 3) {
     const mid = selectedStop.locationString;
     await Promise.all([
       computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
       computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius)
-    ]);
+    ]); 
   }
 }
 
@@ -88,18 +96,48 @@ async function buildARoute(req) {
   const stops = [];
   const radius = 50000; // 50 km
   const allStops = [];
+
+  const startObj = {
+    name: startLocation,
+    location: null,
+    category: 'start',
+    icon: null,
+    place_id: null,
+    locationString: null,
+    rating: null,
+  }
+
+  const endObj = {
+    name: endLocation,
+    location: null,
+    category: 'end',
+    icon: null,
+    place_id: null,
+    locationString: null,
+    rating: null,
+  }
   
   let left = await roadtrip_apis.getGeoLocation(startLocation); 
+  startObj.location = left;
   left = `${left.lat},${left.lng}`;
+  startObj.locationString = left;
   let right = await roadtrip_apis.getGeoLocation(endLocation);
+  endObj.location = right;
   right = `${right.lat},${right.lng}`;
+  endObj.locationString = right;
+
+  stops.push(startObj);
   
   await Promise.all([
     computeStops(left, right, stops, allStops, 0, startDate, radius),
   ]);
+
+  stops.push(endObj);
+
+  const sortedStops = roadtrip_apis.get_shortest_path(stops);
   
   for (let i = 0; i < stops.length - 1; i++) {
-    var request =  {
+     var request =  {
       origin: stops[i].locationString,
       destination: stops[i + 1].locationString,
       travelMode: 'DRIVING',
@@ -117,7 +155,7 @@ async function buildARoute(req) {
     stops[i].distance = route.routes[0].legs[0].distance.value;
     stops[i].duration = route.routes[0].legs[0].duration.value;
   }
-  
+
   return({stops: stops, allStops: allStops});
 }
 
