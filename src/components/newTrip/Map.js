@@ -20,9 +20,10 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { routes, center, setCenter, chosenRoute, stops, decoded} = useDirectionContext();
+  const { center, setCenter, chosenRoute, stops, allStops} = useDirectionContext();
   const [zoom, setZoom] = useState(5);
   const [decodedPath, setDecodedPath] = useState(null);
+  const [decoded, setDecoed] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   function materialUIIconToImage(icon) {
@@ -91,13 +92,13 @@ export default function Map(props) {
   }, []);
 
   useEffect(() => {
-    if (routes && chosenRoute !== null && decoded) {
+    if (chosenRoute !== null) {
       // Calculate the new center based on the directions
-      setDecodedPath(decoded);
-      calculateCenter(decoded);
-      calculateZoom(decoded);
+      // setDecodedPath(decoded);
+      // calculateCenter(decoded);
+      // calculateZoom(decoded);
     }
-  }, [chosenRoute, routes, decoded]);
+  }, [chosenRoute, ]);//routes, decoded]);
 
   return (
     <>
@@ -112,7 +113,7 @@ export default function Map(props) {
         }}
       >
 
-        {routes && (
+        {/* {routes && (
           <Polyline
             path={decodedPath}
             options={{
@@ -121,10 +122,22 @@ export default function Map(props) {
               strokeWeight: 4,
             }}
           />
-        )}
+        )} */}
 
         {stops &&
           stops.map((marker, index) => (
+            <Marker
+              key={index}
+              name={marker.name}
+              position={marker.location}
+              // icon={getStopIcon(marker)}
+              label={String(index + 1)} // Use index as the label
+            />
+          ))
+        }
+
+        {allStops &&
+          allStops.map((marker, index) => (
             <Marker
               key={index}
               name={marker.name}

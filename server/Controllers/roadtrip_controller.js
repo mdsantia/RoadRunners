@@ -75,7 +75,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   const selectedStop = combinedStops[0];
   selectedStops.push(selectedStop);
   if (idx < 2) {
-    const mid = `${selectedStop.location.lat},${selectedStop.location.lng}`;
+    const mid = selectedStop.locationString;
     await Promise.all([
       computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
       computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius)
@@ -86,20 +86,39 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
 async function buildARoute(req) {
   const { startLocation, endLocation, startDate } = req.query;
   const stops = [];
-  const routes = new Map(); 
-  const radius = 50000;
+  const radius = 50000; // 50 km
   const allStops = [];
-
+  
   let left = await roadtrip_apis.getGeoLocation(startLocation); 
   left = `${left.lat},${left.lng}`;
   let right = await roadtrip_apis.getGeoLocation(endLocation);
   right = `${right.lat},${right.lng}`;
-
+  
   await Promise.all([
     computeStops(left, right, stops, allStops, 0, startDate, radius),
   ]);
   
-  return(allStops);
+  for (let i = 0; i < stops.length - 1; i++) {
+    var request =  {
+      origin: stops[i].locationString,
+      destination: stops[i + 1].locationString,
+      travelMode: 'DRIVING',
+      drivingOptions: {
+        departureTime: startDate, // + time
+        trafficModel: 'pessimistic'
+      },
+    };
+    const route = await roadtrip_apis.callDirectionService(request);
+    const decoded = polyline.decode(route.routes[0].overview_polyline.points);
+    const path = decoded.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    stops[i].routeFromHere = path;
+    stops[i].distance = route.routes[0].legs[0].distance.value;
+    stops[i].duration = route.routes[0].legs[0].duration.value;
+  }
+  
+  return({stops: stops, allStops: allStops});
 }
 
 async function getGasStationsAlongRoute(route) {
@@ -121,7 +140,22 @@ const newRoadTrip = async (req, res) => {
   const { startLocation, endLocation, startDate, endDate } = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
 
-  res.status(201).json(await buildARoute(req));
+  const result = {options: [], allStops: []};
+  let promises = [];
+  for (let i = 0; i < 5; i++) {
+    req.optionNumber = i;
+    promises.push(buildARoute(req));
+  }
+  const options = await Promise.all(promises);
+  options.forEach(option => {
+    result.options.push(option.stops);
+    option.allStops.forEach(stop => {
+      if (!result.allStops.some(existingStop => existingStop.place_id == stop.place_id)) {
+        result.allStops.push(stop);
+      }
+    });
+  })
+  res.status(201).json(result);
   /*const result = {routes: []};
 
   req.query.routeOption = 0;

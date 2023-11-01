@@ -113,8 +113,8 @@ export default function Dashboard() {
         axios
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
-            //directionsCallback(res.data);
-            console.log(res);
+            directionsCallback(res.data);
+            //console.log(res);
         })
         .catch((err) => {
             console.log(err);
