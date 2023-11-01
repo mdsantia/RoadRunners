@@ -27,13 +27,13 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
   const getMinMpg = () => {
     let min = Infinity;
     for (let i = 0; i < selectedVehiclesMPG.length; i++) {
-      if (selectedVehiclesMPG[i] == -1)
+      if (selectedVehiclesMPG[i] === -1)
         continue;
       if (selectedVehiclesMPG[i] < min)
         min = selectedVehiclesMPG[i];
     }
 
-    if (min == Infinity) {
+    if (min === Infinity) {
       return 0;
     }
     return min;
@@ -119,10 +119,10 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
         <Divider />
         <br></br>
         <Grid item xs={12} md={8}>
-          {selectedVehiclesMPG.length == 0 ? (
+          {selectedVehiclesMPG.length === 0 ? (
             <p>No vehicle selected</p>
           ):(
-          <p>{getMinMpg() == 0 ? "Not available MPG data" : `${getMinMpg()}`}</p>)}
+          <p>{getMinMpg() === 0 ? "Not available MPG data" : `${getMinMpg()}`}</p>)}
           {/* <p>{selectedVehiclesMPG.length==0?'No vehicle selected':(Math.min(selectedVehiclesMPG)==Infinity?'Missing MPG':Math.min(selectedVehiclesMPG))}</p> */}
         </Grid>
       </Grid>

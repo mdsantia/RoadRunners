@@ -4,8 +4,7 @@ import { Card, Button, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/additionalFeatures/TopBar';
 import CreateTrip from '../components/newTrip/CreateTrip'
-import {useTripContext} from '../hooks/useTripContext';
-import {useDirectionContext} from '../hooks/useDirectionContext';
+import {useDashboardContext} from '../hooks/useDashboardContext';
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -76,8 +75,7 @@ export default function Dashboard() {
     const [nonce, setNonce] = useState('');
     const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
-    const { tripDetails, setTripDetails } = useTripContext();
-    const {directionsCallback} = useDirectionContext();
+    const { tripDetails, setTripDetails, directionsCallback } = useDashboardContext();
 
     useEffect(() => {
         // Fake nonce generation for purposes of demonstration
@@ -114,6 +112,7 @@ export default function Dashboard() {
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
             directionsCallback(res.data);
+            //console.log(res);
         })
         .catch((err) => {
             console.log(err);

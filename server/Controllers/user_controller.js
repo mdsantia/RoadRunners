@@ -78,7 +78,7 @@ const deleteTrip = async (req, res) => {
 
     // Delete trip
     for (let i = 0; i < user.trips.length; i++) {
-        if (user.trips[i]._id == id) {
+        if (user.trips[i]._id === id) {
             user.trips.splice(i, 1);
             await user.save();
             res.status(200).json(user);
@@ -146,7 +146,7 @@ const saveTrip = async (req, res) => {
     // They are updating a trip
     if (id) {
         for (let i = 0; i < user.trips.length; i++) {
-            if (user.trips[i]._id == id) {
+            if (user.trips[i]._id === id) {
                 const newTrip = {
                     _id: id,
                     hash: hash
@@ -217,7 +217,7 @@ const addVehicle = async (req, res) => {
     let i = 0;
     for (; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
-        if (make == user.vehicles[i].make && model == user.vehicles[i].model && year == user.vehicles[i].year && color == user.vehicles[i].color) {
+        if (make === user.vehicles[i].make && model === user.vehicles[i].model && year === user.vehicles[i].year && color === user.vehicles[i].color) {
             console.log(`ERROR Vehicle exists`.red.bold);
             res.status(400).json({error: 'Vehicle already exists'});
             return;
@@ -228,7 +228,7 @@ const addVehicle = async (req, res) => {
     // Add vehicle to user
     user.vehicles.push(newVehicle);
     await user.save();
-    if (mpg == -1) {
+    if (mpg === -1) {
         res.status(201).json(user);
         return;
     }
@@ -260,11 +260,11 @@ const editVehicle = async (req, res) => {
     let i = 0;
     for (; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
-        if (user.vehicles[i]._id == _id) {
+        if (user.vehicles[i]._id === _id) {
             break;
         }
     }
-    if (i == user.vehicles.length) {
+    if (i === user.vehicles.length) {
         console.log(`ERROR Vehicle does not exist`.red.bold);
         res.status(400).json({error: 'Vehicle was not found'});
     }
@@ -339,7 +339,7 @@ const removeVehicle = async (req, res) => {
 
     for (let i = 0; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
-        if (user.vehicles[i]._id == _id) {
+        if (user.vehicles[i]._id === _id) {
             // Remove vehicle from user
             user.vehicles.splice(i, 1);
         }
@@ -406,7 +406,7 @@ const getMPG = async (make, model, year) => {
         const query = {make: make, model: model};
         const document = await col.findOne(query);
         const mpgData = document.mpgData;
-        if (mpgData == 'N') {
+        if (mpgData === 'N') {
             return -1;
         }
         id = document.id;

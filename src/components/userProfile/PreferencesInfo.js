@@ -40,7 +40,7 @@ import PreferencesForm from '../userProfile/PreferencesForm';
 
 export default function PreferencesInfo(props) {
     const {user, updateUser} = useUserContext();
-    const inDashboard = props.type == 'dashboard';
+    const inDashboard = props.type === 'dashboard';
     const [budget, setBudget] = React.useState('');
     const [commuteTime, setCommuteTime] = React.useState('');
     const [carsickRating, setCarsickRating] = React.useState('');

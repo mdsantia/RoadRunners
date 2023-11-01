@@ -10,15 +10,15 @@ import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { Button } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
-import { useTripContext } from '../../hooks/useTripContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
-import { json, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import VehicleSelectionForm from '../newTrip/VehicleSelectionForm';
 import RouteOptions from './RouteOptions';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
+import {useDashboardContext} from '../../context/DashboardContext'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,7 +73,7 @@ export default function Itinerary() {
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
-  const {tripDetails} = useTripContext();
+  const {tripDetails} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
  
   const [value, setValue] = React.useState(1);
