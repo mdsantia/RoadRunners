@@ -55,7 +55,7 @@ function RouteOptions() {
             <Container disableGutters>
                 <List>
                     {/* {routes && routes.map((path, index) => (
-                        <ListItem key={index} disablePadding>
+                        <ListItem key={index}>
                             <ListItemButton
                                 id={index}
                                 value={index}
@@ -99,7 +99,7 @@ function RouteOptions() {
                     ))}
                     {!routes && <p>Loading...</p>} */}
                     {options && options.map((path, index) => (
-                        <ListItem key={index} disablePadding>
+                        <ListItem key={index}>
                             <ListItemButton
                                 id={index}
                                 value={index}
@@ -112,7 +112,6 @@ function RouteOptions() {
                                     margin: 0.3
                                 }}
                                 disableGutters
-                                disablePadding
                             >
                                 <Accordion expanded={expanded === index} onChange={handleChange(index)} 
                                     sx={{ 
@@ -123,7 +122,6 @@ function RouteOptions() {
                                         },
                                     }}
                                     disableGutters
-                                    disablePadding
                                 >
                                     <AccordionSummary id={index}
                                         sx={{ 
