@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { Container, Typography, Grid } from '@mui/material';
+import { Container, Typography, Grid, Divider } from '@mui/material';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useDashboardContext } from '../../context/DashboardContext';
@@ -15,23 +15,143 @@ function RouteOptions() {
     const { user } = useUserContext();
     const { routes, updateChosenRoute, chosenRoute } = useDashboardContext();
     const [expanded, setExpanded] = React.useState([]); // Initialize expanded state for each accordion
+    const tempRoutes = [
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+        {
+            origin: 'West Lafayette, IN, USA',
+            destination: 'Los Angeles, CA, USA',
+            distance: '12 miles',
+            duration: '2 hours',
+            numberOfStops: '5',
+            stop1: 'Sephora',
+            stop2: 'Burger King',
+            stop3: 'Taco Bell'
+        },
+    ]
 
     const handleChange = (index) => (event, isExpanded) => {
         const newExpanded = [...expanded];
         newExpanded[index] = isExpanded;
         setExpanded(newExpanded);
     };
+
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
     };
+
+    const getRouteDetails = (infoLabel, info) => {
+        return (
+            <Grid container alignItems="left" textAlign="left" spacing={0}>
+                <Grid item xs={5} sm={5} md={5}>
+                    <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>
+                        {infoLabel}
+                    </Typography>
+                </Grid>
+                <Grid item xs={7} sm={7} md={7}>
+                    <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
+                        {info}
+                    </Typography>
+                </Grid>
+            </Grid>
+        );
+    }
 
     console.log(routes);
 
     return (
         <div style={{ height: '58vh', overflowY: 'auto' }}>
-            <Container sx={{ padding: '0' }}>
-                <List sx={{ padding: '0' }}>
-                    {routes && routes.map((path, index) => (
+            <Container disableGutters>
+                <List>
+                    {/* {routes && routes.map((path, index) => (
                         <ListItem key={index} disablePadding>
                             <ListItemButton
                                 id={index}
@@ -74,7 +194,55 @@ function RouteOptions() {
                             </ListItemButton>
                         </ListItem>
                     ))}
-                    {!routes && <p>Loading...</p>}
+                    {!routes && <p>Loading...</p>} */}
+                    {tempRoutes && tempRoutes.map((path, index) => (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton
+                                id={index}
+                                value={index}
+                                onClick={(event) => handleButton(event)}
+                                sx={{
+                                    width: '100%',
+                                    backgroundColor: index === chosenRoute ? '#e3e3e3' : 'transparent', // Change the background color
+                                    color: index === chosenRoute ? '#fff' : 'inherit', // Change the text color
+                                    padding: 0,
+                                    margin: 0.3
+                                }}
+                                disableGutters
+                                disablePadding
+                            >
+                                <Accordion expanded={expanded[index]} onChange={handleChange(index)} 
+                                    sx={{ 
+                                        width: '100%',
+                                        backgroundColor: '#fff',
+                                        '&:hover': {
+                                            backgroundColor: index === chosenRoute ? '#d1d1d1' : '#f5f5f5', // Change the background color on hover
+                                        },
+                                    }}
+                                    disableGutters
+                                    disablePadding
+                                >
+                                    <AccordionSummary id={index}
+                                        sx={{ 
+                                            backgroundColor: index === chosenRoute ? '#f5f5f5' : 'inherit',
+                                        }}
+                                    >
+                                        <Typography variant="button" style={{ fontSize: '13px' }}>
+                                            Route #{index + 1}
+                                        </Typography>
+                                    </AccordionSummary>
+                                    <Divider></Divider>
+                                    <AccordionDetails sx={{ backgroundColor: index === chosenRoute ? '#f5f5f5' : 'inherit' }}>
+                                        {getRouteDetails("Total Distance:", path.distance)}
+                                        {getRouteDetails("Trip Duration:", path.duration)}
+                                        {getRouteDetails("Number of Stops:", path.numberOfStops)}
+                                        {getRouteDetails("Categories of Stops:", "Food, Shopping")}   
+                                        {getRouteDetails("Popular Stops Along This Route:", path.stop1 + ", " + path.stop2 + ", " + path.stop3)}  
+                                    </AccordionDetails>
+                                </Accordion>
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
                 </List>
             </Container>
         </div>
