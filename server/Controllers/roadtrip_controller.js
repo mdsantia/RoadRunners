@@ -217,6 +217,33 @@ const newRoadTrip = async (req, res) => {
   res.status(201).json(result);
 };
 
+async function addStopInto (newStop, index, stops) {
+  let promises = [];
+  var request =  {
+    origin: stops[index - 1].locationString,
+    destination: newStop.locationString,
+    travelMode: 'DRIVING',
+    drivingOptions: {
+      departureTime: startDate, // + time
+      trafficModel: 'pessimistic'
+    },
+  };
+  promises.push(roadtrip_apis.callDirectionService(request));
+  request.origin = newStop.locationString;
+  request.destination = stops[index].locationString;
+  promises.push(roadtrip_apis.callDirectionService(request));
+  const newRoutes = await Promise.all(promises);
+  stops[firstStop].routeFromHere = newRoutes[0];
+  newStop.routeFromHere = newRoutes[1];
+
+  const newStops = stops
+  .slice(0, firstStop + 1) // Create a new array from the start to the specified position.
+  .concat(newStop) // Concatenate the new element to the new array.
+  .concat(stops.slice(firstStop + 1)); // Concatenate the remaining elements.
+
+  return newStops;
+}
+
 const addStop = async (req, res) => {
   const {newStop, stops} = req.query;
 
@@ -232,41 +259,14 @@ const addStop = async (req, res) => {
     rightDistance = roadtrip_apis.calculateDistance(stops[connectTo + 1], newStop);
   }
 
-  const firstStop = leftDistance + distance > rightDistance + distance? connectTo + 1: connectTo - 1;
+  const firstStop = leftDistance + distance > rightDistance + distance? connectTo - 1: connectTo;
 
-  let promises = [];
-  var request =  {
-    origin: stops[firstStop].locationString,
-    destination: newStop.locationString,
-    travelMode: 'DRIVING',
-    drivingOptions: {
-      departureTime: startDate, // + time
-      trafficModel: 'pessimistic'
-    },
-  };
-  promises.push(roadtrip_apis.callDirectionService(request));
-  request.origin = newStop.locationString;
-  request.destination = stops[firstStop + 1].locationString;
-  promises.push(roadtrip_apis.callDirectionService(request));
-  const newRoutes = await Promise.all(promises);
-  stops[firstStop].routeFromHere = newRoutes[0];
-  newStop.routeFromHere = newRoutes[1];
-
-  const newStops = stops
-  .slice(0, firstStop + 1) // Create a new array from the start to the specified position.
-  .concat(newStop) // Concatenate the new element to the new array.
-  .concat(stops.slice(firstStop + 1)); // Concatenate the remaining elements.
+  const newStops = await addStopInto(newStop, firstStop + 1, stops);
 
   res.status(201).json(newStops);
 }
 
-const removeStop = async (req, res) => {
-  const {indexToRemove, stops} = req.query;
-
-  if (indexToRemove <= 0 || indexToRemove >= stops.length - 1) {
-    throw new Error("Invalid index");
-  }
-
+async function removeStopFrom (indexToRemove, stops) {
   var request =  {
     origin: stops[indexToRemove - 1].locationString,
     destination: stops[indexToRemove + 1].locationString,
@@ -283,7 +283,33 @@ const removeStop = async (req, res) => {
 
   const newStops = stops.splice(indexToRemove, 1);
 
+  return newStops;
+}
+
+const removeStop = async (req, res) => {
+  const {indexToRemove, stops} = req.query;
+
+  if (indexToRemove <= 0 || indexToRemove >= stops.length - 1) {
+    throw new Error("Invalid index");
+  }
+
+  const newStops = await removeStopFrom(indexToRemove, stops);
+
+  res.status(201).json(newStops);
+}
+
+const moveStop = async (req, res) => {
+  const {indexFrom, indexTo, stops} = req.query;
+
+  const stop = stops[indexFrom];
+
+  var newStops = await removeStopFrom(indexFrom, stops);
+
+  const newIndexTo = indexTo > indexFrom ? indexTo - 1: indexTo;
+
+  newStops = await addStopInto(stop, newIndexTo, newStops);
+
   res.status(201).json(newStops);
 }
   
-module.exports = {newRoadTrip, addStop, removeStop};
+module.exports = {newRoadTrip, addStop, removeStop, moveStop};
