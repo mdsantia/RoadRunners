@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import RouteIcon from '@mui/icons-material/Route';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
-import { Button } from '@mui/material';
+import { Button, Divider } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
@@ -158,8 +158,11 @@ export default function Itinerary() {
           setNumVehicles={setNumVehicles}
           setSelectedVehicles={setSelectedVehicles}
         />
+        <Divider></Divider>
+        <br></br>
         <PreferencesForm setDashboardPrefs={setTemporaryPrefs} type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
-        <Button variant="contained" sx={{m:2}} onClick={handleGenerate} >
+        <Divider></Divider>
+        <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={handleGenerate} >
           Re-Generate Trip
         </Button> 
         </Box>
@@ -173,15 +176,15 @@ export default function Itinerary() {
       <TabPanel value={value} index={3}>
         {(tripDetails && tripDetails.id) ?  (
           <>
-            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(false)} >
+            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
               Update Trip
             </Button>
-            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>   
           </>
           ):(     
-            <Button variant="contained" sx={{m:2}} onClick={() => saveTrip(true)} >
+            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
             </Button> 
           )}  
