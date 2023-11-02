@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
-import { UserContextProvider } from './context/UserContext'
+import { UserContextProvider } from './context/UserContext';
 import { DashboardContextProvider } from './context/DashboardContext';
 import { GOOGLE_MAPS_API_KEY } from './Constants';
 import { LoadScript } from '@react-google-maps/api';

@@ -14,6 +14,7 @@ import {useDashboardContext} from '../../hooks/useDashboardContext';
 import {useUserContext} from '../../hooks/useUserContext';
 import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
+import LZString from 'lz-string';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   width: "80%",
@@ -37,7 +38,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 export default function CreateTrip() {
   const navigate = useNavigate();
   const {user} = useUserContext();
-  const {tripDetails, resetTo} = useDashboardContext();
+  const {tripDetails} = useDashboardContext();
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
   const [endLocation, setEndLocation] = useState(tripDetails?tripDetails.endLocation:null);
@@ -53,6 +54,7 @@ export default function CreateTrip() {
       setEndDate(dayjs(tripDetails.endDate));
     }
   }, [tripDetails]);
+  
 
   const handleSubmit= (event) => {
       //call controller method to create trip
@@ -78,9 +80,8 @@ export default function CreateTrip() {
           numVehicles: numVehicles,
           selectedVehicles: selectedVehicles,
         }
-        const encodedTripDetails = btoa(JSON.stringify({tripDetails}));
+        const encodedTripDetails = LZString.compressToUTF16(JSON.stringify({tripDetails}));
         navigate(`/dashboard/${encodedTripDetails}`);
-        resetTo(tripDetails);
         // window.location.reload();
       } else{
         console.log("invalid");

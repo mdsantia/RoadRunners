@@ -28,7 +28,16 @@ const theme = createTheme({
 function RouteOptions() {
     const navigate = useNavigate();
     const { user } = useUserContext();
-    const { options, updateChosenRoute, chosenRoute } = useDashboardContext();
+    const { tripDetails, setTripDetails, updateChosenRoute } = useDashboardContext();
+    const [options, setOptions] = React.useState(null);
+    const [chosenRoute, setChosenRoute] = React.useState(0);
+
+    React.useEffect(() => {
+        if (tripDetails) {
+            setOptions(tripDetails.options);
+            setChosenRoute(tripDetails.chosenRoute);
+        }
+    }, [tripDetails]);
 
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));

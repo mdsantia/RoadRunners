@@ -44,12 +44,15 @@ async function getGeoLocation(address) {
     address: address,
     key: GoogleApiKey,
   };
+  let response;
   try {
-    const response = await axios.get(endpoint, { params: params });
+    response = await axios.get(endpoint, { params: params });
     const location = response.data.results[0].geometry.location;
     return location;
   } catch (error) {
+    console.log(response.data);
     throw new Error(error.message);
+    
   }
 }
 

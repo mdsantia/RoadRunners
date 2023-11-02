@@ -20,29 +20,20 @@ const icons = {
 
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
-  const { polyline, center, setCenter, chosenRoute, stops, allStops } = useDashboardContext();
+  const [polyline, setPolyline] = useState(null);
+  const [center, setCenter] = useState(null);
+  const [allStops, setAllStops] = useState(null);
+  const [stops, setStops] = useState(null);
   const [zoom, setZoom] = useState(5);
-  const [decodedPath, setDecodedPath] = useState(null);
-  const [decoded, setDecoed] = useState(null);
+  const [chosenRoute, setChosenRoute] = useState(0);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const {tripDetails, setTripDetails} = useDashboardContext();
 
-  function materialUIIconToImage(icon) {
-    const svgString = renderToStaticMarkup(<icon />);
-    const image = new Image();
-    image.src = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
-    return image;
-  } 
-  const custRestaurantIcon = materialUIIconToImage(RestaurantIcon);
-
-  function calculateCenter(decoded) {
-    const midIdx = Math.floor(decoded.length / 2);
-    const midPoint = decoded[midIdx];
+  function calculateCenter() {
+    const midIdx = Math.floor(polyline.length / 2);
+    const midPoint = polyline[midIdx];
     setCenter(midPoint);
   }
-
-  const getStopIcon = (marker) => {
-    return icons[marker.category];
-  };
 
   const calculateZoom = (decoded) => {
     if (!props.size) {
@@ -78,6 +69,21 @@ export default function Map(props) {
   };
 
   useEffect(() => {
+    if (!tripDetails) {
+      return;
+    }
+    if (!tripDetails.polyline) {
+      return;
+    }
+    setPolyline(tripDetails.polyline);
+    setAllStops(tripDetails.allStops);
+    setStops(tripDetails.stops);
+    setChosenRoute(tripDetails.chosenRoute);
+    calculateCenter(tripDetails.polyline);
+    calculateZoom(tripDetails.polyline);
+  }, [tripDetails]);
+    
+  useEffect(() => {
     if (navigator.geolocation && !userLocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -90,15 +96,6 @@ export default function Map(props) {
       );
     }
   }, []);
-
-  useEffect(() => {
-    if (chosenRoute !== null) {
-      // Calculate the new center based on the directions
-      // setDecodedPath(decoded);
-      // calculateCenter(decoded);
-      // calculateZoom(decoded);
-    }
-  }, [chosenRoute, ]);//routes, decoded]);
 
   return (
     <>
@@ -154,18 +151,6 @@ export default function Map(props) {
               label={String(index + 1)} // Use index as the label
             />
           ))
-        }
-
-        {center &&
-          <Marker
-            position={center}
-            icon={{
-              url: 'https://i.imgur.com/7teZKif.png',
-              scaledSize: new window.google.maps.Size(50, 50),
-              origin: new window.google.maps.Point(0, 0),
-              anchor: new window.google.maps.Point(25, 25),
-            }}
-          />
         }
         
         {/*

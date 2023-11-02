@@ -55,15 +55,27 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   };
   const route = await roadtrip_apis.callDirectionService(request);
   const midpoint = calculateMidpoint(decodePath(route));
-  const [amusement_parksResults, museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult] = await Promise.all([
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
+  const [
+    // amusement_parksResults, 
+    museumsResult, 
+    // bowlingAlleyResult, 
+    touristAttractionResult, 
+    // stadiumResult
+  ] = await Promise.all([
+    // roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
     roadtrip_apis.getStops(midpoint, radius, null, null, 'museum'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'bowling_alley'),
+    // roadtrip_apis.getStops(midpoint, radius, null, null, 'bowling_alley'),
     roadtrip_apis.getStops(midpoint, radius, null, null, 'tourist_attraction'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'stadium')
+    // roadtrip_apis.getStops(midpoint, radius, null, null, 'stadium')
   ]);
 
-  const combinedStops = amusement_parksResults.concat(museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult);
+  const combinedStops = [].concat(
+    // amusement_parksResults,
+    museumsResult, 
+    // bowlingAlleyResult, 
+    touristAttractionResult, 
+    // stadiumResult
+    );
   combinedStops.sort((a, b) => {
     return b.rating - a.rating;
   });
@@ -80,9 +92,9 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     }
     i++;
   }
-  const selectedStop = tempStops[0];
+  const selectedStop = tempStops;
   selectedStops.push(selectedStop);
-  if (idx < 2) {
+  if (idx < 0) {
     const mid = selectedStop.locationString;
     await Promise.all([
       computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
@@ -117,6 +129,7 @@ async function buildARoute(req) {
     rating: null,
   }
   
+  console.log(`Building a route from ${startLocation} to ${endLocation}`);
   let left = await roadtrip_apis.getGeoLocation(startLocation); 
   startObj.location = left;
   left = `${left.lat},${left.lng}`;
@@ -185,7 +198,7 @@ async function getGasStationsAlongRoute(route) {
 const newRoadTrip = async (req, res) => {
   const { startLocation, endLocation, startDate, endDate } = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
-
+  
   const result = {options: [], allStops: []};
   let promises = [];
   for (let i = 0; i < 5; i++) {
