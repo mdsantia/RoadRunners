@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
+import LZString from 'lz-string';
 
 const Container = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -83,36 +84,42 @@ export default function Dashboard() {
         setNonce(`nonce-${uuid}`);
         let decodedTripDetails;
         try {
-            decodedTripDetails = JSON.parse(atob(tripString));
-            setTripDetails(decodedTripDetails.tripDetails);
+            decodedTripDetails = JSON.parse(LZString.decompressFromUTF16(tripString)).tripDetails;
+            setTripDetails(decodedTripDetails);
         } catch (err) {
+            console.log(err);
             setTripDetails(null);
-            navigate('/');
+            //navigate('/');
             return;
         }
-
     }, [tripString]);
 
     useEffect(() => {
-        if (tripDetails) {
+        if (tripDetails && !tripDetails.allStops) {
             buildRoadTrip();
         }
     }, [tripDetails]);
 
     const buildRoadTrip = () => {
+        if (tripDetails.allStops) {
+            console.log('Trip already built');
+            return;
+        }
         const roadtripParams = {
             startLocation: tripDetails.startLocation,
             endLocation: tripDetails.endLocation,
             startDate: tripDetails.startDate,
             endDate: tripDetails.endDate
         };
-        
+
         axios
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
             directionsCallback(res.data);
-            //console.log(res);
-        })
+            console.log(tripDetails)
+            const encodedTripDetails = LZString.compressToUTF16(JSON.stringify({tripDetails}));
+            navigate(`/dashboard/${encodedTripDetails}`);
+        })  
         .catch((err) => {
             console.log(err);
         });

@@ -4,6 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../Models/user_model');
 const axios = require('axios');
+const LZString = require('lz-string');
 
 /*
     Check if a user already exists, if they do update and return them
@@ -170,9 +171,10 @@ const saveTrip = async (req, res) => {
     user.trips.push(newTrip);
     await user.save();
     
-    let tripDetails = JSON.parse(atob(hash)).tripDetails;
+    
+    let tripDetails = JSON.parse(LZString.decompressFromUTF16(hash)).tripDetails;
     tripDetails.id = user.trips[user.trips.length - 1]._id;
-    const newHash = btoa(JSON.stringify({tripDetails}));
+    const newHash = LZString.compressToUTF16(JSON.stringify({tripDetails}));
     user.trips[user.trips.length - 1].hash = newHash;
     await user.save();
     res.status(200).json(user);
