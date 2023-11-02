@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function LandMarks({ data }) {
+export default function LandMarks({ data, selected, onSelectionChange }) {
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'left', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
@@ -50,7 +50,13 @@ export default function LandMarks({ data }) {
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
-                <Checkbox  {...label} icon={<AddLocationAltOutlinedIcon></AddLocationAltOutlinedIcon>} checkedIcon={<AddLocationAltIcon></AddLocationAltIcon>} />
+                <Checkbox
+                    {...label}
+                    icon={<AddLocationAltOutlinedIcon />}
+                    checkedIcon={<AddLocationAltIcon />}
+                    checked={selected}
+                    onChange={onSelectionChange}
+                />
             </CardActions>
         </Item>
     );

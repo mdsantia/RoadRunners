@@ -55,11 +55,48 @@ function a11yProps(index) {
 
 export default function AttractionsList() {
   const [value, setValue] = React.useState(0);
+  const [selectedHotels, setSelectedHotels] = useState([]);
+  const [selectedLandmarks, setSelectedLandmarks] = useState([]);
+  const [selectedAttractions, setSelectedAttractions] = useState([]);
+  const [selectedRestaurants, setSelectedRestaurants] = useState([]);
+  const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
+  const [selectedGasStations, setSelectedGasStations] = useState([]);
 
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  /* stop selection functions */
+  const handleStopSelection = (stop, selectedList, setSelectedList) => {
+    const stopName = stop.name;
+    const isSelected = selectedList.some((selectedStop) => selectedStop.name === stopName);
+
+    if (isSelected) {
+      setSelectedList((prevSelectedList) =>
+        prevSelectedList.filter((s) => s.name !== stopName)
+      );
+    } else {
+      setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+    }
   };
+
+  const isStopSelected = (stop, type) => {
+    switch (type) {
+      case 'hotel':
+        return selectedHotels.some((selectedHotel) => selectedHotel.name === stop.name);
+      case 'landmark':
+        return selectedLandmarks.some((selectedLandmark) => selectedLandmark.name === stop.name);
+      case 'attraction':
+        return selectedAttractions.some((selectedAttraction) => selectedAttraction.name === stop.name);
+      case 'restaurant':
+        return selectedRestaurants.some((selectedRestaurant) => selectedRestaurant.name === stop.name);
+      case 'liveEvent':
+        return selectedLiveEvents.some((selectedLiveEvent) => selectedLiveEvent.name === stop.name);
+      case 'gasStation':
+        return selectedGasStations.some((selectedGasStation) => selectedGasStation.name === stop.name);
+      default:
+        return false;
+    }
+  };
+
+
 
   //Hotel Dummy Data
   const HotelData = [
@@ -69,7 +106,7 @@ export default function AttractionsList() {
       price: '200',
       rating: '2.0',
       reviews: '500',
-      link:'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
+      link: 'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
     },
     {
       name: 'Fairmont Hotel Vancouver',
@@ -77,7 +114,7 @@ export default function AttractionsList() {
       price: '400',
       rating: '3.0',
       reviews: '1000',
-      link:'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
+      link: 'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
     },
     {
       name: 'Shangri-La False Creek',
@@ -95,13 +132,21 @@ export default function AttractionsList() {
     }
   ];
 
+
+
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+
   //LandMark Dummy Data
   const LandmarkData = [
     {
       name: 'Niagara Falls',
       price: '10.00',
       rating: '4.00',
-      reviews:'400',
+      reviews: '400',
       link: 'https://www.niagarafallsstatepark.com/'
     },
     {
@@ -116,121 +161,121 @@ export default function AttractionsList() {
       rating: '4.00',
       reviews: '200',
     },
-   
+
   ];
 
 
-    //Attraction Dummy Data
-    const AttractionData = [
-      {
-        name: 'Mall Of America',
-        category: 'Shopping',
-        price: '0',
-        rating: '4.00',
-        reviews:'400',
-        links:'https://www.mallofamerica.com/'
-      },
-      {
-        name: 'Science Centre',
-        category: 'Family',
-        price: '5.00',
-        rating: '4.00',
-        reviews: '500',
-        links:'https://www.mallofamerica.com/'
-      },
-      {
-        name: 'National Art Gallery',
-        category: 'Museum',
-        price: '25.00',
-        rating: '4.00',
-        reviews: '200',
-        links:'https://www.mallofamerica.com/'
-      },
-     
-    ];
+  //Attraction Dummy Data
+  const AttractionData = [
+    {
+      name: 'Mall Of America',
+      category: 'Shopping',
+      price: '0',
+      rating: '4.00',
+      reviews: '400',
+      links: 'https://www.mallofamerica.com/'
+    },
+    {
+      name: 'Science Centre',
+      category: 'Family',
+      price: '5.00',
+      rating: '4.00',
+      reviews: '500',
+      links: 'https://www.mallofamerica.com/'
+    },
+    {
+      name: 'National Art Gallery',
+      category: 'Museum',
+      price: '25.00',
+      rating: '4.00',
+      reviews: '200',
+      links: 'https://www.mallofamerica.com/'
+    },
 
-      //Restaurant Dummy Data
-      const RestaurantsData = [
-        {
-          name: 'BRU',
-          cuisine: 'American',
-          price: '$$$',
-          rating: '4.00',
-          reviews:'400',
-          link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
-        },
-        {
-          name: 'Yatagarusu',
-          cuisine: 'Asian',
-          price: '$$',
-          rating: '4.00',
-          reviews: '500',
-          link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
-        },
-        {
-          name: 'Chipotle',
-          cuisine: 'Fast Food',
-          price: '$',
-          rating: '4.00',
-          reviews: '200',
-          link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
-        },
-       
-      ];
+  ];
 
-       //Live Events Dummy Data
-       const LiveEventsData = [
-        {
-          name: 'Doja Cat',
-          time: 'Fri, 7-11pm',
-          venue: 'United Centre',
-          location:'Chicago, IL',
-          link:'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-        },
-        {
-          name: 'Taylor Swift',
-          time: 'Sat, 9-11pm',
-          venue: 'United Centre',
-          location:'Chicago, IL',
-          link:'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-        },
-        {
-          name: 'John Mayer',
-          time: 'Sat, 6-9pm',
-          venue: 'Navy Pier',
-          location:'Chicago, IL',
-          link:'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-        },
-       
-      ];
+  //Restaurant Dummy Data
+  const RestaurantsData = [
+    {
+      name: 'BRU',
+      cuisine: 'American',
+      price: '$$$',
+      rating: '4.00',
+      reviews: '400',
+      link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
+    },
+    {
+      name: 'Yatagarusu',
+      cuisine: 'Asian',
+      price: '$$',
+      rating: '4.00',
+      reviews: '500',
+      link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
+    },
+    {
+      name: 'Chipotle',
+      cuisine: 'Fast Food',
+      price: '$',
+      rating: '4.00',
+      reviews: '200',
+      link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
+    },
 
-        //Restaurant Dummy Data
-        const GasStationData = [
-          {
-            name: 'Speedway',
-            location: '265 State St',
-            hours: 'open 24 hours',
-            link:'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
-          },
-          {
-            name: 'Exxon',
-            location: '265 Pete St',
-            hours: 'open 24 hours',
-            link:'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
-          },
-          {
-            name: 'BP',
-            location: '265 Tim St',
-            hours: 'open 24 hours',
-            link:'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
-          },
-         
-        ];
+  ];
+
+  //Live Events Dummy Data
+  const LiveEventsData = [
+    {
+      name: 'Doja Cat',
+      time: 'Fri, 7-11pm',
+      venue: 'United Centre',
+      location: 'Chicago, IL',
+      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+    },
+    {
+      name: 'Taylor Swift',
+      time: 'Sat, 9-11pm',
+      venue: 'United Centre',
+      location: 'Chicago, IL',
+      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+    },
+    {
+      name: 'John Mayer',
+      time: 'Sat, 6-9pm',
+      venue: 'Navy Pier',
+      location: 'Chicago, IL',
+      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+    },
+
+  ];
+
+  //Restaurant Dummy Data
+  const GasStationData = [
+    {
+      name: 'Speedway',
+      location: '265 State St',
+      hours: 'open 24 hours',
+      link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
+    },
+    {
+      name: 'Exxon',
+      location: '265 Pete St',
+      hours: 'open 24 hours',
+      link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
+    },
+    {
+      name: 'BP',
+      location: '265 Tim St',
+      hours: 'open 24 hours',
+      link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
+    },
+
+  ];
 
 
   return (
     <Box
-      sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width:'100%' }}
+      sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
     >
       <Tabs
         orientation="vertical"
@@ -238,7 +283,7 @@ export default function AttractionsList() {
         value={value}
         onChange={handleChange}
         aria-label="Vertical tabs example"
-        sx={{ borderRight: 1, borderColor: 'divider', width:'40%'}}
+        sx={{ borderRight: 1, borderColor: 'divider', width: '40%' }}
       >
         <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
         <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
@@ -248,50 +293,62 @@ export default function AttractionsList() {
         <Tab icon={<LocalGasStationIcon />} iconPosition="start" label="Gas Stations" {...a11yProps(5)} />
       </Tabs>
       <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {HotelData.map((hotel, index) => (
-          <HotelCard 
-          key={index}
-          data={hotel} 
+        {HotelData.map((hotel, index) => (
+          <HotelCard
+            key={index}
+            data={hotel}
+            selected={isStopSelected(hotel, 'hotel')}
+            onSelectionChange={() => handleStopSelection(hotel, selectedHotels, setSelectedHotels)}
           />
         ))}
       </TabPanel>
       <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {LandmarkData.map((landmark, index) => (
-          <Landmarks 
-          key={index}
-          data={landmark} 
+        {LandmarkData.map((landmark, index) => (
+          <Landmarks
+            key={index}
+            data={landmark}
+            selected={isStopSelected(landmark, 'landmark')}
+            onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
           />
         ))}
       </TabPanel>
-      <TabPanel value={value} index={2}style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {AttractionData.map((attraction, index) => (
+      <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        {AttractionData.map((attraction, index) => (
           <Attractions
-          key={index}
-          data={attraction} 
+            key={index}
+            data={attraction}
+            selected={isStopSelected(attraction, 'attraction')}
+            onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
           />
         ))}
       </TabPanel>
       <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {RestaurantsData.map((restaurant, index) => (
+        {RestaurantsData.map((restaurant, index) => (
           <Restaurants
-          key={index}
-          data={restaurant} 
+            key={index}
+            data={restaurant}
+            selected={isStopSelected(restaurant, 'restaurant')}
+            onSelectionChange={() => handleStopSelection(restaurant, selectedRestaurants, setSelectedRestaurants)}
           />
         ))}
       </TabPanel>
-      <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} > 
-      {LiveEventsData.map((event, index) => (
+      <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+        {LiveEventsData.map((event, index) => (
           <LiveEvents
-          key={index}
-          data={event} 
+            key={index}
+            data={event}
+            selected={isStopSelected(event, 'liveEvent')}
+            onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
           />
         ))}
       </TabPanel>
       <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {GasStationData.map((gas, index) => (
+        {GasStationData.map((gas, index) => (
           <GasStations
-          key={index}
-          data={gas} 
+            key={index}
+            data={gas}
+            selected={isStopSelected(gas, 'gasStation')}
+            onSelectionChange={() => handleStopSelection(gas, selectedGasStations, setSelectedGasStations)}
           />
         ))}
       </TabPanel>
