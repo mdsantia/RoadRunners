@@ -25,9 +25,9 @@ export default function Map(props) {
   const [allStops, setAllStops] = useState(null);
   const [stops, setStops] = useState(null);
   const [zoom, setZoom] = useState(5);
+  const { tripDetails } = useDashboardContext();
   const [chosenRoute, setChosenRoute] = useState(0);
   const [selectedMarker, setSelectedMarker] = useState(null);
-  const {tripDetails, setTripDetails} = useDashboardContext();
 
   function calculateCenter(polyline) {
     const midIdx = Math.floor(polyline.length / 2);
@@ -69,7 +69,6 @@ export default function Map(props) {
   };
 
   useEffect(() => {
-    console.log('tripDetails:', tripDetails);
     if (tripDetails && tripDetails.polyline) {
       console.log('tripDetails:', tripDetails);
       setPolyline(tripDetails.polyline);

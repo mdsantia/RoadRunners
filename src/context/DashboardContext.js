@@ -27,30 +27,37 @@ export const DashboardContextProvider = ({ children }) => {
     if (!stops) {
       return;
     }
-    let poly = [];
+    var poly = [];
+    poly = [];
     for (let i = 0; i < stops.length - 1; i++) {
       poly.push(...stops[i].routeFromHere);
     }
-    tripDetails.polyline = poly;
+    return poly;
   }
 
-
   const updateChosenRoute = (route) => {
-    buildPolyline(tripDetails.options[parseInt(route)]);
-    // tripDetails.stops = options[route];
-    tripDetails.chosenRoute = parseInt(route);
-  
-    return tripDetails;
+    const newTripDetails = {
+      ...tripDetails,
+      allStops: tripDetails.allStops,
+      options: tripDetails.options,
+      stops: tripDetails.options[parseInt(route)],
+      polyline: buildPolyline(tripDetails.options[parseInt(route)]),
+      chosenRoute: parseInt(route),
+    }
+    setTripDetails(newTripDetails);
   }
 
   const directionsCallback = (response) => {
     if (response !== null) {
-        // Store the directions data in state
-        tripDetails.options = response.options;
-        tripDetails.allStops = response.allStops;
-        tripDetails.chosenRoute = 0;
-        tripDetails.stops = response.options[0];
-        buildPolyline(tripDetails.stops);
+        const newTripDetails = {
+          ...tripDetails,
+          options: response.options,
+          allStops: response.allStops,
+          chosenRoute: 0,
+          stops: response.options[0],
+          polyline: buildPolyline(response.options[0]),
+        }
+        setTripDetails(newTripDetails);
     }
   };
 

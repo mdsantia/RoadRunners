@@ -28,7 +28,7 @@ function decodePath(route) {
   return path;
 }
 
-async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius) {
+async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius, optionNumber) {
   var request =  {
     origin: left,
     destination: right,
@@ -77,18 +77,18 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     }
     i++;
   }
-  const selectedStop = tempStops[0];
+  const selectedStop = tempStops[optionNumber % tempStops.length];
   selectedStops.push(selectedStop);
   if (idx < 0) {
     const mid = selectedStop.locationString;
     await Promise.all([
-      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
-      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius)
+      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius, optionNumber),
+      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius, optionNumber)
     ]); 
   }
 }
 
-async function buildARoute(req) {
+async function buildARoute(req, optionNumber) {
   const { startLocation, endLocation, startDate } = req.query;
   const stops = [];
   const radius = 50000; // 50 km
@@ -114,7 +114,6 @@ async function buildARoute(req) {
     rating: null,
   }
   
-  console.log(`Building a route from ${startLocation} to ${endLocation}`);
   let left = await roadtrip_apis.getGeoLocation(startLocation); 
   startObj.location = left;
   left = `${left.lat},${left.lng}`;
@@ -125,7 +124,7 @@ async function buildARoute(req) {
   endObj.locationString = right;
   
   await Promise.all([
-    computeStops(left, right, stops, allStops, 0, startDate, radius),
+    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber),
   ]);
 
   const sortedStops = [startObj];
@@ -187,8 +186,8 @@ const newRoadTrip = async (req, res) => {
   const result = {options: [], allStops: []};
   let promises = [];
   for (let i = 0; i < 5; i++) {
-    req.optionNumber = i;
-    promises.push(buildARoute(req));
+    const optionNumber = i;
+    promises.push(buildARoute(req, optionNumber));
   }
   const options = await Promise.all(promises);
   options.forEach(option => {

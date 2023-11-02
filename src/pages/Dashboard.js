@@ -115,7 +115,6 @@ export default function Dashboard() {
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
             directionsCallback(res.data);
-            console.log(tripDetails)
             //navigate(`/dashboard/${encodedTripDetails}`);
         })  
         .catch((err) => {
