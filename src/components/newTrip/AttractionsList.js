@@ -262,18 +262,21 @@ export default function AttractionsList() {
     {
       name: 'Speedway',
       location: '265 State St',
+      price: '3.03',
       hours: 'open 24 hours',
       link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
     },
     {
       name: 'Exxon',
       location: '265 Pete St',
+      price: '3.40',
       hours: 'open 24 hours',
       link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
     },
     {
       name: 'BP',
       location: '265 Tim St',
+      price: '3.70',
       hours: 'open 24 hours',
       link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
     },
