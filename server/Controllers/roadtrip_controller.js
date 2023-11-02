@@ -168,13 +168,18 @@ async function buildARoute(req) {
       },
     };
     const route = await roadtrip_apis.callDirectionService(request);
-    const decoded = polyline.decode(route.routes[0].overview_polyline.points);
-    const path = decoded.map((point) => {
-      return { lat: point[0], lng: point[1] };
-    });
-    sortedStops[i].routeFromHere = path;
-    sortedStops[i].distance = route.routes[0].legs[0].distance.value;
-    sortedStops[i].duration = route.routes[0].legs[0].duration.value;
+    if (route.message) {
+      i !== 0?sortedStops.splice(i, 1):i++;
+      i--;
+    } else {
+      const decoded = polyline.decode(route.routes[0].overview_polyline.points);
+      const path = decoded.map((point) => {
+        return { lat: point[0], lng: point[1] };
+      });
+      sortedStops[i].routeFromHere = path;
+      sortedStops[i].distance = route.routes[0].legs[0].distance.value;
+      sortedStops[i].duration = route.routes[0].legs[0].duration.value;
+    }
   }
 
   return({stops: sortedStops, allStops: allStops});
