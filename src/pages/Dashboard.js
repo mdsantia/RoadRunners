@@ -6,12 +6,11 @@ import TopBar from '../components/additionalFeatures/TopBar';
 import CreateTrip from '../components/newTrip/CreateTrip'
 import {useDashboardContext} from '../hooks/useDashboardContext';
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
-import { Row } from 'react-bootstrap';
 
 const Container = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -84,36 +83,40 @@ export default function Dashboard() {
         setNonce(`nonce-${uuid}`);
         let decodedTripDetails;
         try {
-            decodedTripDetails = JSON.parse(atob(tripString));
-            setTripDetails(decodedTripDetails.tripDetails);
+            decodedTripDetails = JSON.parse(atob(tripString)).tripDetails;
+            setTripDetails(decodedTripDetails);
         } catch (err) {
+            console.log(err);
             setTripDetails(null);
-            navigate('/');
+            //navigate('/');
             return;
         }
-
     }, [tripString]);
 
     useEffect(() => {
-        if (tripDetails) {
+        if (tripDetails && !tripDetails.allStops) {
             buildRoadTrip();
         }
     }, [tripDetails]);
 
     const buildRoadTrip = () => {
+        if (tripDetails.allStops) {
+            console.log('Trip already built');
+            return;
+        }
         const roadtripParams = {
             startLocation: tripDetails.startLocation,
             endLocation: tripDetails.endLocation,
             startDate: tripDetails.startDate,
             endDate: tripDetails.endDate
         };
-        
+
         axios
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
             directionsCallback(res.data);
-            //console.log(res);
-        })
+            //navigate(`/dashboard/${encodedTripDetails}`);
+        })  
         .catch((err) => {
             console.log(err);
         });

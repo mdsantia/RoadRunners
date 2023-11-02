@@ -44,10 +44,11 @@ export default function Attractions({data, selected, onSelectionChange}) {
                        {data.category}
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
-                        {data.rating} <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon> ({data.reviews})
+                        <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon>{data.rating}
+                        {/* {data.rating}   ({data.reviews}) */}
                     </Grid>
                     <Grid item xs={12} sx={{fontWeight:'bold'}}>
-                      ${data.price}
+                      {data.price ? data.price : 'Free'}
                     </Grid>
                 </Grid>
             </CardContent>

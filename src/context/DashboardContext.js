@@ -20,61 +20,56 @@ export const directionReducer = (state, action) => {
 export const DashboardContextProvider = ({ children }) => {
   const [polyline, setPolyline] = useState(null);
   const [options, setOptions] = useState(null); 
-  const [stops, setStops] = useState(null);
   const [center, setCenter] = useState(null);
-  const [chosenRoute, setChosenRoute] = useState(0);
-  const [allStops, setAllStops] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
 
-  function buildPolyline(stopsList) {
-    let poly = [];
-    console.log(stopsList);
-    // for (let i = 0; i < stopsList.length - 1; i++) {
-    //   poly.push(...stopsList[i].routeFromHere);
-    // }
-    // console.log(poly);
-    setPolyline(stopsList[0].routeFromHere);
+  function buildPolyline(stops) {
+    if (!stops) {
+      return;
+    }
+    var poly = [];
+    poly = [];
+    for (let i = 0; i < stops.length - 1; i++) {
+      poly.push(...stops[i].routeFromHere);
+    }
+    return poly;
   }
 
   const updateChosenRoute = (route) => {
-    setChosenRoute(route);
-    buildPolyline(options[route]);
-    setStops(options[route]);
-  }
-
-  const resetTo = (tripDetails) => {
-    setPolyline(null);
-    setOptions(null);
-    setStops(null);
-    setChosenRoute(0);
-    setAllStops(null);
-    setTripDetails(tripDetails);
+    const newTripDetails = {
+      ...tripDetails,
+      allStops: tripDetails.allStops,
+      options: tripDetails.options,
+      stops: tripDetails.options[parseInt(route)],
+      polyline: buildPolyline(tripDetails.options[parseInt(route)]),
+      chosenRoute: parseInt(route),
+    }
+    setTripDetails(newTripDetails);
   }
 
   const directionsCallback = (response) => {
     if (response !== null) {
-        // Store the directions data in state
-        setOptions(response.options)
-        setAllStops(response.allStops);
-        const stopsList = response.options[chosenRoute ? chosenRoute : 0];
-        setStops(stopsList);
-        buildPolyline(stopsList);
+        const newTripDetails = {
+          ...tripDetails,
+          options: response.options,
+          allStops: response.allStops,
+          chosenRoute: 0,
+          stops: response.options[0],
+          polyline: buildPolyline(response.options[0]),
+        }
+        setTripDetails(newTripDetails);
     }
   };
 
     return ( 
     <DashboardContext.Provider
       value={{
-        polyline,
-        stops,
-        allStops,
         center,
         setCenter,
         directionsCallback,
-        chosenRoute,
+        tripDetails, 
+        setTripDetails,
         updateChosenRoute,
-        resetTo,
-        tripDetails, setTripDetails
       }}
     >
       {children}

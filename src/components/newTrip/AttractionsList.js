@@ -18,7 +18,8 @@ import Attractions from '../StopsComponents/Attractions';
 import Restaurants from '../StopsComponents/Restaurants';
 import LiveEvents from '../StopsComponents/LiveEvents';
 import GasStations from '../StopsComponents/GasStations'
-
+import { useEffect } from 'react';
+import {useDashboardContext} from '../../context/DashboardContext'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,16 +59,56 @@ export default function AttractionsList() {
   const [selectedHotels, setSelectedHotels] = useState([]);
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
+  const [allAttractions, setAllAttractions] = useState([]);
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
+  const { tripDetails } = useDashboardContext();
+  
+  useEffect(() => {
+    if (tripDetails) {
+      setAllAttractions(tripDetails.allStops);
+      tripDetails.stops.forEach((stop) => {
+        if (stop.category != 'start' && stop.category != 'end') {
+          selectedAttractions.push(stop);
+        }
+      });
+    }
+ }, [tripDetails, tripDetails && tripDetails.allStops]);
+ 
+  //Attraction Dummy Data
+  const AttractionData = [
+    {
+      name: 'Mall Of America',
+      category: 'Shopping',
+      price: '0',
+      rating: '4.00',
+      reviews: '400',
+      links: 'https://www.mallofamerica.com/'
+    },
+    {
+      name: 'Science Centre',
+      category: 'Family',
+      price: '5.00',
+      rating: '4.00',
+      reviews: '500',
+      links: 'https://www.mallofamerica.com/'
+    },
+    {
+      name: 'National Art Gallery',
+      category: 'Museum',
+      price: '25.00',
+      rating: '4.00',
+      reviews: '200',
+      links: 'https://www.mallofamerica.com/'
+    },
 
-
+  ];
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
     const stopName = stop.name;
     const isSelected = selectedList.some((selectedStop) => selectedStop.name === stopName);
-
+    
     if (isSelected) {
       setSelectedList((prevSelectedList) =>
         prevSelectedList.filter((s) => s.name !== stopName)
@@ -95,8 +136,6 @@ export default function AttractionsList() {
         return false;
     }
   };
-
-
 
   //Hotel Dummy Data
   const HotelData = [
@@ -133,8 +172,6 @@ export default function AttractionsList() {
   ];
 
 
-
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -164,35 +201,6 @@ export default function AttractionsList() {
 
   ];
 
-
-  //Attraction Dummy Data
-  const AttractionData = [
-    {
-      name: 'Mall Of America',
-      category: 'Shopping',
-      price: '0',
-      rating: '4.00',
-      reviews: '400',
-      links: 'https://www.mallofamerica.com/'
-    },
-    {
-      name: 'Science Centre',
-      category: 'Family',
-      price: '5.00',
-      rating: '4.00',
-      reviews: '500',
-      links: 'https://www.mallofamerica.com/'
-    },
-    {
-      name: 'National Art Gallery',
-      category: 'Museum',
-      price: '25.00',
-      rating: '4.00',
-      reviews: '200',
-      links: 'https://www.mallofamerica.com/'
-    },
-
-  ];
 
   //Restaurant Dummy Data
   const RestaurantsData = [
@@ -313,7 +321,7 @@ export default function AttractionsList() {
         ))}
       </TabPanel>
       <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {AttractionData.map((attraction, index) => (
+        {allAttractions.map((attraction, index) => (
           <Attractions
             key={index}
             data={attraction}

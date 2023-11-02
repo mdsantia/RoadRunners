@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -10,11 +9,12 @@ import Stack from '@mui/material/Stack';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {useDashboardContext} from '../../hooks/useDashboardContext';
 import {useUserContext} from '../../hooks/useUserContext';
 import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
+import LZString from 'lz-string';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   width: "80%",
@@ -36,22 +36,15 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function CreateTrip() {
-  const location = useLocation();
   const navigate = useNavigate();
   const {user} = useUserContext();
-  const {tripDetails, resetTo} = useDashboardContext();
+  const {tripDetails} = useDashboardContext();
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const [startLocation, setStartLocation] = useState(tripDetails?tripDetails.startLocation:null);
   const [endLocation, setEndLocation] = useState(tripDetails?tripDetails.endLocation:null);
   const [startDate, setStartDate] = useState(tripDetails?dayjs(tripDetails.startDate):null);
   const [endDate, setEndDate] = useState(tripDetails?dayjs(tripDetails.endDate):null);
   const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
-
-  useEffect(() => {
-    // This code will run whenever the URL changes
-    // console.log('URL changed:', location.pathname);
-    resetTo(null);
-  }, [location]);
 
   useEffect(() => {
     if (tripDetails) {
@@ -67,7 +60,6 @@ export default function CreateTrip() {
       //call controller method to create trip
       //redirect to dashboard on success
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
-        console.log(user ? user : null);
         let selectedVehicles = [];
         let numVehicles = 0;
         let vehicle = null;
@@ -88,9 +80,8 @@ export default function CreateTrip() {
           numVehicles: numVehicles,
           selectedVehicles: selectedVehicles,
         }
-        const encodedTripDetails = btoa(JSON.stringify({tripDetails}));
+        const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetails}));
         navigate(`/dashboard/${encodedTripDetails}`);
-        resetTo(tripDetails);
         // window.location.reload();
       } else{
         console.log("invalid");

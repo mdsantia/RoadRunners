@@ -13,110 +13,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 function RouteOptions() {
     const navigate = useNavigate();
     const { user } = useUserContext();
-    const { routes, updateChosenRoute, chosenRoute } = useDashboardContext();
-    const [expanded, setExpanded] = React.useState([]); // Initialize expanded state for each accordion
-    const tempRoutes = [
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-        {
-            origin: 'West Lafayette, IN, USA',
-            destination: 'Los Angeles, CA, USA',
-            distance: '12 miles',
-            duration: '2 hours',
-            numberOfStops: '5',
-            stop1: 'Sephora',
-            stop2: 'Burger King',
-            stop3: 'Taco Bell'
-        },
-    ]
+    const { tripDetails, updateChosenRoute } = useDashboardContext();
+    const [options, setOptions] = React.useState(null);
+    const [chosenRoute, setChosenRoute] = React.useState(0);
+    const [expanded, setExpanded] = React.useState([]);
+
+    React.useEffect(() => {
+        if (tripDetails) {
+            setOptions(tripDetails.options);
+            setChosenRoute(tripDetails.chosenRoute);
+        }
+    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
 
     const handleChange = (index) => (event, isExpanded) => {
         const newExpanded = [...expanded];
@@ -144,8 +51,6 @@ function RouteOptions() {
             </Grid>
         );
     }
-
-    console.log(routes);
 
     return (
         <div style={{ height: '58vh', overflowY: 'auto' }}>
@@ -195,7 +100,7 @@ function RouteOptions() {
                         </ListItem>
                     ))}
                     {!routes && <p>Loading...</p>} */}
-                    {tempRoutes && tempRoutes.map((path, index) => (
+                    {options && options.map((path, index) => (
                         <ListItem key={index} disablePadding>
                             <ListItemButton
                                 id={index}
@@ -233,11 +138,18 @@ function RouteOptions() {
                                     </AccordionSummary>
                                     <Divider></Divider>
                                     <AccordionDetails sx={{ backgroundColor: index === chosenRoute ? '#f5f5f5' : 'inherit' }}>
-                                        {getRouteDetails("Total Distance:", path.distance)}
-                                        {getRouteDetails("Trip Duration:", path.duration)}
-                                        {getRouteDetails("Number of Stops:", path.numberOfStops)}
-                                        {getRouteDetails("Categories of Stops:", "Food, Shopping")}   
-                                        {getRouteDetails("Popular Stops Along This Route:", path.stop1 + ", " + path.stop2 + ", " + path.stop3)}  
+                                        {/* {getRouteDetails("Total Distance:", path.distance)} */}
+                                        {/* {getRouteDetails("Trip Duration:", path.duration)} */}
+                                        {getRouteDetails("Number of Stops:", path.length)}
+                                        {getRouteDetails("Categories of Stops:", path[1].category)}   
+                                        {getRouteDetails("Popular Stops Along This Route:", path[0] + ", " + path[1] + ", " + path[2])}
+                                        <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>
+                                            stops: {path.map((stop, stopIndex) => (
+                                                stopIndex === path.length - 1 ? 
+                                                    <span key={stopIndex}> {stop.name}</span> :
+                                                    <span key={stopIndex}> {stop.name} ={'>'} </span>
+                                            ))}
+                                        </Typography>
                                     </AccordionDetails>
                                 </Accordion>
                             </ListItemButton>

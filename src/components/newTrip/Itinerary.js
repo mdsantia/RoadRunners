@@ -19,6 +19,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext'
+import LZString from 'lz-string';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -107,7 +108,7 @@ export default function Itinerary() {
   const saveTrip = async (isNewTrip) => {
     await axios.post('/api/user/saveTrip', {
       email: user.email,
-      hash: btoa(JSON.stringify({tripDetails})),
+      hash: LZString.compressToUTF16(JSON.stringify({tripDetails})),
       id: isNewTrip ? null : (tripDetails.id ? tripDetails.id : null)
     }).then((response) => {
        const newUser = response.data;

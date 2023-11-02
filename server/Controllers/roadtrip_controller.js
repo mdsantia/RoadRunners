@@ -5,28 +5,13 @@ const roadtrip_apis = require('./roadtrip_apis');
 const joining = require('./roadtrip_joining');
 const polyline = require('polyline');
 
-function motionSickness(scale) {
-  /* Notes on motion sickness */
-  /* 
-  1. Avoid Winding Roads: Try to avoid routes with a lot of sharp turns and winding roads.
+const getWarnings = (req, res) => {
+  const {stops, scale} = req.query; /* Scale from 1 through 10 */
+  const warnings = [];
 
-  2. Use Highways: Highways tend to have smoother and straighter roads compared to local streets.
+  warnings.push(roadtrip_apis.motionSickness(stops, scale))
 
-  3. Plan for Frequent Stops: Frequent stops can help people prone to carsickness.
-
-  4. Avoid Heavy Traffic: Stop-and-go traffic can make carsickness worse. You can check real-time traffic conditions on Google Maps and try to avoid congested areas.
-
-  5. Select the Right Vehicle: If you have the option, choose a vehicle with a smoother ride. Larger and more stable vehicles can often provide a more comfortable journey.
-
-  6. Opt for Daytime Driving: If possible, drive during the day. 
-
-  7. Proper Ventilation: Ensure good ventilation in the vehicle.
-
-  8. Drive Smoothly: Try to maintain a steady speed and avoid sudden acceleration or braking. 
-
-  9. Use Medication: If carsickness is a chronic issue for a passenger, consider over-the-counter motion sickness medication. Consult a healthcare professional for recommendations.
-  */
-  
+  res.status(201).json(newStops);
 }
 
 function calculateMidpoint(decoded) {
@@ -43,7 +28,7 @@ function decodePath(route) {
   return path;
 }
 
-async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius) {
+async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius, optionNumber) {
   var request =  {
     origin: left,
     destination: right,
@@ -55,53 +40,111 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   };
   const route = await roadtrip_apis.callDirectionService(request);
   const midpoint = calculateMidpoint(decodePath(route));
-  const [amusement_parksResults, museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult] = await Promise.all([
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
+  const [
+    // amusement_parksResults, 
+    museumsResult, 
+    // bowlingAlleyResult, 
+    touristAttractionResult, 
+    // stadiumResult
+  ] = await Promise.all([
+    // roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
     roadtrip_apis.getStops(midpoint, radius, null, null, 'museum'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'bowling_alley'),
+    // roadtrip_apis.getStops(midpoint, radius, null, null, 'bowling_alley'),
     roadtrip_apis.getStops(midpoint, radius, null, null, 'tourist_attraction'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'stadium')
+    // roadtrip_apis.getStops(midpoint, radius, null, null, 'stadium')
   ]);
 
-  const combinedStops = amusement_parksResults.concat(museumsResult, bowlingAlleyResult, touristAttractionResult, stadiumResult);
+  const combinedStops = [].concat(
+    // amusement_parksResults,
+    museumsResult, 
+    // bowlingAlleyResult, 
+    touristAttractionResult, 
+    // stadiumResult
+    );
   combinedStops.sort((a, b) => {
     return b.rating - a.rating;
   });
-  combinedStops.slice(0, 4).forEach(stop => {
+  // Only add stops that are not already in the list and the first 4 stops
+  let numStops = 0;
+  let tempStops = [];
+  let i = 0;
+  while (numStops < 4 && i < combinedStops.length) {
+    const stop = combinedStops[i];
     if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
       allStops.push(stop);
+      numStops++;
+      tempStops.push(stop);
     }
-  });
-  const selectedStop = combinedStops[0];
+    i++;
+  }
+  const selectedStop = tempStops[optionNumber % tempStops.length];
   selectedStops.push(selectedStop);
-  if (idx < 2) {
+  if (idx < 0) {
     const mid = selectedStop.locationString;
     await Promise.all([
-      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius),
-      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius)
-    ]);
+      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius, optionNumber),
+      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius, optionNumber)
+    ]); 
   }
 }
 
-async function buildARoute(req) {
+async function buildARoute(req, optionNumber) {
   const { startLocation, endLocation, startDate } = req.query;
   const stops = [];
   const radius = 50000; // 50 km
   const allStops = [];
+
+  const startObj = {
+    name: startLocation,
+    location: null,
+    category: 'start',
+    icon: null,
+    place_id: null,
+    locationString: null,
+    rating: null,
+  }
+
+  const endObj = {
+    name: endLocation,
+    location: null,
+    category: 'end',
+    icon: null,
+    place_id: null,
+    locationString: null,
+    rating: null,
+  }
   
   let left = await roadtrip_apis.getGeoLocation(startLocation); 
+  startObj.location = left;
   left = `${left.lat},${left.lng}`;
+  startObj.locationString = left;
   let right = await roadtrip_apis.getGeoLocation(endLocation);
+  endObj.location = right;
   right = `${right.lat},${right.lng}`;
+  endObj.locationString = right;
   
   await Promise.all([
-    computeStops(left, right, stops, allStops, 0, startDate, radius),
+    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber),
   ]);
+
+  const sortedStops = [startObj];
+  let current = startObj;
+
+  /* Simple greedy sorting */
+  while (stops.length > 1) {
+    next = roadtrip_apis.nearestNextStop(current, stops);
+    current = stops[next];
+    stops.splice(next, 1);
+    sortedStops.push(current);
+  }
+
+  sortedStops.push(stops[0]);
+  sortedStops.push(endObj);
   
-  for (let i = 0; i < stops.length - 1; i++) {
-    var request =  {
-      origin: stops[i].locationString,
-      destination: stops[i + 1].locationString,
+  for (let i = 0; i < sortedStops.length - 1; i++) {
+     var request =  {
+      origin: sortedStops[i].locationString,
+      destination: sortedStops[i + 1].locationString,
       travelMode: 'DRIVING',
       drivingOptions: {
         departureTime: startDate, // + time
@@ -113,12 +156,12 @@ async function buildARoute(req) {
     const path = decoded.map((point) => {
       return { lat: point[0], lng: point[1] };
     });
-    stops[i].routeFromHere = path;
-    stops[i].distance = route.routes[0].legs[0].distance.value;
-    stops[i].duration = route.routes[0].legs[0].duration.value;
+    sortedStops[i].routeFromHere = path;
+    sortedStops[i].distance = route.routes[0].legs[0].distance.value;
+    sortedStops[i].duration = route.routes[0].legs[0].duration.value;
   }
-  
-  return({stops: stops, allStops: allStops});
+
+  return({stops: sortedStops, allStops: allStops});
 }
 
 async function getGasStationsAlongRoute(route) {
@@ -139,12 +182,12 @@ async function getGasStationsAlongRoute(route) {
 const newRoadTrip = async (req, res) => {
   const { startLocation, endLocation, startDate, endDate } = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
-
+  
   const result = {options: [], allStops: []};
   let promises = [];
   for (let i = 0; i < 5; i++) {
-    req.optionNumber = i;
-    promises.push(buildARoute(req));
+    const optionNumber = i;
+    promises.push(buildARoute(req, optionNumber));
   }
   const options = await Promise.all(promises);
   options.forEach(option => {
@@ -156,46 +199,101 @@ const newRoadTrip = async (req, res) => {
     });
   })
   res.status(201).json(result);
-  /*const result = {routes: []};
-
-  req.query.routeOption = 0;
-  try {
-    const route = await buildARoute(req);
-    const decoded = polyline.decode(route.route.routes[0].overview_polyline.points);
-    const path = decoded.map((point) => {
-      return { lat: point[0], lng: point[1] };
-    });
-    const obj = {
-      decodedPath: path,
-      stops: route.stops,
-      distance: route.route.routes[0].legs[0].distance,
-      duration: route.route.routes[0].legs[0].duration,
-    }
-    result.routes.push(obj);
-  } catch (error) {
-    console.error(`Error getting directions by request: ${error}`.red.bold);
-    res.status(409).json({ message: error });
-    return;
-  }
-  for (let i = 1; i < 4; i++) {
-    req.query.routeOption = i;
-    let newOption = null;
-    try {
-      newOption = await buildARoute(req);
-    } catch (error) {
-      break;
-    }
-    const decoded = decodePath(newOption);
-    const obj = {
-      decodedPath: path,
-      stops: newOption.stops,
-      distance: newOption.route.routes[0].legs[0].distance,
-      duration: newOption.route.routes[0].legs[0].duration,
-    }
-    result.routes.push(obj);
-  }
-
-  res.status(201).json(result);*/
 };
+
+async function addStopInto (newStop, index, stops) {
+  let promises = [];
+  var request =  {
+    origin: stops[index - 1].locationString,
+    destination: newStop.locationString,
+    travelMode: 'DRIVING',
+    drivingOptions: {
+      departureTime: startDate, // + time
+      trafficModel: 'pessimistic'
+    },
+  };
+  promises.push(roadtrip_apis.callDirectionService(request));
+  request.origin = newStop.locationString;
+  request.destination = stops[index].locationString;
+  promises.push(roadtrip_apis.callDirectionService(request));
+  const newRoutes = await Promise.all(promises);
+  stops[firstStop].routeFromHere = newRoutes[0];
+  newStop.routeFromHere = newRoutes[1];
+
+  const newStops = stops
+  .slice(0, firstStop + 1) // Create a new array from the start to the specified position.
+  .concat(newStop) // Concatenate the new element to the new array.
+  .concat(stops.slice(firstStop + 1)); // Concatenate the remaining elements.
+
+  return newStops;
+}
+
+const addStop = async (req, res) => {
+  const {newStop, stops} = req.query;
+
+  const connectTo = roadtrip_apis.nearestNextStop(newStop, stops);
+  const distance = roadtrip_apis.calculateDistance(connectTo, newStop);
+
+  var leftDistance = Infinity;
+  var rightDistance = Infinity;
+  if (connectTo > 0) {
+    leftDistance = roadtrip_apis.calculateDistance(stops[connectTo - 1], newStop);
+  } 
+  if (connectTo < stops.length - 1) {
+    rightDistance = roadtrip_apis.calculateDistance(stops[connectTo + 1], newStop);
+  }
+
+  const firstStop = leftDistance + distance > rightDistance + distance? connectTo - 1: connectTo;
+
+  const newStops = await addStopInto(newStop, firstStop + 1, stops);
+
+  res.status(201).json(newStops);
+}
+
+async function removeStopFrom (indexToRemove, stops) {
+  var request =  {
+    origin: stops[indexToRemove - 1].locationString,
+    destination: stops[indexToRemove + 1].locationString,
+    travelMode: 'DRIVING',
+    drivingOptions: {
+      departureTime: startDate, // + time
+      trafficModel: 'pessimistic'
+    },
+  };
   
-module.exports = {newRoadTrip};
+  const replacementRoute = await roadtrip_apis.callDirectionService(request)
+
+  stops[indexToRemove - 1].routeFromHere = replacementRoute;
+
+  const newStops = stops.splice(indexToRemove, 1);
+
+  return newStops;
+}
+
+const removeStop = async (req, res) => {
+  const {indexToRemove, stops} = req.query;
+
+  if (indexToRemove <= 0 || indexToRemove >= stops.length - 1) {
+    throw new Error("Invalid index");
+  }
+
+  const newStops = await removeStopFrom(indexToRemove, stops);
+
+  res.status(201).json(newStops);
+}
+
+const moveStop = async (req, res) => {
+  const {indexFrom, indexTo, stops} = req.query;
+
+  const stop = stops[indexFrom];
+
+  var newStops = await removeStopFrom(indexFrom, stops);
+
+  const newIndexTo = indexTo > indexFrom ? indexTo - 1: indexTo;
+
+  newStops = await addStopInto(stop, newIndexTo, newStops);
+
+  res.status(201).json(newStops);
+}
+  
+module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop};
