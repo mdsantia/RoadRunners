@@ -37,7 +37,7 @@ function RouteOptions() {
             setOptions(tripDetails.options);
             setChosenRoute(tripDetails.chosenRoute);
         }
-    }, [tripDetails]);
+    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
 
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));

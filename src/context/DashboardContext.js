@@ -31,16 +31,15 @@ export const DashboardContextProvider = ({ children }) => {
     for (let i = 0; i < stops.length - 1; i++) {
       poly.push(...stops[i].routeFromHere);
     }
-    setPolyline(poly);
+    tripDetails.polyline = poly;
   }
 
 
   const updateChosenRoute = (route) => {
-    buildPolyline(options[route]);
-    tripDetails.polyline = polyline;
+    buildPolyline(tripDetails.options[route]);
     tripDetails.stops = options[route];
     tripDetails.chosenRoute = route;
-    
+  
     return tripDetails;
   }
 
@@ -51,8 +50,7 @@ export const DashboardContextProvider = ({ children }) => {
         tripDetails.allStops = response.allStops;
         tripDetails.chosenRoute = 0;
         tripDetails.stops = response.options[0];
-        buildPolyline(response.options[0]);
-        tripDetails.polyline = polyline;
+        buildPolyline(tripDetails.stops);
     }
   };
 

@@ -11,7 +11,8 @@ import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
-import LZString from 'lz-string';
+import LZString, { compress } from 'lz-string';
+import JSONC from 'jsoncomp';
 
 const Container = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -84,7 +85,7 @@ export default function Dashboard() {
         setNonce(`nonce-${uuid}`);
         let decodedTripDetails;
         try {
-            decodedTripDetails = JSON.parse(LZString.decompressFromUTF16(tripString)).tripDetails;
+            decodedTripDetails = JSON.parse(atob(tripString)).tripDetails;
             setTripDetails(decodedTripDetails);
         } catch (err) {
             console.log(err);
@@ -117,8 +118,7 @@ export default function Dashboard() {
         .then((res) => {
             directionsCallback(res.data);
             console.log(tripDetails)
-            const encodedTripDetails = LZString.compressToUTF16(JSON.stringify({tripDetails}));
-            navigate(`/dashboard/${encodedTripDetails}`);
+            //navigate(`/dashboard/${encodedTripDetails}`);
         })  
         .catch((err) => {
             console.log(err);

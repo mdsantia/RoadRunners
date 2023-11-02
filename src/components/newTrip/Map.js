@@ -29,7 +29,7 @@ export default function Map(props) {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const {tripDetails, setTripDetails} = useDashboardContext();
 
-  function calculateCenter() {
+  function calculateCenter(polyline) {
     const midIdx = Math.floor(polyline.length / 2);
     const midPoint = polyline[midIdx];
     setCenter(midPoint);
@@ -69,19 +69,17 @@ export default function Map(props) {
   };
 
   useEffect(() => {
-    if (!tripDetails) {
-      return;
+    console.log('tripDetails:', tripDetails);
+    if (tripDetails && tripDetails.polyline) {
+      console.log('tripDetails:', tripDetails);
+      setPolyline(tripDetails.polyline);
+      setAllStops(tripDetails.allStops);
+      setStops(tripDetails.stops);
+      setChosenRoute(tripDetails.chosenRoute);
+      calculateCenter(tripDetails.polyline);
+      calculateZoom(tripDetails.polyline);
     }
-    if (!tripDetails.polyline) {
-      return;
-    }
-    setPolyline(tripDetails.polyline);
-    setAllStops(tripDetails.allStops);
-    setStops(tripDetails.stops);
-    setChosenRoute(tripDetails.chosenRoute);
-    calculateCenter(tripDetails.polyline);
-    calculateZoom(tripDetails.polyline);
-  }, [tripDetails]);
+  }, [tripDetails, tripDetails && tripDetails.polyline]);
     
   useEffect(() => {
     if (navigator.geolocation && !userLocation) {

@@ -80,7 +80,7 @@ export default function CreateTrip() {
           numVehicles: numVehicles,
           selectedVehicles: selectedVehicles,
         }
-        const encodedTripDetails = LZString.compressToUTF16(JSON.stringify({tripDetails}));
+        const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetails}));
         navigate(`/dashboard/${encodedTripDetails}`);
         // window.location.reload();
       } else{

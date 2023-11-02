@@ -92,7 +92,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     }
     i++;
   }
-  const selectedStop = tempStops;
+  const selectedStop = tempStops[0];
   selectedStops.push(selectedStop);
   if (idx < 0) {
     const mid = selectedStop.locationString;
