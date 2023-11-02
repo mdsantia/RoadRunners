@@ -11,8 +11,6 @@ import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
-import LZString, { compress } from 'lz-string';
-import JSONC from 'jsoncomp';
 
 const Container = styled('div')(({ theme }) => ({
     display: 'flex',

@@ -36,9 +36,9 @@ export const DashboardContextProvider = ({ children }) => {
 
 
   const updateChosenRoute = (route) => {
-    buildPolyline(tripDetails.options[route]);
-    tripDetails.stops = options[route];
-    tripDetails.chosenRoute = route;
+    buildPolyline(tripDetails.options[parseInt(route)]);
+    // tripDetails.stops = options[route];
+    tripDetails.chosenRoute = parseInt(route);
   
     return tripDetails;
   }

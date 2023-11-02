@@ -116,11 +116,51 @@ async function getStops(location, radius, keyword, preferences, type) {
   }
 }
 
+function motionSickness(stops, scale) {
+  /* Notes on motion sickness */
+  /* 
+  1. Drive Smoothly: Try to maintain a steady speed and avoid sudden acceleration or braking. 
+  
+  2. Focus on the horizon and limit head movements.
+  
+  3. Proper Ventilation: Ensure good ventilation in the vehicle.
+
+  4. Opt for Daytime Driving: If possible, drive during the day. 
+  
+  5. Select the Right Vehicle: If you have the option, choose a vehicle with a smoother ride. Larger and more stable vehicles can often provide a more comfortable journey.
+  
+  6. Avoid Heavy Traffic: Stop-and-go traffic can make carsickness worse. You can check real-time traffic conditions on Google Maps and try to avoid congested areas. Upload all your planned routes into your Google Maps for easier access.
+  
+  7. Use Highways: Highways tend to have smoother and straighter roads compared to local streets.
+  
+  8. Plan for Frequent Stops.
+  
+  9. Avoid Winding Roads: Try to avoid routes with a lot of sharp turns and winding roads.
+
+  10. Use Medication: If carsickness is a chronic issue for a passenger, consider over-the-counter motion sickness medication. Consult a healthcare professional for recommendations.
+  */
+ const recommendations = ['Drive Smoothly: Try to maintain a steady speed and avoid sudden acceleration or braking.'];
+ recommendations.push('Focus on the horizon and limit head movements.'); 
+ recommendations.push('Proper Ventilation: Ensure good ventilation in the vehicle.'); 
+ recommendations.push('Opt for Daytime Driving: If possible, drive during the day.'); 
+ recommendations.push('Select the Right Vehicle: If you have the option, choose a vehicle with a smoother ride.'); 
+ recommendations.push('Avoid Heavy Traffic: Stop-and-go traffic can make carsickness worse. You can check real-time traffic conditions on Google Maps and try to avoid congested areas. Upload all your planned routes into your Google Maps for easier access.'); 
+ recommendations.push('Use Highways: Highways tend to have smoother and straighter roads compared to local streets.'); 
+ recommendations.push('Plan for Frequent Stops.');
+ recommendations.push('Avoid Winding Roads: Try to avoid routes with a lot of sharp turns and winding roads.');
+ recommendations.push('Use Medication: If carsickness is a chronic issue for a passenger, consider over-the-counter motion sickness medication. Consult a healthcare professional for recommendations.');
+
+  const result = recommendations.splice(0, scale - 1);  
+
+  return result;
+}
+
 module.exports = {
   callDirectionService,
   getStops,
   getGeoLocation,
   decodePolyline,
   calculateDistance,
-  nearestNextStop
+  nearestNextStop,
+  motionSickness
 };
