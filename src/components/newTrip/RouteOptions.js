@@ -16,7 +16,7 @@ function RouteOptions() {
     const { tripDetails, updateChosenRoute } = useDashboardContext();
     const [options, setOptions] = React.useState(null);
     const [chosenRoute, setChosenRoute] = React.useState(0);
-    const [expanded, setExpanded] = React.useState([]);
+    const [expanded, setExpanded] = React.useState(null);
 
     React.useEffect(() => {
         if (tripDetails) {
@@ -25,10 +25,8 @@ function RouteOptions() {
         }
     }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
 
-    const handleChange = (index) => (event, isExpanded) => {
-        const newExpanded = [...expanded];
-        newExpanded[index] = isExpanded;
-        setExpanded(newExpanded);
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : null);
     };
 
     const handleButton = (event) => {
@@ -116,7 +114,7 @@ function RouteOptions() {
                                 disableGutters
                                 disablePadding
                             >
-                                <Accordion expanded={expanded[index]} onChange={handleChange(index)} 
+                                <Accordion expanded={expanded === index} onChange={handleChange(index)} 
                                     sx={{ 
                                         width: '100%',
                                         backgroundColor: '#fff',
@@ -144,7 +142,7 @@ function RouteOptions() {
                                         {getRouteDetails("Categories of Stops:", path[1].category)}   
                                         {getRouteDetails("Popular Stops Along This Route:", path[0] + ", " + path[1] + ", " + path[2])}
                                         <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>
-                                            stops: {path.map((stop, stopIndex) => (
+                                            Stops: {path.map((stop, stopIndex) => (
                                                 stopIndex === path.length - 1 ? 
                                                     <span key={stopIndex}> {stop.name}</span> :
                                                     <span key={stopIndex}> {stop.name} ={'>'} </span>
