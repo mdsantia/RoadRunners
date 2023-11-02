@@ -68,6 +68,20 @@ async function decodePolyline(polyline) {
   } 
 }
 
+function nearestNextStop(from, stops) {
+  let minDist = Infinity;
+  let next = null;
+  for (let i = 0; i < stops.length; i++) {
+    const distance = calculateDistance(from.location.lat, from.location.lng,
+      stops[i].location.lat, stops[i].location.lng);
+    if (distance < minDist) {
+      minDist = distance;
+      next = i;
+    }
+  }
+  return next;
+}
+
 async function getStops(location, radius, keyword, preferences, type) {
   try {
     const locationString = `${location.lat},${location.lng}`;
@@ -104,5 +118,6 @@ module.exports = {
   getStops,
   getGeoLocation,
   decodePolyline,
-  calculateDistance
+  calculateDistance,
+  nearestNextStop
 };
