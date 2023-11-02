@@ -6,12 +6,11 @@ import TopBar from '../components/additionalFeatures/TopBar';
 import CreateTrip from '../components/newTrip/CreateTrip'
 import {useDashboardContext} from '../hooks/useDashboardContext';
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
-import { Row } from 'react-bootstrap';
 
 const Container = styled('div')(({ theme }) => ({
     display: 'flex',

@@ -27,6 +27,9 @@ export const DashboardContextProvider = ({ children }) => {
   const [tripDetails, setTripDetails] = useState(null);
 
   function buildPolyline(stopsList) {
+    if (!stopsList) {
+      return;
+    }
     let poly = [];
     // console.log(stopsList);
     for (let i = 0; i < stopsList.length - 1; i++) {
@@ -44,19 +47,33 @@ export const DashboardContextProvider = ({ children }) => {
 
   const resetTo = (tripDetails) => {
     setPolyline(null);
-    setOptions(null);
-    setStops(null);
-    setChosenRoute(0);
-    setAllStops(null);
-    setTripDetails(tripDetails);
+    // if (tripDetails) {
+    //   setChosenRoute(tripDetails.chosenRoute);
+    //   setOptions(tripDetails.options);
+    //   setStops(tripDetails.stops);
+    //   setAllStops(tripDetails.allStops);
+    //   buildPolyline(tripDetails.stops);
+      setTripDetails(tripDetails);
+    // } else {
+      setChosenRoute(0);
+      setOptions(null);
+      setStops(null);
+      setAllStops(null);
+      buildPolyline(null);
+      setTripDetails(null);
+    // }
   }
 
   const directionsCallback = (response) => {
     if (response !== null) {
         // Store the directions data in state
+        tripDetails.options = response.options;
         setOptions(response.options)
+        tripDetails.allStops = response.allStops;
         setAllStops(response.allStops);
-        const stopsList = response.options[chosenRoute ? chosenRoute : 0];
+        tripDetails.chosenRoute = 0;
+        const stopsList = response.options[0];
+        tripDetails.stopsList = response.stopsList;
         setStops(stopsList);
         buildPolyline(stopsList);
     }

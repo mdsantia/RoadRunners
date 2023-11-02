@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -10,7 +9,7 @@ import Stack from '@mui/material/Stack';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {useDashboardContext} from '../../hooks/useDashboardContext';
 import {useUserContext} from '../../hooks/useUserContext';
 import { useMediaQuery } from '@mui/material';
@@ -36,7 +35,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function CreateTrip() {
-  const location = useLocation();
   const navigate = useNavigate();
   const {user} = useUserContext();
   const {tripDetails, resetTo} = useDashboardContext();
@@ -48,12 +46,6 @@ export default function CreateTrip() {
   const [shouldDisplayWarning, setShouldDisplayWarning] = useState(false);
 
   useEffect(() => {
-    // This code will run whenever the URL changes
-    // console.log('URL changed:', location.pathname);
-    resetTo(null);
-  }, [location]);
-
-  useEffect(() => {
     if (tripDetails) {
       setStartLocation(tripDetails.startLocation);
       setEndLocation(tripDetails.endLocation);
@@ -61,13 +53,11 @@ export default function CreateTrip() {
       setEndDate(dayjs(tripDetails.endDate));
     }
   }, [tripDetails]);
-  
 
   const handleSubmit= (event) => {
       //call controller method to create trip
       //redirect to dashboard on success
       if(startLocation != null && endLocation != null && startDate != null && endDate != null){
-        console.log(user ? user : null);
         let selectedVehicles = [];
         let numVehicles = 0;
         let vehicle = null;

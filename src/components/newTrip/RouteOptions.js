@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { createTheme, ThemeProvider, Container, Typography } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useDashboardContext } from '../../context/DashboardContext';
-import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
     typography: {
@@ -28,7 +28,7 @@ const theme = createTheme({
 function RouteOptions() {
     const navigate = useNavigate();
     const { user } = useUserContext();
-    const { routes, updateChosenRoute, chosenRoute } = useDashboardContext();
+    const { options, updateChosenRoute, chosenRoute } = useDashboardContext();
 
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
@@ -38,7 +38,7 @@ function RouteOptions() {
         <ThemeProvider theme={theme}>
             <Container>
                 <List sx={{ paddingTop: '90px' }}>
-                    {routes && routes.map((path, index) => (
+                    {options && options.map((path, index) => (
                         <ListItem key={index} disablePadding>
                             <ListItemButton
                                 id={index}
@@ -51,15 +51,15 @@ function RouteOptions() {
                                 }}
                             >
                                 <ListItemText sx={{ fontStyle: 'italic' }}>Route #{index}</ListItemText>
-                                <ListItemText>Distance: {path.distance.text}</ListItemText>
-                                <ListItemText>Duration: {path.duration.text}</ListItemText>
+                                {/* <ListItemText>Distance: {path.distance.text}</ListItemText>
+                                <ListItemText>Duration: {path.duration.text}</ListItemText> */}
                                 {/* <ListItemText
                                     primary={`Index: ${index}, Distance: ${path.distance.text} & Duration: ${path.duration.text}`}
                                 /> */}
                             </ListItemButton>
                         </ListItem>
                     ))}
-                    {!routes && <p>Loading...</p>}
+                    {!options && <p>Loading...</p>}
                 </List>
             </Container>
         </ThemeProvider>
