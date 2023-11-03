@@ -228,7 +228,7 @@ const addVehicle = async (req, res) => {
     }
 
     mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
-    mpg = -1 ? 20 : mpg;
+    // mpg = -1 ? 20 : mpg;
     // fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
     // Create new vehicle
     const newVehicle = {
@@ -296,7 +296,7 @@ const editVehicle = async (req, res) => {
     }
 
     const mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
-    mpg = -1 ? 20 : mpg;
+    // mpg = -1 ? 20 : mpg;
     // const fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
     const newVehicle = {
         _id,
