@@ -67,7 +67,7 @@ export default function AttractionsList() {
   const [LiveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
-  /* 
+  
   useEffect(() => {
     axios
       .get('/api/roadtrip/getLiveEvents', {
@@ -78,12 +78,13 @@ export default function AttractionsList() {
       })
       .then((response) => {
         const value = response.data;
+        console.log(response.data)
         setLiveEventsData(response.data);
       })
       .catch((err) => {
         // setError(err.message);
       });
-  }, []); */
+  }, []);
 
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
@@ -318,7 +319,7 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        { /*<TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+        {<TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
           {LiveEventsData && LiveEvents.length > 0 && LiveEventsData.map((event, index) => (
             <LiveEvents
               key={index}
@@ -327,7 +328,7 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
             />
           ))}
-          </TabPanel> */}
+          </TabPanel>}
         <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
           {allGasStations && allGasStations.map((gas, index) => (
             <GasStations
