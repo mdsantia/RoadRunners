@@ -38,9 +38,11 @@ export default function AttractionsList() {
     };
 
     useEffect(() => {
-        if (tripDetails.stops) {
+        if (tripDetails && tripDetails.stops) {
             const newStops = [...tripDetails.stops];
-            newStops.forEach((stop) => {delete stop.routeFromHere});
+            newStops.forEach((stop) => {
+                    const newStop = {...stop};
+                    delete newStop.routeFromHere});
             console.log(tripDetails.stops);
             axios.get('/api/roadtrip/yelpUrl', { params: {stops: tripDetails.stops} })
             .then((res) => {
@@ -55,15 +57,15 @@ export default function AttractionsList() {
     }, [tripDetails.stops]);
 
     useEffect(() => {
-        if (tripDetails) {
+        if (tripDetails && tripDetails.allStops) {
             setAllAttractions(tripDetails.allStops);
             tripDetails.stops.forEach((stop) => {
                 if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
                 selectedAttractions.push(stop);
-                
                 }
-            }, [tripDetails, tripDetails && tripDetails.allStops]);
-    }});
+            });
+        }
+    }, [tripDetails, tripDetails && tripDetails.stops]);
 
      /* stop selection functions */
     const handleStopSelection = (stop, selectedList, setSelectedList) => {
@@ -71,7 +73,7 @@ export default function AttractionsList() {
       const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
       const newStops = tripDetails.stops.map(stop => {
       const stopCopy = { ...stop };
-      delete stopCopy.routeFromHere;
+    //   delete stopCopy.routeFromHere;
       return stopCopy;
       }); 
       
