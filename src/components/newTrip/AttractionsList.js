@@ -107,6 +107,9 @@ export default function AttractionsList() {
   ];
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
+    if (stop.routeFromHere) {
+      delete stop.routeFromHere;
+    }
     const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
     const newStops = tripDetails.stops.map(stop => {
       const stopCopy = { ...stop };
