@@ -219,7 +219,7 @@ const newRoadTrip = async (req, res) => {
       }
     });
   })
-  await getGasStationsAlongRoute(result.options[0], 10, 10, 'Regular');
+  await getGasStationsAlongRoute(result.options[0], mpg, 10, 'Regular');
   let chosenFood = 'Fast Food';
   if(foodPref && !foodPref.includes(chosenFood)) {
     if(foodPref.includes('Family Restaurants')) {
