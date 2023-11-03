@@ -22,143 +22,168 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function AttractionsList() {
-  const [value, setValue] = React.useState(0);
-  const [selectedHotels, setSelectedHotels] = useState([]);
-  const [selectedLandmarks, setSelectedLandmarks] = useState([]);
-  const [selectedAttractions, setSelectedAttractions] = useState([]);
-  const [allAttractions, setAllAttractions] = useState([]);
-  const [selectedRestaurants, setSelectedRestaurants] = useState([]);
-  const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
-  const [selectedGasStations, setSelectedGasStations] = useState([]);
-  const { tripDetails, changeStops } = useDashboardContext();
-  const [expandedCard, setExpandedCard] = useState(null);
+    const [value, setValue] = React.useState(0);
+    const [selectedHotels, setSelectedHotels] = useState([]);
+    const [selectedLandmarks, setSelectedLandmarks] = useState([]);
+    const [selectedAttractions, setSelectedAttractions] = useState([]);
+    const [allAttractions, setAllAttractions] = useState([]);
+    const [selectedRestaurants, setSelectedRestaurants] = useState([]);
+    const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
+    const [selectedGasStations, setSelectedGasStations] = useState([]);
+    const { tripDetails, changeStops } = useDashboardContext();
+    const [expandedCard, setExpandedCard] = useState(null);
 
-  const handleExpandCard = (index) => {
-    setExpandedCard(index === expandedCard ? null : index);
-  };
-  
-  useEffect(() => {
-    if (tripDetails) {
-      setAllAttractions(tripDetails.allStops);
-      tripDetails.stops.forEach((stop) => {
-        if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
-          selectedAttractions.push(stop);
-          
-        }
-      });
-      setSelectedAttractions(selectedAttractions);
-    }
- }, [tripDetails, tripDetails && tripDetails.allStops]);
-
-  /* stop selection functions */
-  const handleStopSelection = (stop, selectedList, setSelectedList) => {
-    if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
-      return;
-    }
-    if (stop.routeFromHere) {
-      delete stop.routeFromHere;
-    }
-    const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
-    const newStops = tripDetails.stops.map(stop => {
-      const stopCopy = { ...stop };
-      delete stopCopy.routeFromHere;
-      return stopCopy;
-    }); 
+    const handleExpandCard = (index) => {
+        setExpandedCard(index === expandedCard ? null : index);
+    };
     
-    if (index === -1) {
-      // Remove Stop from route
-      axios
-      .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
-      .then((res) => {
-        changeStops(res.data, 1);
-        setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
-      })  
-      .catch((err) => {
-        console.log(err);
-      });
-    } else {
-      // Add Stop from route
-      axios
-      .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
-      .then((res) => {
-        changeStops(res.data, -1);
-        setSelectedList((prevSelectedList) =>
-        prevSelectedList.filter((s) => s.place_id !== stop.place_id)
-      );
-      })  
-      .catch((err) => {
-        console.log(err);
-      });
-    }
-  };
+    useEffect(() => {
+        if (tripDetails) {
+        setAllAttractions(tripDetails.allStops);
+        tripDetails.stops.forEach((stop) => {
+            if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
+                selectedAttractions.push(stop);
+            
+            }
+        });
+        setSelectedAttractions(selectedAttractions);
+        }
+    }, [tripDetails, tripDetails && tripDetails.allStops]);
 
-return (
-    <Box
-      sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
-    >
-      <Container value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {tripDetails.stops.map((stop, index) => (
-          <div key={index}>
-            <Item
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                maxWidth: '100%',
-                margin: '0 auto',
-                marginTop: '3%',
-                cursor: 'pointer',
-                transition: 'height 0.3s', // Define the transition property
-                height: expandedCard === index ? 140 : 60, // Set initial and expanded height
-              }}
-              onClick={() => handleExpandCard(index)}
-            >
-                {stop.category === 'Hotel' && (
-                    <CardMedia
-                      sx={{ height: expandedCard === index ? 140 : 60, flex: '0 0 40%' }}
-                      image={LandMarkImage}
-                      title="LandMarkImage"
-                    />
+     /* stop selection functions */
+    const handleStopSelection = (stop, selectedList, setSelectedList) => {
+        if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
+        return;
+        }
+        if (stop.routeFromHere) {
+        delete stop.routeFromHere;
+        }
+        const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
+        const newStops = tripDetails.stops.map(stop => {
+        const stopCopy = { ...stop };
+        delete stopCopy.routeFromHere;
+        return stopCopy;
+        }); 
+        
+        if (index === -1) {
+        // Remove Stop from route
+        axios
+        .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
+        .then((res) => {
+            changeStops(res.data, 1);
+            setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+        })  
+        .catch((err) => {
+            console.log(err);
+        });
+        } else {
+        // Add Stop from route
+        axios
+        .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
+        .then((res) => {
+            changeStops(res.data, -1);
+            setSelectedList((prevSelectedList) =>
+            prevSelectedList.filter((s) => s.place_id !== stop.place_id)
+        );
+        })  
+        .catch((err) => {
+            console.log(err);
+        });
+        }
+    };
 
-                )}
-              <CardContent sx={{ flex: '1' }}>
-                <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                  <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
-                    <a
-                      href={stop.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ textDecoration: 'none', color: 'inherit' }}
-                      onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                      onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
-                    >
-                      {stop.name}
-                    </a>
-                  </Grid>
+    const getRouteDetails = (infoLabel, info) => {
+        return (
+            <Grid container alignItems="left" textAlign="left" spacing={0}>
+                <Grid item xs={5} sm={5} md={5}>
+                    <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+                        {infoLabel}
+                    </Typography>
                 </Grid>
-                {/* Display additional content if the card is expanded */}
-                {expandedCard === index && (
-                  <div>
-                    <Grid item xs={12} sx={{ color: 'grey' }}>
-                      {stop.rating} <StarRateIcon sx={{ verticalAlign: 'text-bottom', color: 'gold' }}></StarRateIcon> ({stop.reviews})
-                    </Grid>
-                    <Grid item xs={12} sx={{ fontWeight: 'bold' }}>
-                      ${stop.price}/night
-                    </Grid>
-                  </div>
-                )}
-              </CardContent>
-              <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
-                <Checkbox
-                  icon={<AddLocationAltOutlinedIcon />}
-                  checkedIcon={<AddLocationAltIcon />}
-                  checked={true}
-                  onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)} 
-                />
-              </CardActions>
-            </Item>
-          </div>
-        ))}
-      </Container>
-    </Box>
-  );
+                <Grid item xs={7} sm={7} md={7}>
+                    <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
+                        {info}
+                    </Typography>
+                </Grid>
+            </Grid>
+        );
+    }
+
+    console.log(tripDetails);
+
+    return (
+        <Box
+        sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
+        >
+        <Container value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto', textAlign: 'left', alignItems: 'left'}}>
+            {getRouteDetails("Starting Location:", tripDetails.stops[0].name)}
+            <br></br>
+            {getRouteDetails("Destination:", tripDetails.stops[tripDetails.stops.length - 1].name)}
+            <br></br>
+            {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
+            <br></br>
+            {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+                Your Selected Vehicle(s) for This Trip:
+            </Typography>
+            {tripDetails.selectedVehicles.map((vehicle, index) => (
+                <li variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
+                    {vehicle}
+                </li>
+            ))}
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+                All Stops Along Your Route:
+            </Typography>
+            {tripDetails.stops.slice(1, -1).map((stop, index) => ( // Slice to exclude first and last stops
+            <div key={index}>
+                <Item
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        maxWidth: '100%',
+                        margin: '0 auto',
+                        marginTop: '3%',
+                        cursor: 'pointer',
+                        transition: 'height 0.3s', // Define the transition property
+                        height: expandedCard === index ? 140 : 60, // Set initial and expanded height
+                        backgroundColor: '#f5f5f5'
+                    }}
+                    onClick={() => handleExpandCard(index)}
+                >
+                    <CardContent sx={{ flex: '1' }}>
+                        <Grid container spacing={0.5} justifyContent="center" alignItems="center">
+                        <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                            <a
+                            href={stop.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                            onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                            >
+                            {stop.name}
+                            </a>
+                        </Grid>
+                        </Grid>
+                    </CardContent>
+                    {/* <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
+                        <Checkbox
+                        icon={<AddLocationAltOutlinedIcon />}
+                        checkedIcon={<AddLocationAltIcon />}
+                        checked={selectedHotels.includes(stop)}
+                        onChange={() => handleStopSelection(stop, selectedHotels, setSelectedHotels)}
+                        />
+                    </CardActions> */}
+                </Item>
+            </div>
+            ))}
+        </Container>
+        </Box>
+    );
 }
