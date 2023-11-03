@@ -386,6 +386,7 @@ export default function AttractionsList() {
           ))}
         </TabPanel>
         <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+          {console.log(LiveEventsData)}
           {LiveEventsData && LiveEventsData.map((event, index) => (
             <LiveEvents
               key={index}

@@ -118,7 +118,7 @@ export default function Map(props) {
           />
         )}
 
-        {/* {stops &&
+        {stops &&
           stops.map((marker, index) => (
             <Marker
               key={index}
@@ -128,9 +128,9 @@ export default function Map(props) {
               label={String(index + 1)} // Use index as the label
             />
           ))
-        } */}
+        }
 
-        {allStops &&
+        {/* {allStops &&
           allStops.map((marker, index) => (
             <Marker
               key={index}
@@ -139,7 +139,7 @@ export default function Map(props) {
               // onClick={setSelectedMarker(marker)}
               // icon={getStopIcon(marker)}
               icon={{
-                // path: /* global google */ google.maps.SymbolPath.CIRCLE,
+                // path: /* global google *\/ google.maps.SymbolPath.CIRCLE,
                 fillColor: 'blue',
                 fillOpacity: 1,
                 scale: 10,
@@ -149,10 +149,10 @@ export default function Map(props) {
               label={String(index + 1)} // Use index as the label
             />
           ))
-        }
+        } */}
         
         
-        {selectedMarker && (
+        {/* {selectedMarker && (
            <InfoWindow
             position={selectedMarker.location}
             onCloseClick={() => {
@@ -164,7 +164,7 @@ export default function Map(props) {
               <p>{selectedMarker.rating}</p>
             </div>
           </InfoWindow>
-          )}
+          )} */}
       </GoogleMap>
     </>
   );
