@@ -22,6 +22,11 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+const handleClick = (name) => {
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(name)}`;
+    window.open(searchUrl, '_blank');
+};
+
 function convertPrice(price) {
     let priceLevel = '';
     if (price === 0) {
@@ -45,10 +50,13 @@ export default function GasStations({data, selected, onSelectionChange}) {
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                 <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
-                <a href={data.url} target="_blank" rel="noopener noreferrer"
+                <a
+                            href="#"
+                            onClick={() => handleClick(data.name)}
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
+                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                        >
                             {data.name}
                         </a>
                     </Grid>

@@ -21,6 +21,10 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+const handleClick = (name) => {
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(name)}`;
+    window.open(searchUrl, '_blank');
+};
 
 
 export default function HotelCard({ data, selected, onSelectionChange }) {
@@ -36,12 +40,15 @@ export default function HotelCard({ data, selected, onSelectionChange }) {
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                     <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
-                    <a href={data.link} target="_blank" rel="noopener noreferrer" 
-        style={{ textDecoration: 'none', color: 'inherit' }}
-        onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-        onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
-        {data.name}
-    </a>
+                 <a
+                            href="#"
+                            onClick={() => handleClick(data.name)}
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                            onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                        >
+                            {data.name}
+                        </a>
                     </Grid>
                     <Grid item xs={12} sx={{ color: 'grey' }}>
                         {data.rating} <StarRateIcon sx={{ verticalAlign: 'text-bottom', color: 'gold' }}></StarRateIcon> ({data.reviews})
