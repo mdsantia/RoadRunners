@@ -157,7 +157,7 @@ async function buildARoute(req, optionNumber) {
       return { lat: point[0], lng: point[1] };
     });
     sortedStops[i].routeFromHere = path;
-    sortedStops[i].distance = route.routes[0].legs[0].distance.value;
+    sortedStops[i].distance = parseFloat((route.routes[0].legs[0].distance.value * 0.00062137119223733).toFixed(2));
     sortedStops[i].duration = route.routes[0].legs[0].duration.value;
   }
 

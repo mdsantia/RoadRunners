@@ -21,6 +21,32 @@ export const DashboardContextProvider = ({ children }) => {
   const [center, setCenter] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
 
+  function calculateTotalDistance(options) {
+    const distanceArray = [];
+    let totalDistance = 0;
+    for (let i = 0; i < options.length; i++) {
+      totalDistance = 0;
+      for (let j = 0; j < options[i].length - 1; j++) {
+        totalDistance += options[i][j].distance;
+      }
+      distanceArray.push(totalDistance);
+    }
+    return distanceArray;
+  }
+
+  function calculateTotalDuration(options) {
+    const durationArray = [];
+    let totalDuration = 0;
+    for (let i = 0; i < options.length; i++) {
+      totalDuration = 0;
+      for (let j = 0; j < options[i].length - 1; j++) {
+        totalDuration += options[i][j].duration;
+      }
+      durationArray.push(totalDuration);
+    }
+    return durationArray;
+  }
+
   function buildPolyline(stops) {
     if (!stops) {
       return;
@@ -84,6 +110,8 @@ export const DashboardContextProvider = ({ children }) => {
           allStops: response.allStops,
           chosenRoute: 0,
           stops: response.options[0],
+          totalDistance: calculateTotalDistance(response.options),
+          totalDuration: calculateTotalDuration(response.options),
           polyline: buildPolyline(response.options[0]),
         }
         setTripDetails(newTripDetails);
