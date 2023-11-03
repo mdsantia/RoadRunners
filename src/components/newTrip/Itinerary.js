@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import RouteIcon from '@mui/icons-material/Route';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
-import { Button, Divider } from '@mui/material';
+import { Button, Divider, Container } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
@@ -32,7 +32,6 @@ function TabPanel(props) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
-     
     >
       {value === index ? (
         <Box sx={{ p: 3 }}>
@@ -176,6 +175,7 @@ export default function Itinerary() {
         <AttractionsList></AttractionsList>
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <Box sx={{ overflowY: 'auto', maxHeight: '450px'}}>
         <TripOverview></TripOverview>
         <br></br>
         <Divider></Divider>
@@ -187,13 +187,14 @@ export default function Itinerary() {
             </Button>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
-            </Button>   
+            </Button> 
           </>
           ):(     
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
-            </Button> 
+            </Button>           
           )}  
+          </Box>
       </TabPanel>
       <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
         <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
