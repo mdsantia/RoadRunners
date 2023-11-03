@@ -123,7 +123,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
                 year: year,
                 color: color,
                 mpgGiven: mpg,
-                fuelGrade: fuelGrade,
+                fuelGradeGiven: fuelGrade,
             }).then(response => {
                 const newUser = response.data;
                 updateUser(newUser);
@@ -149,7 +149,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
             model: model,
             color: color,
             mpgGiven: mpg,
-            fuelGrade: fuelGrade
+            fuelGradeGiven: fuelGrade
         };
         axios.post('/api/user/editVehicle', params)
         .then((res) => {
