@@ -1,6 +1,6 @@
 /* API HELPER FUNCTIONS FOR ROADTRIP BUILDING */
 const axios = require('axios');
-const { GoogleApiKey } = require('../Constants');
+const { GoogleApiKey, TicketMasterApiKey } = require('../Constants');
 
 async function callDirectionService (request) {
   const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
@@ -83,6 +83,28 @@ function nearestNextStop(from, stops) {
     }
   }
   return next;
+}
+
+async function callTicketmasterService(request) {
+  const baseUrl = 'https://app.ticketmaster.com/discovery/v2/attractions.json';
+  request.apikey = TicketMasterApiKey;
+
+  try {
+    const response = await axios.get(baseUrl, {
+      params: request,
+    });
+
+    if (response.data._embedded && response.data._embedded.attractions) {
+      const attractions = response.data._embedded.attractions;
+      return attractions;
+    } else {
+      console.error(`Error getting Ticketmaster attractions: ${response.data.error}`);
+      return { message: response.data.error };
+    }
+  } catch (error) {
+    console.error(`Error getting Ticketmaster attractions: ${error.message}`);
+    return { message: error.message };
+  }
 }
 
 // async function getPlacePhotos(placeId) {
@@ -177,5 +199,6 @@ module.exports = {
   decodePolyline,
   calculateDistance,
   nearestNextStop,
+  callTicketmasterService,
   motionSickness
 };

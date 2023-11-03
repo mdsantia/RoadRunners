@@ -64,8 +64,27 @@ export default function AttractionsList() {
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
+  const [LiveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
+  useEffect(() => {
+    axios
+      .get('/api/roadtrip/getLiveEvents', {
+        params: {
+          keyword: 'music',
+          city: 'New York',
+        },
+      })
+      .then((response) => {
+        const value = response.data;
+        console.log(value);
+        setLiveEventsData(response.data);
+      })
+      .catch((err) => {
+        // setError(err.message);
+      });
+  }, []);
+
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
       setAllAttractions(tripDetails.allStops);
@@ -258,30 +277,30 @@ export default function AttractionsList() {
   ];
 
   //Live Events Dummy Data
-  const LiveEventsData = [
-    {
-      name: 'Doja Cat',
-      time: 'Fri, 7-11pm',
-      venue: 'United Centre',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
-    {
-      name: 'Taylor Swift',
-      time: 'Sat, 9-11pm',
-      venue: 'United Centre',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
-    {
-      name: 'John Mayer',
-      time: 'Sat, 6-9pm',
-      venue: 'Navy Pier',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
+  // const LiveEventsData = [
+  //   {
+  //     name: 'Doja Cat',
+  //     time: 'Fri, 7-11pm',
+  //     venue: 'United Centre',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
+  //   {
+  //     name: 'Taylor Swift',
+  //     time: 'Sat, 9-11pm',
+  //     venue: 'United Centre',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
+  //   {
+  //     name: 'John Mayer',
+  //     time: 'Sat, 6-9pm',
+  //     venue: 'Navy Pier',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
 
-  ];
+  // ];
 
   //Restaurant Dummy Data
   const GasStationData = [
@@ -367,7 +386,7 @@ export default function AttractionsList() {
           ))}
         </TabPanel>
         <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
-          {LiveEventsData.map((event, index) => (
+          {LiveEventsData && LiveEventsData.map((event, index) => (
             <LiveEvents
               key={index}
               data={event}

@@ -201,6 +201,27 @@ const newRoadTrip = async (req, res) => {
   res.status(201).json(result);
 };
 
+const getLiveEvents = async(req, res) => {
+  const {keyword, city} = req.query;
+  const request = {
+    size: 1,
+    keyword: keyword,
+    city: city,
+    // startEndDateTime
+    // size	Page size of the response	String	20	No
+    // page	Page number	String	0	No
+    // sort
+  }
+
+  const attractions = await roadtrip_apis.callTicketmasterService(request);
+
+  if (attractions.message) {
+    console.log("Ticket Master Error\n");
+  }
+
+  res.status(201).json(attractions);
+}
+
 async function addStopInto (newStop, into, stops) {
   const firstStop = parseInt(into) - 1;
   let promises = [];
@@ -319,4 +340,4 @@ const moveStop = async (req, res) => {
   res.status(201).json(newStops);
 }
   
-module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop};
+module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents};
