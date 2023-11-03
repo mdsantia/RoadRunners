@@ -89,7 +89,7 @@ export default function Map(props) {
       setChosenRoute(tripDetails.chosenRoute);
       calculateCenter(tripDetails.polyline);
       calculateZoom(tripDetails.polyline);
-      if (tripDetails.chosenRoute == 0) {
+      if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].gasStations && tripDetails.stops[1].gasStations.length > 0) {
         tripDetails.stops.forEach((stop) => {
           if (stop.gasStations && stop.gasStations.length > 0) {
             // If we didn't already add this gas station to the list, add it
@@ -104,7 +104,7 @@ export default function Map(props) {
         });
       }
       console.log(gasStations);
-      if (tripDetails.chosenRoute == 0) {
+      if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].restaurants && tripDetails.stops[1].restaurants.length > 0) {
         setRestaurants(tripDetails.stops[1].restaurants);
       }
       console.log(restaurants);

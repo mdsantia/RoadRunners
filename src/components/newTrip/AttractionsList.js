@@ -67,6 +67,7 @@ export default function AttractionsList() {
   const [LiveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
+  /* 
   useEffect(() => {
     axios
       .get('/api/roadtrip/getLiveEvents', {
@@ -82,7 +83,7 @@ export default function AttractionsList() {
       .catch((err) => {
         // setError(err.message);
       });
-  }, []);
+  }, []); */
 
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
@@ -92,7 +93,7 @@ export default function AttractionsList() {
           selectedAttractions.push(stop);
         }
       });
-      if (tripDetails.chosenRoute == 0) {
+      if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].restaurants) {
         tripDetails.stops.forEach((stop) => {
           if (stop.gasStations && stop.gasStations.length > 0) {
             // If we didn't already add this gas station to the list, add it
@@ -106,7 +107,7 @@ export default function AttractionsList() {
           }
         });
       }
-      if (tripDetails.chosenRoute == 0) {
+      if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].restaurants) {
         setAllRestaurants(tripDetails.stops[1].restaurants)
       }
     }
