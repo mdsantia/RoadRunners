@@ -33,37 +33,37 @@ export default function AttractionsList() {
     const { tripDetails, changeStops } = useDashboardContext();
     const [expandedCard, setExpandedCard] = useState(null);
 
-  const handleExpandCard = (index) => {
-    setExpandedCard(index === expandedCard ? null : index);
-  };
+    const handleExpandCard = (index) => {
+        setExpandedCard(index === expandedCard ? null : index);
+    };
 
-  useEffect(() => {
-    if (tripDetails.stops) {
-      const newStops = [...tripDetails.stops];
-      newStops.forEach((stop) => {delete stop.routeFromHere});
-      console.log(tripDetails.stops)
-      axios
-        .get('/api/roadtrip/yelpUrl', { params: {stops: tripDetails.stops} })
-        .then((res) => {
-          // changeStops(res.data, 1);
-          // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
-          console.log(res.data);
-        })  
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [tripDetails.stops]);
-
-  useEffect(() => {
-    if (tripDetails) {
-      setAllAttractions(tripDetails.allStops);
-      tripDetails.stops.forEach((stop) => {
-        if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
-          selectedAttractions.push(stop);
-          
+    useEffect(() => {
+        if (tripDetails.stops) {
+            const newStops = [...tripDetails.stops];
+            newStops.forEach((stop) => {delete stop.routeFromHere});
+            console.log(tripDetails.stops);
+            axios.get('/api/roadtrip/yelpUrl', { params: {stops: tripDetails.stops} })
+            .then((res) => {
+            // changeStops(res.data, 1);
+            // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+                console.log(res.data);
+            })  
+            .catch((err) => {
+                console.log(err);
+            });
         }
-    }, [tripDetails, tripDetails && tripDetails.allStops]);
+    }, [tripDetails.stops]);
+
+    useEffect(() => {
+        if (tripDetails) {
+            setAllAttractions(tripDetails.allStops);
+            tripDetails.stops.forEach((stop) => {
+                if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
+                selectedAttractions.push(stop);
+                
+                }
+            }, [tripDetails, tripDetails && tripDetails.allStops]);
+    }});
 
      /* stop selection functions */
     const handleStopSelection = (stop, selectedList, setSelectedList) => {
