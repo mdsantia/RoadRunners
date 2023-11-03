@@ -32,7 +32,7 @@ export default function LiveEvents({ data, selected, onSelectionChange}) {
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
                 sx={{ height: 140, flex: '0 0 40%' }}
-                image={data.images[0].url}
+                image={LandMarkImage}
                 title="LandMarkImage"
             />
             <CardContent sx={{ flex: '1' }}>
