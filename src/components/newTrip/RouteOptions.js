@@ -75,7 +75,7 @@ function RouteOptions() {
         <div style={{ height: '58vh', overflowY: 'auto' }}>
             <Grid container spacing={2} alignItems="center" textAlign="left">
                 <Grid item xs={10} sm={10} md={10}>
-                    <InputLabel>Filter By</InputLabel>
+                    <InputLabel>Filter Routes By</InputLabel>
                     <Select
                         displayEmpty
                         value={selectedFilter}
