@@ -236,30 +236,30 @@ export default function AttractionsList() {
 
 
   //Live Events Dummy Data
-  // const LiveEventsData = [
-  //   {
-  //     name: 'Doja Cat',
-  //     time: 'Fri, 7-11pm',
-  //     venue: 'United Centre',
-  //     location: 'Chicago, IL',
-  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-  //   },
-  //   {
-  //     name: 'Taylor Swift',
-  //     time: 'Sat, 9-11pm',
-  //     venue: 'United Centre',
-  //     location: 'Chicago, IL',
-  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-  //   },
-  //   {
-  //     name: 'John Mayer',
-  //     time: 'Sat, 6-9pm',
-  //     venue: 'Navy Pier',
-  //     location: 'Chicago, IL',
-  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-  //   },
+  const LiveEventsDummyData = [
+    {
+      name: 'Doja Cat',
+      time: 'Fri, 7-11pm',
+      venue: 'United Centre',
+      location: 'Chicago, IL',
+      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+    },
+    {
+      name: 'Taylor Swift',
+      time: 'Sat, 9-11pm',
+      venue: 'United Centre',
+      location: 'Chicago, IL',
+      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+    },
+    {
+      name: 'John Mayer',
+      time: 'Sat, 6-9pm',
+      venue: 'Navy Pier',
+      location: 'Chicago, IL',
+      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+    },
 
-  // ];
+  ];
 
   if (allAttractions) {
     return (
