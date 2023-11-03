@@ -110,7 +110,6 @@ export default function AttractionsList() {
         setAllRestaurants(tripDetails.stops[1].restaurants)
       }
     }
-
  }, [tripDetails]);
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {

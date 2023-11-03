@@ -1,21 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
-import HotelIcon from '@mui/icons-material/Hotel';
-import LandscapeIcon from '@mui/icons-material/Landscape';
-import MuseumIcon from '@mui/icons-material/Museum';
-import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-
-const icons = {
-  'gas station': <LocalGasStationIcon />,
-  'landmark': <LandscapeIcon />,
-  'museum': <MuseumIcon />,
-  'restaurant': <RestaurantIcon />,
-  'theater': <TheaterComedyIcon />,
-  'hotel': <HotelIcon />,
-};
 
 const infoWindowContainer = {
   background: 'white',
@@ -51,6 +36,7 @@ export default function Map(props) {
   const { tripDetails } = useDashboardContext();
   const [gasStations, setGasStations] = useState([]);
   const [chosenRoute, setChosenRoute] = useState(0);
+  const [restaurants, setRestaurants] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const iconSize = '10x10';
   var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
@@ -97,7 +83,6 @@ export default function Map(props) {
 
   useEffect(() => {
     if (tripDetails && tripDetails.polyline) {
-      console.log('tripDetails:', tripDetails);
       setPolyline(tripDetails.polyline);
       setAllStops(tripDetails.allStops);
       setStops(tripDetails.stops);
@@ -118,6 +103,11 @@ export default function Map(props) {
           }
         });
       }
+      console.log(gasStations);
+      if (tripDetails.chosenRoute == 0) {
+        setRestaurants(tripDetails.stops[1].restaurants);
+      }
+      console.log(restaurants);
     }
   }, [tripDetails]);
     
@@ -165,31 +155,48 @@ export default function Map(props) {
               key={index}
               name={marker.name}
               position={marker.location}
-              // icon={getStopIcon(marker)}
               label={String(index + 1)} // Use index as the label
               onClick={() => {setSelectedMarker(marker)}}
             />
           ))
         }
 
-        
-      {gasStations &&
-          gasStations.map((marker, index) => (
-            <Marker
-              key={index}
-              name={marker.name}
-              position={marker.location}
-              icon={{
+    {gasStations &&
+        gasStations.map((marker, index) => (
+          <Marker
+            key={index}
+            name={marker.name}
+            position={marker.location}
+            icon={{
               url: iconBase + 'gas_stations.png' + '?size=' + iconSize,
               size: new window.google.maps.Size(40, 40),
               origin: new window.google.maps.Point(0, 0),
               anchor: new window.google.maps.Point(20, 20),
+            }}
+            onClick={() => {setSelectedMarker(marker)}}
+            label={String(index + 1)} // Use index as the label
+          />
+        ))
+      }
+
+      {restaurants &&
+          restaurants.map((marker, index) => (
+            <Marker
+              key={index}
+              name={marker.name}
+              icon={{
+                path: /* global google */ google.maps.SymbolPath.CIRCLE,
+                fillColor: 'grey',
+                fillOpacity: 1,
+                scale: 10,
+                strokeColor: 'white',
+                strokeWeight: 2,
               }}
+              position={marker.location}
               onClick={() => {setSelectedMarker(marker)}}
-              label={String(index + 1)} // Use index as the label
             />
           ))
-        }
+        } 
 
         {/* {allStops &&
           allStops.map((marker, index) => (
