@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import HotelCard from '../StopsComponents/Hotels';
@@ -29,7 +30,7 @@ export default function AttractionsList() {
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
-  const { tripDetails } = useDashboardContext();
+  const { tripDetails, changeStops } = useDashboardContext();
   const [expandedCard, setExpandedCard] = useState(null);
 
   const handleExpandCard = (index) => {
@@ -40,29 +41,56 @@ export default function AttractionsList() {
     if (tripDetails) {
       setAllAttractions(tripDetails.allStops);
       tripDetails.stops.forEach((stop) => {
-        if (stop.category != 'start' && stop.category != 'end') {
+        if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
           selectedAttractions.push(stop);
           
         }
       });
+      setSelectedAttractions(selectedAttractions);
     }
  }, [tripDetails, tripDetails && tripDetails.allStops]);
 
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
-    const stopName = stop.name;
-    const isSelected = selectedList.some((selectedStop) => selectedStop.name === stopName);
+    if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
+      return;
+    }
+    if (stop.routeFromHere) {
+      delete stop.routeFromHere;
+    }
+    const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
+    const newStops = tripDetails.stops.map(stop => {
+      const stopCopy = { ...stop };
+      delete stopCopy.routeFromHere;
+      return stopCopy;
+    }); 
     
-    if (isSelected) {
-      setSelectedList((prevSelectedList) =>
-        prevSelectedList.filter((s) => s.name !== stopName)
-      );
+    if (index === -1) {
+      // Remove Stop from route
+      axios
+      .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
+      .then((res) => {
+        changeStops(res.data, 1);
+        setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
     } else {
-      setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+      // Add Stop from route
+      axios
+      .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
+      .then((res) => {
+        changeStops(res.data, -1);
+        setSelectedList((prevSelectedList) =>
+        prevSelectedList.filter((s) => s.place_id !== stop.place_id)
+      );
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
     }
   };
-
-  console.log(tripDetails.stops);
 
 return (
     <Box
@@ -123,8 +151,8 @@ return (
                 <Checkbox
                   icon={<AddLocationAltOutlinedIcon />}
                   checkedIcon={<AddLocationAltIcon />}
-                  checked={selectedHotels.includes(stop)}
-                  onChange={() => handleStopSelection(stop, selectedHotels, setSelectedHotels)}
+                  checked={true}
+                  onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)} 
                 />
               </CardActions>
             </Item>
