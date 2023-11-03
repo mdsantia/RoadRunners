@@ -115,7 +115,7 @@ export default function AttractionsList() {
       const stopCopy = { ...stop };
       delete stopCopy.routeFromHere;
       return stopCopy;
-    });
+    }); 
     
     if (index === -1) {
       // Remove Stop from route

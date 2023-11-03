@@ -115,6 +115,7 @@ export default function Dashboard() {
     }, [tripString, user]);
 
     useEffect(() => {
+        console.log('tripDetails:', tripDetails);
         if (!tripDetails) {
             return;
         }
@@ -125,7 +126,6 @@ export default function Dashboard() {
 
     const buildRoadTrip = () => {
         if (tripDetails && tripDetails.allStops) {
-            console.log('Trip already built');
             return;
         }
         const roadtripParams = {

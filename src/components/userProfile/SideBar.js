@@ -148,7 +148,6 @@ function SideBar(props) {
                     {pageOptions.map((text, index) => (
                         <ListItem 
                             key={text} 
-                            disablePadding 
                             className="list-item"
                         >
                             <ListItemButton 
