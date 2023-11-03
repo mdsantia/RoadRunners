@@ -7,7 +7,7 @@ import { useUserContext } from '../../hooks/useUserContext';
 import Logo from '../../assets/rr-logo.png';
 
 export default function VehicleForm({selectedCar, onSelectCar}) {
-    const fuelGradeOptions = ["87 (Regular)", "88-90 (Midgrade)", "91-94 (Premium)"];
+    const fuelGradeOptions = ["Regular", "Midgrade", "Premium"];
     React.useEffect(() => {
         if (selectedCar) {
             fetchData('', '', '');
@@ -123,12 +123,11 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
                 year: year,
                 color: color,
                 mpgGiven: mpg,
-                fuelGrade: fuelGrade
             }).then(response => {
                 const newUser = response.data;
                 updateUser(newUser);
                 if (response.status === 201) {
-                    alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.\nBy default, we have set the MPG of your vehicle to be 20.");
+                    alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.");
                 } else {
                     alert("Your vehicle has been saved!");
                 }

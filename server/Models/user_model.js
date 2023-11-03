@@ -25,10 +25,10 @@ const Vehicle = new Schema({
         type: String,
         required: true
     },
-    fuelGrade: {
-        type: String,
-        required: false
-    },
+    // fuelGrade: {
+    //     type: String,
+    //     required: false
+    // },
     ranking: {
         type: Number,
         required: true
