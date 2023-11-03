@@ -75,7 +75,7 @@ export default function AttractionsList() {
         }
       });
     }
- }, [tripDetails, tripDetails && tripDetails.allStops]);
+ }, [tripDetails]);
  
   //Attraction Dummy Data
   const AttractionData = [
@@ -107,8 +107,7 @@ export default function AttractionsList() {
   ];
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
-    const stopName = stop.name;
-    const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.name === stopName);
+    const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
     const newStops = tripDetails.stops.map(stop => {
       const stopCopy = { ...stop };
       delete stopCopy.routeFromHere;
@@ -121,6 +120,7 @@ export default function AttractionsList() {
       .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
       .then((res) => {
         changeStops(res.data, 1);
+        setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
       })  
       .catch((err) => {
         console.log(err);
@@ -131,6 +131,9 @@ export default function AttractionsList() {
       .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
       .then((res) => {
         changeStops(res.data, -1);
+        setSelectedList((prevSelectedList) =>
+        prevSelectedList.filter((s) => s.place_id !== stop.place_id)
+      );
       })  
       .catch((err) => {
         console.log(err);

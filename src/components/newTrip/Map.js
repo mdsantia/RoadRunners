@@ -78,7 +78,7 @@ export default function Map(props) {
       calculateCenter(tripDetails.polyline);
       calculateZoom(tripDetails.polyline);
     }
-  }, [tripDetails, tripDetails && tripDetails.polyline]);
+  }, [tripDetails]);
     
   useEffect(() => {
     if (navigator.geolocation && !userLocation) {
