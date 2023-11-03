@@ -21,14 +21,10 @@ function RouteOptions() {
     const [chosenRoute, setChosenRoute] = React.useState(0);
     const [expanded, setExpanded] = React.useState(null);
     const [selectedFilter, setSelectedFilter] = React.useState('');
-    const filterOptions = ["Shortest", "Fastest"];
+    const [fastestRoute, setFastestRoute] = React.useState(null);
+    const [shortestRoute, setShortestRoute] = React.useState(null);
+    const filterOptions = ["Shortest", "Fastest"];    
 
-    React.useEffect(() => {
-        if (tripDetails) {
-            setOptions(tripDetails.options);
-            setChosenRoute(tripDetails.chosenRoute);
-        }
-    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
     // const handleFilterChange = (event) => {
     //     const {
     //       target: { value },
@@ -38,7 +34,14 @@ function RouteOptions() {
     //       typeof value === 'string' ? value.split(',') : value,
     //     );
     // };
-
+                
+    React.useEffect(() => {
+        if (tripDetails) {
+            setOptions(tripDetails.options);
+            setChosenRoute(tripDetails.chosenRoute);
+        }
+    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
+                
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
     };
@@ -47,7 +50,6 @@ function RouteOptions() {
         setExpanded(isExpanded ? panel : null);
     };
 
-    
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
     };
@@ -73,11 +75,13 @@ function RouteOptions() {
         );
     }
 
+    console.log(tripDetails);
+
     return (
         <div style={{ height: '58vh', overflowY: 'auto' }}>
             <Grid container spacing={2} alignItems="center" textAlign="left">
                 <Grid item xs={10} sm={10} md={10}>
-                    <InputLabel>Filter By</InputLabel>
+                    <InputLabel>Filter Routes By</InputLabel>
                     <Select
                         displayEmpty
                         value={selectedFilter}
