@@ -42,11 +42,7 @@ export default function Attractions({data, selected, onSelectionChange}) {
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
-            <CardMedia
-                sx={{ height: 140 , flex: '0 0 40%'  }}
-                image={data.photo || LandMarkImage}
-                title="LandMarkImage"
-            />
+           
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                 <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
