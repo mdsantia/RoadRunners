@@ -1,6 +1,6 @@
 /* API HELPER FUNCTIONS FOR ROADTRIP BUILDING */
 const axios = require('axios');
-const { GoogleApiKey } = require('../Constants');
+const { GoogleApiKey, TicketMasterApiKey } = require('../Constants');
 
 async function callDirectionService (request) {
   const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
@@ -171,6 +171,43 @@ function nearestNextStop(from, stops) {
   return next;
 }
 
+async function callTicketmasterService(request) {
+  const baseUrl = 'https://app.ticketmaster.com/discovery/v2/attractions.json';
+  request.apikey = TicketMasterApiKey;
+
+  try {
+    const response = await axios.get(baseUrl, {
+      params: request,
+    });
+
+    if (response.data._embedded && response.data._embedded.attractions) {
+      const attractions = response.data._embedded.attractions;
+      return attractions;
+    } else {
+      console.error(`Error getting Ticketmaster attractions: ${response.data.error}`);
+      return { message: response.data.error };
+    }
+  } catch (error) {
+    console.error(`Error getting Ticketmaster attractions: ${error.message}`);
+    return { message: error.message };
+  }
+}
+
+// async function getPlacePhotos(placeId) {
+//   try {
+//     const endpoint = 'https://maps.googleapis.com/maps/api/place/photo';
+//     const params = {
+//       photoreference: placeId, // Use place_id as photoreference
+//       maxwidth: 400, // You can adjust the size of the photo
+//       key: GoogleApiKey
+//     };
+//     const photoResponse = await axios.get(endpoint, { params: params });
+//     return photoResponse.data; // This will contain the photo data
+//   } catch (error) {
+//     return { message: error.message };
+//   }
+// }
+
 async function getStops(location, radius, keyword, preferences, type) {
   try {
     const locationString = `${location.lat},${location.lng}`;
@@ -192,7 +229,7 @@ async function getStops(location, radius, keyword, preferences, type) {
         name: place.name,
         location: place.geometry.location,
         category: type,
-        icon: place.icon,
+        // icon: place.icon,
         place_id: place.place_id,
         locationString: `${place.geometry.location.lat},${place.geometry.location.lng}`, 
         rating: place.rating});})
@@ -248,5 +285,6 @@ module.exports = {
   decodePolyline,
   calculateDistance,
   nearestNextStop,
+  callTicketmasterService,
   motionSickness
 };

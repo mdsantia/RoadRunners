@@ -27,13 +27,13 @@ export default function LiveEvents({ data, selected, onSelectionChange}) {
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
                 sx={{ height: 140, flex: '0 0 40%' }}
-                image={LandMarkImage}
+                image={data.images[0].url}
                 title="LandMarkImage"
             />
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                     <Grid item xs={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
-                        <a href={data.link} target="_blank" rel="noopener noreferrer"
+                        <a href={data.url} target="_blank" rel="noopener noreferrer"
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                             onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>

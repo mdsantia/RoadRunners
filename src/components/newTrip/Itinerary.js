@@ -74,7 +74,7 @@ export default function Itinerary() {
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
-  const {tripDetails} = useDashboardContext();
+  const {tripDetails, setTripDetails} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
  
   const [value, setValue] = React.useState(1);
@@ -106,18 +106,34 @@ export default function Itinerary() {
   }
 
   const saveTrip = async (isNewTrip) => {
+    const tripDetailsToHash = {
+        startLocation: tripDetails.startLocation,
+        endLocation: tripDetails.endLocation,
+        startDate: tripDetails.startDate,
+        endDate: tripDetails.endDate,
+        preferences: tripDetails.preferences,
+        numVehicles: tripDetails.numVehicles,
+        selectedVehicles: tripDetails.selectedVehicles,
+    }
+    if (tripDetails.id) {
+      tripDetailsToHash.id = tripDetails.id;
+    }
     await axios.post('/api/user/saveTrip', {
       email: user.email,
-      hash: LZString.compressToUTF16(JSON.stringify({tripDetails})),
-      id: isNewTrip ? null : (tripDetails.id ? tripDetails.id : null)
+      hash: btoa(JSON.stringify({tripDetails: tripDetailsToHash})),
+      id: isNewTrip ? null : (tripDetails.id ? tripDetails.id : null),
+      allStops: tripDetails.allStops,
+      options: tripDetails.options,
+      polyline: tripDetails.polyline,
+      chosenRoute: tripDetails.chosenRoute,
+      stops: tripDetails.stops, 
     }).then((response) => {
        const newUser = response.data;
        updateUser(newUser);
        isNewTrip ? showMessage('Trip saved successfully!', 2000, 'success') : showMessage('Trip updated successfully!', 2000, 'success');
-       if(isNewTrip){
+       if(isNewTrip) {
         const encodedTripDetails = newUser.trips[newUser.trips.length - 1].hash;
         navigate(`/dashboard/${encodedTripDetails}`);
-        
        }
     }
     ).catch((error) => {
@@ -130,11 +146,22 @@ export default function Itinerary() {
       ...tripDetails,
       preferences: temporaryPrefs,
       numVehicles: numVehicles,
-      selectedVehicles: selectedVehicles
+      selectedVehicles: selectedVehicles,
     }
-    const encodedTripDetails = btoa(JSON.stringify({tripDetails: newTripDetails}));
+    const tripDetailsToHash = {
+      startLocation: tripDetails.startLocation,
+      endLocation: tripDetails.endLocation,
+      startDate: tripDetails.startDate,
+      endDate: tripDetails.endDate,
+      preferences: newTripDetails.preferences,
+      numVehicles: newTripDetails.numVehicles,
+      selectedVehicles: newTripDetails.selectedVehicles,
+    }
+    if (tripDetails.id) {
+      tripDetailsToHash.id = tripDetails.id;
+    }
+    const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetailsToHash}));
     navigate(`/dashboard/${encodedTripDetails}`);
-    window.location.reload();
   }
 
   return (

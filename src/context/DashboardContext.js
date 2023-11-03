@@ -18,8 +18,6 @@ export const directionReducer = (state, action) => {
 }
 
 export const DashboardContextProvider = ({ children }) => {
-  const [polyline, setPolyline] = useState(null);
-  const [options, setOptions] = useState(null); 
   const [center, setCenter] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
 
@@ -33,6 +31,37 @@ export const DashboardContextProvider = ({ children }) => {
       poly.push(...stops[i].routeFromHere);
     }
     return poly;
+  }
+
+  const changeStops = (newStops, type) => {
+    // remove is type -1, add is type 1
+    const stops = tripDetails.stops;
+    console.log(stops);
+    for (let i = 0; i < stops.length; i++) {
+      var index = -1;
+    
+      for (let j = 0; j < newStops.length; j++) {
+        if (newStops[j].place_id === stops[i].place_id) {
+          index = j;
+          break;
+        }
+      }
+    
+      if (index !== -1) {
+        if (!newStops[index].routeFromHere) {
+          newStops[index].routeFromHere = stops[i].routeFromHere;
+        }
+      }
+    }
+    var newOptions = tripDetails.options;
+    newOptions[tripDetails.chosenRoute] = newStops;
+    const newTripDetails = {
+      ...tripDetails,
+      stops: newStops,
+      options: newOptions,
+      polyline: buildPolyline(newStops)
+    }
+    setTripDetails(newTripDetails);
   }
 
   const updateChosenRoute = (route) => {
@@ -70,6 +99,7 @@ export const DashboardContextProvider = ({ children }) => {
         tripDetails, 
         setTripDetails,
         updateChosenRoute,
+        changeStops
       }}
     >
       {children}

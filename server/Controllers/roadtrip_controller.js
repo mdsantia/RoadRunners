@@ -99,7 +99,7 @@ async function buildARoute(req, optionNumber) {
     location: null,
     category: 'start',
     icon: null,
-    place_id: null,
+    place_id: 'A',
     locationString: null,
     rating: null,
   }
@@ -109,7 +109,7 @@ async function buildARoute(req, optionNumber) {
     location: null,
     category: 'end',
     icon: null,
-    place_id: null,
+    place_id: 'B',
     locationString: null,
     rating: null,
   }
@@ -201,24 +201,60 @@ const newRoadTrip = async (req, res) => {
   res.status(201).json(result);
 };
 
-async function addStopInto (newStop, index, stops) {
+const getLiveEvents = async(req, res) => {
+  const {keyword, city} = req.query;
+  const request = {
+    size: 1,
+    keyword: keyword,
+    city: city,
+    // startEndDateTime
+    // size	Page size of the response	String	20	No
+    // page	Page number	String	0	No
+    // sort
+  }
+
+  const attractions = await roadtrip_apis.callTicketmasterService(request);
+
+  if (attractions.message) {
+    console.log("Ticket Master Error\n");
+  }
+
+  res.status(201).json(attractions);
+}
+
+async function addStopInto (newStop, into, stops) {
+  const firstStop = parseInt(into) - 1;
   let promises = [];
   var request =  {
-    origin: stops[index - 1].locationString,
+    origin: stops[firstStop].locationString,
     destination: newStop.locationString,
     travelMode: 'DRIVING',
     drivingOptions: {
-      departureTime: startDate, // + time
+      // departureTime: startDate, // + time
       trafficModel: 'pessimistic'
     },
   };
   promises.push(roadtrip_apis.callDirectionService(request));
   request.origin = newStop.locationString;
-  request.destination = stops[index].locationString;
+  request.destination = stops[firstStop + 1].locationString;
   promises.push(roadtrip_apis.callDirectionService(request));
   const newRoutes = await Promise.all(promises);
-  stops[firstStop].routeFromHere = newRoutes[0];
-  newStop.routeFromHere = newRoutes[1];
+  const decoded = newRoutes.map((route) => {
+    return polyline.decode(route.routes[0].overview_polyline.points);
+  });
+  const paths = [];
+  for (const points of decoded) {
+    const path = points.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    paths.push(path);
+  }
+  stops[firstStop].routeFromHere = paths[0];
+  stops[firstStop].distance = newRoutes[0].routes[0].legs[0].distance.value;
+  stops[firstStop].duration = newRoutes[0].routes[0].legs[0].duration.value;
+  newStop.routeFromHere = paths[1];
+  newStop.distance = newRoutes[1].routes[0].legs[0].distance.value;
+  newStop.duration = newRoutes[1].routes[0].legs[0].duration.value;
 
   const newStops = stops
   .slice(0, firstStop + 1) // Create a new array from the start to the specified position.
@@ -231,7 +267,7 @@ async function addStopInto (newStop, index, stops) {
 const addStop = async (req, res) => {
   const {newStop, stops} = req.query;
 
-  const connectTo = roadtrip_apis.nearestNextStop(newStop, stops);
+  var connectTo = roadtrip_apis.nearestNextStop(newStop, stops);
   const distance = roadtrip_apis.calculateDistance(connectTo, newStop);
 
   var leftDistance = Infinity;
@@ -243,31 +279,44 @@ const addStop = async (req, res) => {
     rightDistance = roadtrip_apis.calculateDistance(stops[connectTo + 1], newStop);
   }
 
-  const firstStop = leftDistance + distance > rightDistance + distance? connectTo - 1: connectTo;
+  const into = leftDistance + distance > rightDistance + distance? connectTo: connectTo + 1;
 
-  const newStops = await addStopInto(newStop, firstStop + 1, stops);
+  const newStops = await addStopInto(newStop, into, stops);
+
+  for(let i = 0; i < newStops.length; i++) {
+    const newLocation = {lat: parseFloat(newStops[i].location.lat), lng: parseFloat(newStops[i].location.lng)};
+    newStops[i].location = newLocation;
+  }
 
   res.status(201).json(newStops);
 }
 
-async function removeStopFrom (indexToRemove, stops) {
+async function removeStopFrom (index, stops) {
+  const indexToRemove = parseInt(index);
   var request =  {
     origin: stops[indexToRemove - 1].locationString,
     destination: stops[indexToRemove + 1].locationString,
     travelMode: 'DRIVING',
     drivingOptions: {
-      departureTime: startDate, // + time
+      // departureTime: startDate, // + time
       trafficModel: 'pessimistic'
     },
   };
   
   const replacementRoute = await roadtrip_apis.callDirectionService(request)
 
-  stops[indexToRemove - 1].routeFromHere = replacementRoute;
+  const decoded = polyline.decode(replacementRoute.routes[0].overview_polyline.points);
+  const path = decoded.map((point) => {
+    return { lat: point[0], lng: point[1] };
+  });
 
-  const newStops = stops.splice(indexToRemove, 1);
+  stops[indexToRemove - 1].routeFromHere = path;
+  stops[indexToRemove - 1].distance = replacementRoute.routes[0].legs[0].distance.value;
+  stops[indexToRemove - 1].duration = replacementRoute.routes[0].legs[0].duration.value;
 
-  return newStops;
+  stops.splice(indexToRemove, 1);
+
+  return stops;
 }
 
 const removeStop = async (req, res) => {
@@ -278,7 +327,10 @@ const removeStop = async (req, res) => {
   }
 
   const newStops = await removeStopFrom(indexToRemove, stops);
-
+  for(let i = 0; i < newStops.length; i++) {
+    const newLocation = {lat: parseFloat(newStops[i].location.lat), lng: parseFloat(newStops[i].location.lng)};
+    newStops[i].location = newLocation;
+  }
   res.status(201).json(newStops);
 }
 
@@ -296,4 +348,4 @@ const moveStop = async (req, res) => {
   res.status(201).json(newStops);
 }
   
-module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop};
+module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents};

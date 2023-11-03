@@ -40,6 +40,26 @@ const Trip = new Schema({
         type: String,
         required: true
     },
+    allStops: {
+        type: [{}],
+        required: true
+    },
+    options: {
+        type: [{}],
+        required: true
+    },
+    chosenRoute: {
+        type: Number,
+        required: true
+    },
+    polyline: {
+        type: [],
+        required: true
+    },
+    stops: {
+        type: [{}],
+        required: true
+    }
 });
 
 const Preferences = new Schema({

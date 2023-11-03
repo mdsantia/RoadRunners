@@ -59,7 +59,7 @@ export default function CreateTrip() {
   const handleSubmit= (event) => {
       //call controller method to create trip
       //redirect to dashboard on success
-      if(startLocation != null && endLocation != null && startDate != null && endDate != null){
+      if(startLocation !== null && endLocation !== null && startDate !== null && endDate !== null){
         let selectedVehicles = [];
         let numVehicles = 0;
         let vehicle = null;
@@ -81,8 +81,7 @@ export default function CreateTrip() {
           selectedVehicles: selectedVehicles,
         }
         const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetails}));
-        navigate(`/dashboard/${encodedTripDetails}`);
-        // window.location.reload();
+        navigate(`/dashboard/${encodedTripDetails}`); 
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);

@@ -78,7 +78,7 @@ export default function Map(props) {
       calculateCenter(tripDetails.polyline);
       calculateZoom(tripDetails.polyline);
     }
-  }, [tripDetails, tripDetails && tripDetails.polyline]);
+  }, [tripDetails]);
     
   useEffect(() => {
     if (navigator.geolocation && !userLocation) {
@@ -130,15 +130,16 @@ export default function Map(props) {
           ))
         }
 
-        {allStops &&
+        {/* {allStops &&
           allStops.map((marker, index) => (
             <Marker
               key={index}
               name={marker.name}
               position={marker.location}
+              // onClick={setSelectedMarker(marker)}
               // icon={getStopIcon(marker)}
               icon={{
-                path: /* global google */ google.maps.SymbolPath.CIRCLE,
+                // path: /* global google *\/ google.maps.SymbolPath.CIRCLE,
                 fillColor: 'blue',
                 fillOpacity: 1,
                 scale: 10,
@@ -148,10 +149,10 @@ export default function Map(props) {
               label={String(index + 1)} // Use index as the label
             />
           ))
-        }
+        } */}
         
-        {/*
-        {selectedMarker && (
+        
+        {/* {selectedMarker && (
            <InfoWindow
             position={selectedMarker.location}
             onCloseClick={() => {

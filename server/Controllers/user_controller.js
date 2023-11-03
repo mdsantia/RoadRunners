@@ -135,7 +135,7 @@ const clearTrips = async (req, res) => {
 */
 
 const saveTrip = async (req, res) => {
-    const {email, hash, id} = req.body;
+    const {email, hash, id, allStops, options, chosenRoute, polyline, stops} = req.body;
     // Check if user exists
     const user = await User.findOne({email});
     if (!user) {
@@ -146,12 +146,19 @@ const saveTrip = async (req, res) => {
 
     // They are updating a trip
     if (id) {
+        console.log(id);
         for (let i = 0; i < user.trips.length; i++) {
-            if (user.trips[i]._id === id) {
+            if (user.trips[i]._id == id) {
                 const newTrip = {
                     _id: id,
-                    hash: hash
+                    hash: hash,
+                    allStops: allStops,
+                    options: options,
+                    chosenRoute: chosenRoute,
+                    polyline: polyline,
+                    stops: stops
                 }
+                
                 user.trips[i] = newTrip; 
                 await user.save();
                 res.status(200).json(user);
@@ -164,17 +171,31 @@ const saveTrip = async (req, res) => {
     } 
 
     const newTrip = { 
-        hash: hash
+        hash: hash,
+        allStops: allStops,
+        options: options,
+        chosenRoute: chosenRoute,
+        polyline: polyline,
+        stops: stops
     }
 
     // Add trip to user
     user.trips.push(newTrip);
     await user.save();
     
-    
-    let tripDetails = JSON.parse(LZString.decompressFromUTF16(hash)).tripDetails;
+    let tripDetails = JSON.parse(atob(hash)).tripDetails;
     tripDetails.id = user.trips[user.trips.length - 1]._id;
-    const newHash = LZString.compressToUTF16(JSON.stringify({tripDetails}));
+    const tripDetailsToHash = {
+        startLocation: tripDetails.startLocation,
+        endLocation: tripDetails.endLocation,
+        startDate: tripDetails.startDate,
+        endDate: tripDetails.endDate,
+        preferences: tripDetails.preferences,
+        numVehicles: tripDetails.numVehicles,
+        selectedVehicles: tripDetails.selectedVehicles,
+        id: tripDetails.id
+    }
+    const newHash = btoa(JSON.stringify({tripDetails: tripDetailsToHash}));
     user.trips[user.trips.length - 1].hash = newHash;
     await user.save();
     res.status(200).json(user);

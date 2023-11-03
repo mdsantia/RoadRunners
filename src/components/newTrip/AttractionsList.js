@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -55,7 +56,7 @@ function a11yProps(index) {
 }
 
 export default function AttractionsList() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(2);
   const [selectedHotels, setSelectedHotels] = useState([]);
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
@@ -63,19 +64,38 @@ export default function AttractionsList() {
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
-  const { tripDetails } = useDashboardContext();
+  const [LiveEventsData, setLiveEventsData] = useState([]);
+  const { tripDetails, changeStops } = useDashboardContext();
   
   useEffect(() => {
-    if (tripDetails) {
+    axios
+      .get('/api/roadtrip/getLiveEvents', {
+        params: {
+          keyword: 'music',
+          city: 'New York',
+        },
+      })
+      .then((response) => {
+        const value = response.data;
+        console.log(value);
+        setLiveEventsData(response.data);
+      })
+      .catch((err) => {
+        // setError(err.message);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (tripDetails && tripDetails.allStops) {
       setAllAttractions(tripDetails.allStops);
       tripDetails.stops.forEach((stop) => {
-        if (stop.category != 'start' && stop.category != 'end') {
+        if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
           selectedAttractions.push(stop);
           
         }
       });
     }
- }, [tripDetails, tripDetails && tripDetails.allStops]);
+ }, [tripDetails]);
  
   //Attraction Dummy Data
   const AttractionData = [
@@ -107,15 +127,43 @@ export default function AttractionsList() {
   ];
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
-    const stopName = stop.name;
-    const isSelected = selectedList.some((selectedStop) => selectedStop.name === stopName);
+    if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
+      return;
+    }
+    if (stop.routeFromHere) {
+      delete stop.routeFromHere;
+    }
+    const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
+    const newStops = tripDetails.stops.map(stop => {
+      const stopCopy = { ...stop };
+      delete stopCopy.routeFromHere;
+      return stopCopy;
+    }); 
     
-    if (isSelected) {
-      setSelectedList((prevSelectedList) =>
-        prevSelectedList.filter((s) => s.name !== stopName)
-      );
+    if (index === -1) {
+      // Remove Stop from route
+      axios
+      .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
+      .then((res) => {
+        changeStops(res.data, 1);
+        setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
     } else {
-      setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+      // Add Stop from route
+      axios
+      .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
+      .then((res) => {
+        changeStops(res.data, -1);
+        setSelectedList((prevSelectedList) =>
+        prevSelectedList.filter((s) => s.place_id !== stop.place_id)
+      );
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
     }
   };
 
@@ -233,30 +281,30 @@ export default function AttractionsList() {
   ];
 
   //Live Events Dummy Data
-  const LiveEventsData = [
-    {
-      name: 'Doja Cat',
-      time: 'Fri, 7-11pm',
-      venue: 'United Centre',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
-    {
-      name: 'Taylor Swift',
-      time: 'Sat, 9-11pm',
-      venue: 'United Centre',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
-    {
-      name: 'John Mayer',
-      time: 'Sat, 6-9pm',
-      venue: 'Navy Pier',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
+  // const LiveEventsData = [
+  //   {
+  //     name: 'Doja Cat',
+  //     time: 'Fri, 7-11pm',
+  //     venue: 'United Centre',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
+  //   {
+  //     name: 'Taylor Swift',
+  //     time: 'Sat, 9-11pm',
+  //     venue: 'United Centre',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
+  //   {
+  //     name: 'John Mayer',
+  //     time: 'Sat, 6-9pm',
+  //     venue: 'Navy Pier',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
 
-  ];
+  // ];
 
   //Restaurant Dummy Data
   const GasStationData = [
@@ -284,87 +332,91 @@ export default function AttractionsList() {
 
   ];
 
-
-  return (
-    <Box
-      sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
-    >
-      <Tabs
-        orientation="vertical"
-        variant="scrollable"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs example"
-        sx={{ borderRight: 1, borderColor: 'divider', width: '40%' }}
+  if (allAttractions) {
+    return (
+      <Box
+        sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
       >
-        <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
-        <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
-        <Tab icon={<MuseumIcon />} iconPosition="start" label="Attractions" {...a11yProps(2)} />
-        <Tab icon={<RestaurantIcon />} iconPosition="start" label="Restaurants" {...a11yProps(3)} />
-        <Tab icon={<TheaterComedyIcon />} iconPosition="start" label="Live Events" {...a11yProps(4)} />
-        <Tab icon={<LocalGasStationIcon />} iconPosition="start" label="Gas Stations" {...a11yProps(5)} />
-      </Tabs>
-      <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {HotelData.map((hotel, index) => (
-          <HotelCard
-            key={index}
-            data={hotel}
-            selected={isStopSelected(hotel, 'hotel')}
-            onSelectionChange={() => handleStopSelection(hotel, selectedHotels, setSelectedHotels)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {LandmarkData.map((landmark, index) => (
-          <Landmarks
-            key={index}
-            data={landmark}
-            selected={isStopSelected(landmark, 'landmark')}
-            onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {allAttractions.map((attraction, index) => (
-          <Attractions
-            key={index}
-            data={attraction}
-            selected={isStopSelected(attraction, 'attraction')}
-            onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {RestaurantsData.map((restaurant, index) => (
-          <Restaurants
-            key={index}
-            data={restaurant}
-            selected={isStopSelected(restaurant, 'restaurant')}
-            onSelectionChange={() => handleStopSelection(restaurant, selectedRestaurants, setSelectedRestaurants)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
-        {LiveEventsData.map((event, index) => (
-          <LiveEvents
-            key={index}
-            data={event}
-            selected={isStopSelected(event, 'liveEvent')}
-            onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {GasStationData.map((gas, index) => (
-          <GasStations
-            key={index}
-            data={gas}
-            selected={isStopSelected(gas, 'gasStation')}
-            onSelectionChange={() => handleStopSelection(gas, selectedGasStations, setSelectedGasStations)}
-          />
-        ))}
-      </TabPanel>
-
-    </Box>
-  );
+        <Tabs
+          orientation="vertical"
+          variant="scrollable"
+          value={value}
+          onChange={handleChange}
+          aria-label="Vertical tabs example"
+          sx={{ borderRight: 1, borderColor: 'divider', width: '40%' }}
+        >
+          <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
+          <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
+          <Tab icon={<MuseumIcon />} iconPosition="start" label="Attractions" {...a11yProps(2)} />
+          <Tab icon={<RestaurantIcon />} iconPosition="start" label="Restaurants" {...a11yProps(3)} />
+          <Tab icon={<TheaterComedyIcon />} iconPosition="start" label="Live Events" {...a11yProps(4)} />
+          <Tab icon={<LocalGasStationIcon />} iconPosition="start" label="Gas Stations" {...a11yProps(5)} />
+        </Tabs>
+        <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {HotelData.map((hotel, index) => (
+            <HotelCard
+              key={index}
+              data={hotel}
+              selected={isStopSelected(hotel, 'hotel')}
+              onSelectionChange={() => handleStopSelection(hotel, selectedHotels, setSelectedHotels)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {LandmarkData.map((landmark, index) => (
+            <Landmarks
+              key={index}
+              data={landmark}
+              selected={isStopSelected(landmark, 'landmark')}
+              onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {allAttractions.map((attraction, index) => (
+            <Attractions
+              key={index}
+              data={attraction}
+              selected={isStopSelected(attraction, 'attraction')}
+              onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {RestaurantsData.map((restaurant, index) => (
+            <Restaurants
+              key={index}
+              data={restaurant}
+              selected={isStopSelected(restaurant, 'restaurant')}
+              onSelectionChange={() => handleStopSelection(restaurant, selectedRestaurants, setSelectedRestaurants)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+          {console.log(LiveEventsData)}
+          {LiveEventsData && LiveEvents.length > 0 && LiveEventsData.map((event, index) => (
+            <LiveEvents
+              key={index}
+              data={event}
+              selected={isStopSelected(event, 'liveEvent')}
+              onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {GasStationData.map((gas, index) => (
+            <GasStations
+              key={index}
+              data={gas}
+              selected={isStopSelected(gas, 'gasStation')}
+              onSelectionChange={() => handleStopSelection(gas, selectedGasStations, setSelectedGasStations)}
+            />
+          ))}
+        </TabPanel>
+  
+      </Box>
+    );
+  } else {
+    // <div>Loading...</div>
+  }
 }
