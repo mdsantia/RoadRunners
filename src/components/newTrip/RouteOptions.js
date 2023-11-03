@@ -72,7 +72,6 @@ function RouteOptions() {
                                         margin: 0.3
                                     }}
                                     disableGutters
-                                    disablePadding
                                 >
                                     <Accordion expanded={expanded[index]} onChange={handleChange(index)} 
                                         sx={{ 
@@ -83,7 +82,6 @@ function RouteOptions() {
                                             },
                                         }}
                                         disableGutters
-                                        disablePadding
                                     >
                                         <AccordionSummary id={index}
                                             sx={{ 

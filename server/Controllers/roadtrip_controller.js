@@ -283,6 +283,11 @@ const addStop = async (req, res) => {
 
   const newStops = await addStopInto(newStop, into, stops);
 
+  for(let i = 0; i < newStops.length; i++) {
+    const newLocation = {lat: parseFloat(newStops[i].location.lat), lng: parseFloat(newStops[i].location.lng)};
+    newStops[i].location = newLocation;
+  }
+
   res.status(201).json(newStops);
 }
 
@@ -322,7 +327,10 @@ const removeStop = async (req, res) => {
   }
 
   const newStops = await removeStopFrom(indexToRemove, stops);
-
+  for(let i = 0; i < newStops.length; i++) {
+    const newLocation = {lat: parseFloat(newStops[i].location.lat), lng: parseFloat(newStops[i].location.lng)};
+    newStops[i].location = newLocation;
+  }
   res.status(201).json(newStops);
 }
 
