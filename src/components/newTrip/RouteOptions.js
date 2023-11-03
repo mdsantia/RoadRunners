@@ -3,15 +3,13 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { Container, Typography, Grid, Divider, Select, OutlinedInput, InputLabel, TextField } from '@mui/material';
-import { Accordion, AccordionDetails, AccordionSummary, MenuItem, Button, Autocomplete } from '@mui/material';
+import { Container, Typography, Grid, Divider } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useDashboardContext } from '../../context/DashboardContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from '@mui/material/CircularProgress';
-import Checkbox from '@mui/material/Checkbox';
-
 
 function RouteOptions() {
     const navigate = useNavigate();
@@ -19,36 +17,25 @@ function RouteOptions() {
     const { tripDetails, updateChosenRoute } = useDashboardContext();
     const [options, setOptions] = React.useState(null);
     const [chosenRoute, setChosenRoute] = React.useState(0);
-    const [expanded, setExpanded] = React.useState(null);
-    const [selectedFilter, setSelectedFilter] = React.useState('');
-    const filterOptions = ["Scenic", "Eventful", "Fastest"];
+    const [expanded, setExpanded] = React.useState([]);
 
-    // const handleFilterChange = (event) => {
-    //     const {
-    //       target: { value },
-    //     } = event;
-    //     setSelectedFilters(
-    //       // On autofill we get a stringified value.
-    //       typeof value === 'string' ? value.split(',') : value,
-    //     );
-    // };
+    React.useEffect(() => {
+        if (tripDetails) {
+            setOptions(tripDetails.options);
+            setChosenRoute(tripDetails.chosenRoute);
+        }
+    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
 
-    const handleFilterChange = (event) => {
-        setSelectedFilter(event.target.value);
+    const handleChange = (index) => (event, isExpanded) => {
+        const newExpanded = [...expanded];
+        newExpanded[index] = isExpanded;
+        setExpanded(newExpanded);
     };
-    
-    const handleAccordionChange = (panel) => (event, isExpanded) => {
-        setExpanded(isExpanded ? panel : null);
-    };
-    
+
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
     };
 
-    const handleFilterSelect = (event) => {
-        // TODO
-    }
-    
     const getRouteDetails = (infoLabel, info) => {
         return (
             <Grid container alignItems="left" textAlign="left" spacing={0}>
@@ -65,13 +52,6 @@ function RouteOptions() {
             </Grid>
         );
     }
-    
-    React.useEffect(() => {
-        if (tripDetails) {
-            setOptions(tripDetails.options);
-            setChosenRoute(tripDetails.chosenRoute);
-        }
-    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
 
     if (options) {
         return (

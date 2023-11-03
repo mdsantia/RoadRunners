@@ -127,6 +127,9 @@ export default function AttractionsList() {
   ];
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
+    if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
+      return;
+    }
     if (stop.routeFromHere) {
       delete stop.routeFromHere;
     }
