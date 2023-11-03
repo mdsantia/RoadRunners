@@ -67,44 +67,26 @@ export default function AttractionsList() {
 
      /* stop selection functions */
     const handleStopSelection = (stop, selectedList, setSelectedList) => {
-        if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
-        return;
-        }
-        if (stop.routeFromHere) {
-        delete stop.routeFromHere;
-        }
-        const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
-        const newStops = tripDetails.stops.map(stop => {
-        const stopCopy = { ...stop };
-        delete stopCopy.routeFromHere;
-        return stopCopy;
-        }); 
-        
-        if (index === -1) {
-        // Remove Stop from route
-        axios
-        .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
-        .then((res) => {
-            changeStops(res.data, 1);
-            setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
-        })  
-        .catch((err) => {
-            console.log(err);
-        });
-        } else {
-        // Add Stop from route
-        axios
-        .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
-        .then((res) => {
-            changeStops(res.data, -1);
-            setSelectedList((prevSelectedList) =>
-            prevSelectedList.filter((s) => s.place_id !== stop.place_id)
-        );
-        })  
-        .catch((err) => {
-            console.log(err);
-        });
-        }
+      delete stop.routeFromHere;
+      const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
+      const newStops = tripDetails.stops.map(stop => {
+      const stopCopy = { ...stop };
+      delete stopCopy.routeFromHere;
+      return stopCopy;
+      }); 
+      
+      // Remove Stop from route
+      axios
+      .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
+      .then((res) => {
+        changeStops(res.data, -1);
+        setSelectedList((prevSelectedList) =>
+        prevSelectedList.filter((s) => s.place_id !== stop.place_id)
+      );
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
     };
 
     const getRouteDetails = (infoLabel, info) => {
@@ -187,14 +169,18 @@ export default function AttractionsList() {
                         </Grid>
                         </Grid>
                     </CardContent>
-                    {/* <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
+                    <CardActions 
+                      sx={{ justifyContent: 'center', flex: '0 0 5%' }}
+                      onClick={(e) => {
+                          e.stopPropagation(); // Stop the click event from propagating to the parent element
+                      }}>
                         <Checkbox
                         icon={<AddLocationAltOutlinedIcon />}
                         checkedIcon={<AddLocationAltIcon />}
-                        checked={selectedHotels.includes(stop)}
-                        onChange={() => handleStopSelection(stop, selectedHotels, setSelectedHotels)}
+                        checked={true}
+                        onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)}
                         />
-                    </CardActions> */}
+                    </CardActions>
                 </Item>
             </div>
             ))}
