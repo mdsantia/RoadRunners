@@ -1,6 +1,6 @@
 /* API HELPER FUNCTIONS FOR ROADTRIP BUILDING */
 const axios = require('axios');
-const { GoogleApiKey, TicketMasterApiKey } = require('../Constants');
+const { GoogleApiKey, TicketMasterApiKey, YelpApiKey } = require('../Constants');
 
 async function callDirectionService (request) {
   const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
@@ -71,6 +71,39 @@ async function getStateFromCoordinates(lat, long) {
     console.log(response.data);
     throw new Error(error.message);
   }
+}
+
+async function getYelpURL(location) {
+  const searchUrl = 'https://api.yelp.com/v3/businesses/search';
+  const headers = {
+    Authorization: `Bearer ${YelpApiKey}`,
+  };
+  const params = {
+    // term: SEARCH_TERM,
+    location: location,
+  };
+
+  axios
+  .get(searchUrl, {
+    headers,
+    params,
+  })
+  .then((response) => {
+    const data = response.data;
+
+    if (data.businesses && data.businesses.length > 0) {
+      const business = data.businesses[0];
+      const yelpUrl = business.url || 'Yelp URL not found';
+      console.log(`Yelp URL for ${SEARCH_TERM}: ${yelpUrl}`);
+      return yelpUrl;
+    } else {
+      console.log(`No results found for ${SEARCH_TERM}`);
+      return null;
+    }
+  })
+  .catch((error) => {
+    return {message: error.message};
+  });
 }
 
 
@@ -285,6 +318,7 @@ module.exports = {
   decodePolyline,
   calculateDistance,
   nearestNextStop,
+  getYelpURL,
   callTicketmasterService,
   motionSickness
 };

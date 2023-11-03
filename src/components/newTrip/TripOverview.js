@@ -36,7 +36,25 @@ export default function AttractionsList() {
   const handleExpandCard = (index) => {
     setExpandedCard(index === expandedCard ? null : index);
   };
-  
+
+  useEffect(() => {
+    if (tripDetails.stops) {
+      const newStops = [...tripDetails.stops];
+      newStops.forEach((stop) => {delete stop.routeFromHere});
+      console.log(tripDetails.stops)
+      axios
+        .get('/api/roadtrip/yelpUrl', { params: {stops: tripDetails.stops} })
+        .then((res) => {
+          // changeStops(res.data, 1);
+          // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+          console.log(res.data);
+        })  
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [tripDetails.stops]);
+
   useEffect(() => {
     if (tripDetails) {
       setAllAttractions(tripDetails.allStops);

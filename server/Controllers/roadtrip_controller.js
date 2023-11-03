@@ -179,6 +179,21 @@ async function getGasStationsAlongRoute(route) {
   return gasStations;
 }
 
+const yelpUrl = async (req, res) => {
+  const {stops} = req.query;
+  console.log(stops)
+
+  const promises = [];
+  for (stop of stops) {
+
+    promises.push(roadtrip_apis.getYelpURL(stop.location));
+  }
+
+  const urls = await Promise.all(promises);
+
+  res.status(201).json(urls);
+}
+
 const newRoadTrip = async (req, res) => {
   const { startLocation, endLocation, startDate, endDate } = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
@@ -217,6 +232,7 @@ const getLiveEvents = async(req, res) => {
 
   if (attractions.message) {
     console.log("Ticket Master Error\n");
+    res.status(401).json(attractions.message);
   }
 
   res.status(201).json(attractions);
@@ -348,4 +364,4 @@ const moveStop = async (req, res) => {
   res.status(201).json(newStops);
 }
   
-module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents};
+module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents, yelpUrl};
