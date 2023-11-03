@@ -193,6 +193,7 @@ const saveTrip = async (req, res) => {
         preferences: tripDetails.preferences,
         numVehicles: tripDetails.numVehicles,
         selectedVehicles: tripDetails.selectedVehicles,
+        minimumMPG: tripDetails.minimumMPG,
         id: tripDetails.id
     }
     const newHash = btoa(JSON.stringify({tripDetails: tripDetailsToHash}));

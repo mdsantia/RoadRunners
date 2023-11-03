@@ -61,9 +61,9 @@ export default function AttractionsList() {
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
   const [allAttractions, setAllAttractions] = useState([]);
-  const [selectedRestaurants, setSelectedRestaurants] = useState([]);
+  const [allRestaurants, setAllRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
-  const [selectedGasStations, setSelectedGasStations] = useState([]);
+  const [allGasStations, setAllGasStations] = useState([]);
   const [LiveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
@@ -77,7 +77,6 @@ export default function AttractionsList() {
       })
       .then((response) => {
         const value = response.data;
-        console.log(value);
         setLiveEventsData(response.data);
       })
       .catch((err) => {
@@ -91,40 +90,28 @@ export default function AttractionsList() {
       tripDetails.stops.forEach((stop) => {
         if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
           selectedAttractions.push(stop);
-          
         }
       });
+      if (tripDetails.chosenRoute == 0) {
+        tripDetails.stops.forEach((stop) => {
+          if (stop.gasStations && stop.gasStations.length > 0) {
+            // If we didn't already add this gas station to the list, add it
+            for(let i = 0; i < stop.gasStations.length; i++) {
+              // If it already exists, don't add it
+              if (allGasStations.find(gas => gas.place_id === stop.gasStations[i].place_id)) {
+                continue;
+              }
+              allGasStations.push(stop.gasStations[i]);
+            }
+          }
+        });
+      }
+      if (tripDetails.chosenRoute == 0) {
+        setAllRestaurants(tripDetails.stops[1].restaurants)
+      }
     }
- }, [tripDetails]);
- 
-  //Attraction Dummy Data
-  const AttractionData = [
-    {
-      name: 'Mall Of America',
-      category: 'Shopping',
-      price: '0',
-      rating: '4.00',
-      reviews: '400',
-      links: 'https://www.mallofamerica.com/'
-    },
-    {
-      name: 'Science Centre',
-      category: 'Family',
-      price: '5.00',
-      rating: '4.00',
-      reviews: '500',
-      links: 'https://www.mallofamerica.com/'
-    },
-    {
-      name: 'National Art Gallery',
-      category: 'Museum',
-      price: '25.00',
-      rating: '4.00',
-      reviews: '200',
-      links: 'https://www.mallofamerica.com/'
-    },
 
-  ];
+ }, [tripDetails]);
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
     if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
@@ -175,12 +162,8 @@ export default function AttractionsList() {
         return selectedLandmarks.some((selectedLandmark) => selectedLandmark.name === stop.name);
       case 'attraction':
         return selectedAttractions.some((selectedAttraction) => selectedAttraction.name === stop.name);
-      case 'restaurant':
-        return selectedRestaurants.some((selectedRestaurant) => selectedRestaurant.name === stop.name);
       case 'liveEvent':
         return selectedLiveEvents.some((selectedLiveEvent) => selectedLiveEvent.name === stop.name);
-      case 'gasStation':
-        return selectedGasStations.some((selectedGasStation) => selectedGasStation.name === stop.name);
       default:
         return false;
     }
@@ -251,35 +234,6 @@ export default function AttractionsList() {
   ];
 
 
-  //Restaurant Dummy Data
-  const RestaurantsData = [
-    {
-      name: 'BRU',
-      cuisine: 'American',
-      price: '$$$',
-      rating: '4.00',
-      reviews: '400',
-      link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
-    },
-    {
-      name: 'Yatagarusu',
-      cuisine: 'Asian',
-      price: '$$',
-      rating: '4.00',
-      reviews: '500',
-      link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
-    },
-    {
-      name: 'Chipotle',
-      cuisine: 'Fast Food',
-      price: '$',
-      rating: '4.00',
-      reviews: '200',
-      link: 'https://www.opentable.com/r/bru-burger-bar-lafayette'
-    },
-
-  ];
-
   //Live Events Dummy Data
   // const LiveEventsData = [
   //   {
@@ -305,32 +259,6 @@ export default function AttractionsList() {
   //   },
 
   // ];
-
-  //Restaurant Dummy Data
-  const GasStationData = [
-    {
-      name: 'Speedway',
-      location: '265 State St',
-      price: '3.03',
-      hours: 'open 24 hours',
-      link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
-    },
-    {
-      name: 'Exxon',
-      location: '265 Pete St',
-      price: '3.40',
-      hours: 'open 24 hours',
-      link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
-    },
-    {
-      name: 'BP',
-      location: '265 Tim St',
-      price: '3.70',
-      hours: 'open 24 hours',
-      link: 'https://www.speedway.com/locations/IN/West-Lafayette/265-East-State-Street'
-    },
-
-  ];
 
   if (allAttractions) {
     return (
@@ -383,17 +311,14 @@ export default function AttractionsList() {
           ))}
         </TabPanel>
         <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          {RestaurantsData.map((restaurant, index) => (
+          {allRestaurants && allRestaurants.map((restaurant, index) => (
             <Restaurants
               key={index}
               data={restaurant}
-              selected={isStopSelected(restaurant, 'restaurant')}
-              onSelectionChange={() => handleStopSelection(restaurant, selectedRestaurants, setSelectedRestaurants)}
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
-          {console.log(LiveEventsData)}
+        {/* <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
           {LiveEventsData && LiveEvents.length > 0 && LiveEventsData.map((event, index) => (
             <LiveEvents
               key={index}
@@ -402,14 +327,12 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
             />
           ))}
-        </TabPanel>
+        </TabPanel> */}
         <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          {GasStationData.map((gas, index) => (
+          {allGasStations && allGasStations.map((gas, index) => (
             <GasStations
               key={index}
               data={gas}
-              selected={isStopSelected(gas, 'gasStation')}
-              onSelectionChange={() => handleStopSelection(gas, selectedGasStations, setSelectedGasStations)}
             />
           ))}
         </TabPanel>

@@ -157,6 +157,7 @@ async function buildARoute(req, optionNumber) {
       return { lat: point[0], lng: point[1] };
     });
     sortedStops[i].routeFromHere = path;
+    //Convert to miles 
     sortedStops[i].distance = parseFloat((route.routes[0].legs[0].distance.value * 0.00062137119223733).toFixed(2));
     sortedStops[i].duration = route.routes[0].legs[0].duration.value;
   }
@@ -164,19 +165,25 @@ async function buildARoute(req, optionNumber) {
   return({stops: sortedStops, allStops: allStops});
 }
 
-async function getGasStationsAlongRoute(route) {
-  const gasStations = [];
-  const routeSteps = route.routes[0].legs[0].steps;
-  for (let i = 0; i < routeSteps.length; i++) {
-    const step = routeSteps[i];
-    const stepStart = step.start_location;
-    const stepDistance = step.distance.value;
-    const stepGasStations = await roadtrip_apis.getStops(stepStart, stepDistance, "Gas Station", null, 'gas_station');
-    for (station of stepGasStations) {
-      gasStations.push(station);
+async function getGasStationsAlongRoute(stops, mpg, tankSize, fuelType) {
+  let promises = [];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (i === 0) {
+      promises.push(roadtrip_apis.gasStationsForStop(stops[i], mpg, tankSize, 0, fuelType));
+    } else {
+      promises.push(roadtrip_apis.gasStationsForStop(stops[i], mpg, tankSize, stops[i - 1].distanceForGasStations, fuelType));
     }
+  } 
+  await Promise.all(promises);
+}
+
+async function getRestaurantsAlongRoute(stops, foodPref) {
+  var poly = [];
+  poly = [];
+  for (let i = 0; i < stops.length - 1; i++) {
+    poly.push(...stops[i].routeFromHere);
   }
-  return gasStations;
+  stops[1].restaurants = await roadtrip_apis.getRestaurants(poly, foodPref);
 }
 
 const yelpUrl = async (req, res) => {
@@ -194,7 +201,7 @@ const yelpUrl = async (req, res) => {
 }
 
 const newRoadTrip = async (req, res) => {
-  const { startLocation, endLocation, startDate, endDate } = req.query;
+  const { startLocation, endLocation, startDate, endDate, mpg, foodPref} = req.query;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
   
   const result = {options: [], allStops: []};
@@ -212,6 +219,16 @@ const newRoadTrip = async (req, res) => {
       }
     });
   })
+  await getGasStationsAlongRoute(result.options[0], mpg, 10, 'Regular');
+  let chosenFood = 'Fast Food';
+  if(foodPref && !foodPref.includes(chosenFood)) {
+    if(foodPref.includes('Family Restaurants')) {
+      chosenFood = 'Family';
+    } else if (foodPref.includes('Cafés/Coffee Shops')) {
+      chosenFood = 'Coffee';
+    }
+  }
+  await getRestaurantsAlongRoute(result.options[0], chosenFood);
   res.status(201).json(result);
 };
 

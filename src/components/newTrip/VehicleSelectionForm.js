@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 
-function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setNumVehicles, setSelectedVehicles }) {
+function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setNumVehicles, setSelectedVehicles, minMPG, setMinMPG }) {
   const [selectedVehiclesMPG, setSelectedVehiclesMPG] = useState([]);
   const handleNumVehiclesChange = (event) => {
       const newValue = parseInt(event.target.value, 10);
@@ -48,7 +48,7 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
       });;
       setSelectedVehicles(selectedValues);
       setSelectedVehiclesMPG(selectedMPGValues);
-      console.log(selectedValues);
+      setMinMPG(getMinMpg());
     }
   };
 
@@ -122,7 +122,7 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
           {selectedVehiclesMPG.length === 0 ? (
             <p>No vehicle selected</p>
           ):(
-          <p>{getMinMpg() === 0 ? "Not available MPG data" : `${getMinMpg()}`}</p>)}
+          <p>{minMPG === 0 ? '20' : minMPG}</p> )}
           {/* <p>{selectedVehiclesMPG.length==0?'No vehicle selected':(Math.min(selectedVehiclesMPG)==Infinity?'Missing MPG':Math.min(selectedVehiclesMPG))}</p> */}
         </Grid>
       </Grid>

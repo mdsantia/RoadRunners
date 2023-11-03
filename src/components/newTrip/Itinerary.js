@@ -85,6 +85,7 @@ export default function Itinerary() {
   const [vehicleList, setVehicleList] = React.useState([]);
   const [selectedVehicles, setSelectedVehicles] = React.useState([]);
   const [numVehicles, setNumVehicles] = React.useState(0);
+  const [minimumMPG, setMinimumMPG] = React.useState(0);
 
   React.useEffect(() => {
     if (user) {
@@ -97,6 +98,7 @@ export default function Itinerary() {
       setNumVehicles(parseInt(tripDetails.numVehicles));
       setSelectedVehicles(tripDetails.selectedVehicles);
       setTemporaryPrefs(tripDetails.preferences);
+      setMinimumMPG(tripDetails.minimumMPG);
     }
   }, [tripDetails]);
 
@@ -114,6 +116,7 @@ export default function Itinerary() {
         preferences: tripDetails.preferences,
         numVehicles: tripDetails.numVehicles,
         selectedVehicles: tripDetails.selectedVehicles,
+        minimumMPG: tripDetails.minimumMPG,
     }
     if (tripDetails.id) {
       tripDetailsToHash.id = tripDetails.id;
@@ -156,6 +159,7 @@ export default function Itinerary() {
       preferences: newTripDetails.preferences,
       numVehicles: newTripDetails.numVehicles,
       selectedVehicles: newTripDetails.selectedVehicles,
+      minimumMPG: tripDetails.minimumMPG,
     }
     if (tripDetails.id) {
       tripDetailsToHash.id = tripDetails.id;
@@ -185,6 +189,8 @@ export default function Itinerary() {
           selectedVehicles={selectedVehicles}
           setNumVehicles={setNumVehicles}
           setSelectedVehicles={setSelectedVehicles}
+          minMPG={minimumMPG}
+          setMinMPG={setMinimumMPG}
         />
         <Divider></Divider>
         <br></br>
