@@ -215,8 +215,9 @@ const saveTrip = async (req, res) => {
     
     */
 const addVehicle = async (req, res) => {
-    const {email, make, model, year, color, mpgGiven, fuelGrade } = req.body;
+    const {email, make, model, year, color, mpgGiven, fuelGradeGiven } = req.body;
     var mpg = mpgGiven;
+    var fuelGrade = fuelGradeGiven;
     
     // Check if user exists
     const user = await User.findOne({email});
@@ -227,6 +228,8 @@ const addVehicle = async (req, res) => {
     }
 
     mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
+    mpg = -1 ? 20 : mpg;
+    // fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
     // Create new vehicle
     const newVehicle = {
         make,
@@ -271,7 +274,7 @@ const addVehicle = async (req, res) => {
     
     */
 const editVehicle = async (req, res) => {
-    const {email, _id, make, model, year, color, mpgGiven, fuelGrade } = req.body;
+    const {email, _id, make, model, year, color, mpgGiven, fuelGradeGiven } = req.body;
     // Check if user exists
     const user = await User.findOne({email});
     if (!user) {
@@ -293,6 +296,8 @@ const editVehicle = async (req, res) => {
     }
 
     const mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
+    mpg = -1 ? 20 : mpg;
+    // const fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
     const newVehicle = {
         _id,
         year,
@@ -444,5 +449,35 @@ const getMPG = async (make, model, year) => {
     const mpg = Math.round(response.data.avgMpg);
     return mpg;
 }
+
+// const getFuelGrade = async (make, model, year) => {
+//     // Mongodb Vehicle connection
+//     const user = "mdsantia";
+//     const pwd = "PkLnDkpIynsO9YR8";
+//     const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
+//     const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+//     var id = -1;
+//     try {
+//         await client.connect();
+//         const db = client.db("Vehicles");
+//         const col = db.collection(year + '');
+//         const query = {make: make, model: model};
+//         const document = await col.findOne(query);
+//         const fuelGradeData = document.mpgData;
+//         if (fuelGrade === 'N') {
+//             return -1;
+//         }
+//         id = document.id;
+//     } catch (error) {
+//         console.error('Error querying MongoDB:', error);
+//         return -1;
+//     } finally {
+//         await client.close();
+//     }
+//     const url = `https://www.fueleconomy.gov/ws/rest/ympg/shared/ympgVehicle/${id}`;
+//     const response = await axios.get(url);
+//     const fuelGrade = Math.round(response.data.avgMpg);
+//     return fuelGrade;
+// }
 
 module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking, editVehicle, deleteTrip, clearTrips};
