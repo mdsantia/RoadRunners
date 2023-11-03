@@ -64,7 +64,7 @@ export default function AttractionsList() {
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
-  const { tripDetails } = useDashboardContext();
+  const { tripDetails, changeStops } = useDashboardContext();
   
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
@@ -117,26 +117,20 @@ export default function AttractionsList() {
     
     if (index === -1) {
       // Remove Stop from route
-      // setSelectedList((prevSelectedList) =>
-      //   prevSelectedList.filter((s) => s.name !== stopName)
-      //   );
       axios
       .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
       .then((res) => {
-        // setSelectedList(res.data);
-        //navigate(`/dashboard/${encodedTripDetails}`);
+        changeStops(res.data, 1);
       })  
       .catch((err) => {
         console.log(err);
       });
     } else {
       // Add Stop from route
-      // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
       axios
       .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
       .then((res) => {
-        // setSelectedList(res.data);
-        //navigate(`/dashboard/${encodedTripDetails}`);
+        changeStops(res.data, -1);
       })  
       .catch((err) => {
         console.log(err);

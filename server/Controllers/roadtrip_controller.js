@@ -99,7 +99,7 @@ async function buildARoute(req, optionNumber) {
     location: null,
     category: 'start',
     icon: null,
-    place_id: null,
+    place_id: 'A',
     locationString: null,
     rating: null,
   }
@@ -109,7 +109,7 @@ async function buildARoute(req, optionNumber) {
     location: null,
     category: 'end',
     icon: null,
-    place_id: null,
+    place_id: 'B',
     locationString: null,
     rating: null,
   }
@@ -229,7 +229,11 @@ async function addStopInto (newStop, into, stops) {
     paths.push(path);
   }
   stops[firstStop].routeFromHere = paths[0];
+  stops[firstStop].distance = newRoutes[0].routes[0].legs[0].distance.value;
+  stops[firstStop].duration = newRoutes[0].routes[0].legs[0].duration.value;
   newStop.routeFromHere = paths[1];
+  newStop.distance = newRoutes[1].routes[0].legs[0].distance.value;
+  newStop.duration = newRoutes[1].routes[0].legs[0].duration.value;
 
   const newStops = stops
   .slice(0, firstStop + 1) // Create a new array from the start to the specified position.
@@ -281,6 +285,8 @@ async function removeStopFrom (index, stops) {
   });
 
   stops[indexToRemove - 1].routeFromHere = path;
+  stops[indexToRemove - 1].distance = replacementRoute.routes[0].legs[0].distance.value;
+  stops[indexToRemove - 1].duration = replacementRoute.routes[0].legs[0].duration.value;
 
   stops.splice(indexToRemove, 1);
 
@@ -290,7 +296,6 @@ async function removeStopFrom (index, stops) {
 const removeStop = async (req, res) => {
   const {indexToRemove, stops} = req.query;
 
-  console.log(stops);
   if (indexToRemove <= 0 || indexToRemove >= stops.length - 1) {
     throw new Error("Invalid index");
   }
