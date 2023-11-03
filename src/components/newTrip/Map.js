@@ -7,7 +7,6 @@ import MuseumIcon from '@mui/icons-material/Museum';
 import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import { renderToStaticMarkup } from 'react-dom/server';
 
 const icons = {
   'gas station': <LocalGasStationIcon />,
@@ -18,6 +17,30 @@ const icons = {
   'hotel': <HotelIcon />,
 };
 
+const infoWindowContainer = {
+  background: 'white',
+  padding: '10px',
+  borderRadius: '4px',
+  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+  maxWidth: '200px', // Adjust the width as needed
+};
+
+const infoWindowTitle = {
+  fontSize: '18px',
+  fontWeight: 'bold',
+  margin: '0',
+};
+
+const infoWindowRating = {
+  fontSize: '14px',
+  margin: '8px 0',
+};
+
+const infoWindowPrice = {
+  fontSize: '14px',
+  margin: '8px 0',
+};
+
 export default function Map(props) {
   const [userLocation, setUserLocation] = useState(null);
   const [polyline, setPolyline] = useState(null);
@@ -26,8 +49,12 @@ export default function Map(props) {
   const [stops, setStops] = useState(null);
   const [zoom, setZoom] = useState(5);
   const { tripDetails } = useDashboardContext();
+  const [gasStations, setGasStations] = useState([]);
   const [chosenRoute, setChosenRoute] = useState(0);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const iconSize = '10x10';
+  var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+
 
   function calculateCenter(polyline) {
     const midIdx = Math.floor(polyline.length / 2);
@@ -77,6 +104,20 @@ export default function Map(props) {
       setChosenRoute(tripDetails.chosenRoute);
       calculateCenter(tripDetails.polyline);
       calculateZoom(tripDetails.polyline);
+      if (tripDetails.chosenRoute == 0) {
+        tripDetails.stops.forEach((stop) => {
+          if (stop.gasStations && stop.gasStations.length > 0) {
+            // If we didn't already add this gas station to the list, add it
+            for(let i = 0; i < stop.gasStations.length; i++) {
+              // If it already exists, don't add it
+              if (gasStations.find(gas => gas.place_id === stop.gasStations[i].place_id)) {
+                continue;
+              }
+              gasStations.push(stop.gasStations[i]);
+            }
+          }
+        });
+      }
     }
   }, [tripDetails]);
     
@@ -126,6 +167,26 @@ export default function Map(props) {
               position={marker.location}
               // icon={getStopIcon(marker)}
               label={String(index + 1)} // Use index as the label
+              onClick={() => {setSelectedMarker(marker)}}
+            />
+          ))
+        }
+
+        
+      {gasStations &&
+          gasStations.map((marker, index) => (
+            <Marker
+              key={index}
+              name={marker.name}
+              position={marker.location}
+              icon={{
+              url: iconBase + 'gas_stations.png' + '?size=' + iconSize,
+              size: new window.google.maps.Size(40, 40),
+              origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(20, 20),
+              }}
+              onClick={() => {setSelectedMarker(marker)}}
+              label={String(index + 1)} // Use index as the label
             />
           ))
         }
@@ -151,20 +212,25 @@ export default function Map(props) {
           ))
         } */}
         
-        
-        {/* {selectedMarker && (
-           <InfoWindow
+        {selectedMarker && (
+          <InfoWindow
             position={selectedMarker.location}
             onCloseClick={() => {
               setSelectedMarker(null);
             }}
           >
-            <div>
-              <h2>{selectedMarker.name}</h2>
-              <p>{selectedMarker.rating}</p>
+            <div style={infoWindowContainer}>
+              <h2 style={infoWindowTitle}>{selectedMarker.name}</h2>
+              <p style={infoWindowRating}>
+                Rating: {selectedMarker.rating || 'N/A'}
+              </p>
+              {selectedMarker.price && (
+                <p style={infoWindowPrice}>Price: {selectedMarker.price}</p>
+              )}
             </div>
           </InfoWindow>
-          )} */}
+        )}        
+
       </GoogleMap>
     </>
   );
