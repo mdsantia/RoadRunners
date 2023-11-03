@@ -21,19 +21,30 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+function convertPrice(price) {
+    let priceLevel = '';
+    if (price === 0) {
+        return 'Free';
+    }
+    for (let i = 0; i < price; i++) {
+        priceLevel += '$';
+    }
+    return priceLevel;
+}
+
 export default function Attractions({data, selected, onSelectionChange}) {
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
                 sx={{ height: 140 , flex: '0 0 40%'  }}
-                image={LandMarkImage}
+                image={data.photo || LandMarkImage}
                 title="LandMarkImage"
             />
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                 <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
-                <a href={data.link} target="_blank" rel="noopener noreferrer" 
+                <a href={data.url} target="_blank" rel="noopener noreferrer" 
         style={{ textDecoration: 'none', color: 'inherit' }}
         onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
         onMouseLeave={(e) => e.target.style.textDecoration = 'none'}>
@@ -41,13 +52,14 @@ export default function Attractions({data, selected, onSelectionChange}) {
     </a>
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
-                       {data.cuisine}
+                       {data.name}
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
-                        {data.rating} <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon> ({data.reviews})
+                        <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon>{data.rating}
+                        {/* {data.rating}   ({data.reviews}) */}
                     </Grid>
                     <Grid item xs={12} sx={{fontWeight:'bold'}}>
-                      {data.price}
+                      Price Level: {data.price ? convertPrice(data.price) : ''}
                     </Grid>
                 </Grid>
             </CardContent>

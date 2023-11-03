@@ -68,7 +68,6 @@ async function getStateFromCoordinates(lat, long) {
     });
     return state.long_name;
   } catch (error) {
-    console.log(response.data);
     throw new Error(error.message);
   }
 }
@@ -94,7 +93,7 @@ async function getYelpURL(location) {
     if (data.businesses && data.businesses.length > 0) {
       const business = data.businesses[0];
       const yelpUrl = business.url || 'Yelp URL not found';
-      console.log(`Yelp URL for ${SEARCH_TERM}: ${yelpUrl}`);
+      //console.log(`Yelp URL for ${SEARCH_TERM}: ${yelpUrl}`);
       return yelpUrl;
     } else {
       console.log(`No results found for ${SEARCH_TERM}`);
@@ -106,72 +105,48 @@ async function getYelpURL(location) {
   });
 }
 
-
-//Get Gas Station Prices
-async function getGasStationPrices(geocode) {
-  const state = await getStateFromCoordinates(geocode.lat,geocode.long);
-  console.log("state", state);
-  const gasPrices = {
-    "Alaska": 4.229,
-    "Alabama": 3.028,
-    "Arkansas": 3.049,
-    "Arizona": 3.915,
-    "California":	5.210,
-    "Colorado":	3.503,
-    "Connecticut":	3.547,
-    "District of Columbia": 3.640,
-    "Delaware":	3.119,
-    "Florida":	3.228,
-    "Georgia":	2.934,
-    "Hawaii":	 4.760,
-    "Iowa": 3.172,
-    "Idaho":	3.866,
-    "Illinois": 3.544,
-    "Indiana": 3.296,
-    "Kansas": 3.260,
-    "Kentucky": 3.111,
-    "Louisiana": 3.011,
-    "Massachusetts": 3.543,
-    "Maryland": 3.321,
-    "Maine": 3.529,
-    "Michigan": 3.296,
-    "Minnesota": 3.338,
-    "Missouri": 3.121,
-    "Mississippi": 2.943,
-    "Montana": 3.693,
-    "North Carolina": 3.151,
-    "North Dakota": 3.522,
-    "Nebraska":3.359,
-    "New Hampshire": 3.428,
-    "New Jersey": 3.375,
-    "New Mexico": 3.353,
-    "Nevada": 4.527,
-    "New York": 3.727,
-    "Ohio": 3.129,
-    "Oklahoma": 3.097,
-    "Oregon": 4.305,
-    "Pennsylvania": 3.679,
-    "Rhode Island": 3.479,
-    "South Carolina": 3.021,
-    "South Dakota": 3.460,
-    "Tennessee": 3.063,
-    "Texas": 2.933,
-    "Utah": 3.696,
-    "Virginia": 3.258,
-    "Vermont": 3.618,
-    "Washington": 4.649,
-    "Wisconsin": 3.154,
-    "West Virginia": 3.312,
-    "Wyoming": 3.567
-  };
-
-  if (gasPrices[state]) {
-    return gasPrices[state];
-  } else {
-    throw new Error(`Gas price for ${state} not found.`);
+async function getRestaurants(route, preferences) {
+  const restaurants = [];
+  let current = route[0];
+  const maxDistance = 50;
+  let currentDistance = 0;
+  for(let i = 1; i < route.length; i++) {
+    const distance = calculateDistance(current.lat, current.lng, route[i].lat, route[i].lng);
+    if (currentDistance + distance > maxDistance) {
+      const currRestaurants = await getStops(current, null, null, preferences, 'food', 'distance');
+      // Push the first 3 restaurants
+      restaurants.push(...currRestaurants.slice(0, 3));
+      currentDistance = 0; 
+    }
+    current = route[i];
+    currentDistance += distance;
   }
 
+  return restaurants;
+}
 
+async function gasStationsForStop(stop, mpg, fuelCapacity, distancePassed, fuelType) {
+  const gasStations = [];
+  const route = stop.routeFromHere;
+  let current = route[0];
+  const maxDistance = mpg * fuelCapacity * 0.75;
+  let currentDistance = distancePassed;
+  for(let i = 1; i < route.length; i++) {
+    const distance = calculateDistance(current.lat, current.lng, route[i].lat, route[i].lng);
+    if (currentDistance + distance > maxDistance) {
+      const currGasStations = await getStops(current, null, null, null, 'gas_station', 'distance');
+      // Push the first 3 gas stations
+      gasStations.push(...currGasStations.slice(0, 3));
+      gasStations.forEach((station) => {
+          station.price = getGasStationPrices(station.location, fuelType);
+      });
+      currentDistance = 0;
+    }
+    current = route[i];
+    currentDistance += distance; 
+  }
+  stop.distanceForGasStations = currentDistance;
+  stop.gasStations = gasStations;
 }
 
 
@@ -241,13 +216,12 @@ async function callTicketmasterService(request) {
 //   }
 // }
 
-async function getStops(location, radius, keyword, preferences, type) {
+async function getStops(location, radius, keyword, preferences, type, rankby) {
   try {
     const locationString = `${location.lat},${location.lng}`;
     endpoint = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
     params = {
       location: locationString,
-      radius: radius,
       type: type,
       // minprice: , 
       // maxprice: ,
@@ -256,6 +230,10 @@ async function getStops(location, radius, keyword, preferences, type) {
     };
     if (keyword) 
       params.keyword = keyword;
+    if (radius)
+      params.radius = radius;
+    if (rankby)
+      params.rankby = rankby;
     const results = await axios.get(endpoint, { params: params });
     const list = results.data.results.map((place) => {
       return ({
@@ -265,6 +243,10 @@ async function getStops(location, radius, keyword, preferences, type) {
         // icon: place.icon,
         place_id: place.place_id,
         locationString: `${place.geometry.location.lat},${place.geometry.location.lng}`, 
+        price: place.price_level,
+        vicinity: place.vicinity ? place.vicinity : null,
+        url: place.url,
+        photo: place.photos ? place.photos[0] : null,
         rating: place.rating});})
     return list; // Corrected access to place names
   } catch (error) {
@@ -320,5 +302,326 @@ module.exports = {
   nearestNextStop,
   getYelpURL,
   callTicketmasterService,
-  motionSickness
+  motionSickness,
+  gasStationsForStop,
+  getRestaurants,
 };
+
+//Get Gas Station Prices
+async function getGasStationPrices(geocode, fuelType) {
+  const state = await getStateFromCoordinates(geocode.lat,geocode.lng);
+  const gasPrices = {
+    Alaska: {
+      Regular: 4.196,
+      MidGrade: 4.429,
+      Premium: 4.634,
+      Diesel: 4.532,
+    },
+    Alabama: {
+      Regular: 3.016,
+      MidGrade: 3.427,
+      Premium: 3.809,
+      Diesel: 4.111,
+    },
+    Arkansas: {
+      Regular: 3.038,
+      MidGrade: 3.441,
+      Premium: 3.805,
+      Diesel: 4.175,
+    },
+    Arizona: {
+      Regular: 3.894,
+      MidGrade: 4.222,
+      Premium: 4.505,
+      Diesel: 4.561,
+    },
+    California: {
+      Regular: 5.183,
+      MidGrade: 5.415,
+      Premium: 5.569,
+      Diesel: 6.072,
+    },
+    Colorado: {
+      Regular: 3.476,
+      MidGrade: 3.863,
+      Premium: 4.164,
+      Diesel: 4.535,
+    },
+    Connecticut: {
+      Regular: 3.537,
+      MidGrade: 4.117,
+      Premium: 4.517,
+      Diesel: 4.546,
+    },
+    'District of Columbia': {
+      Regular: 3.636,
+      MidGrade: 4.230,
+      Premium: 4.607,
+      Diesel: 4.544,
+    },
+    Delaware: {
+      Regular: 3.101,
+      MidGrade: 3.643,
+      Premium: 3.947,
+      Diesel: 4.260,
+    },
+    Florida: {
+      Regular: 3.208,
+      MidGrade: 3.627,
+      Premium: 3.960,
+      Diesel: 4.271,
+    },
+    Georgia: {
+      Regular: 2.924,
+      MidGrade: 3.360,
+      Premium: 3.750,
+      Diesel: 4.028,
+    },
+    Hawaii: {
+      Regular: 4.754,
+      MidGrade: 4.963,
+      Premium: 5.214,
+      Diesel: 5.737,
+    },
+    Iowa: {
+      Regular: 3.151,
+      MidGrade: 3.483,
+      Premium: 3.919,
+      Diesel: 4.458,
+    },
+    Idaho: {
+      Regular: 3.855,
+      MidGrade: 4.088,
+      Premium: 4.327,
+      Diesel: 4.627,
+    },
+    Illinois: {
+      Regular: 3.538,
+      MidGrade: 4.046,
+      Premium: 4.474,
+      Diesel: 4.269,
+    },
+    Indiana: {
+      Regular: 3.282,
+      MidGrade: 3.789,
+      Premium: 4.249,
+      Diesel: 4.337,
+    },
+    Kansas: {
+      Regular: 3.240,
+      MidGrade: 3.544,
+      Premium: 3.870,
+      Diesel: 4.516,
+    },
+    Kentucky: {
+      Regular: 3.095,
+      MidGrade: 3.576,
+      Premium: 3.980,
+      Diesel: 4.159,
+    },
+    Louisiana: {
+      Regular: 2.997,
+      MidGrade: 3.416,
+      Premium: 3.774,
+      Diesel: 4.016,
+    },
+    Massachusetts: {
+      Regular: 3.533,
+      MidGrade: 4.112,
+      Premium: 4.452,
+      Diesel: 4.465,
+    },
+    Maryland: {
+      Regular: 3.307,
+      MidGrade: 3.876,
+      Premium: 4.186,
+      Diesel: 4.367,
+    },
+    Maine: {
+      Regular: 3.516,
+      MidGrade: 3.952,
+      Premium: 4.365,
+      Diesel: 4.472,
+    },
+    Michigan: {
+      Regular: 3.389,
+      MidGrade: 3.858,
+      Premium: 4.355,
+      Diesel: 4.280,
+    },
+    Minnesota: {
+      Regular: 3.321,
+      MidGrade: 3.658,
+      Premium: 4.061,
+      Diesel: 4.670,
+    },
+    Missouri: {
+      Regular: 3.108,
+      MidGrade: 3.449,
+      Premium: 3.774,
+      Diesel: 4.297,
+    },
+    Mississippi: {
+      Regular: 2.929,
+      MidGrade: 3.338,
+      Premium: 3.689,
+      Diesel: 3.959,
+    },
+    Montana: {
+      Regular: 3.669,
+      MidGrade: 3.965,
+      Premium: 4.262,
+      Diesel: 4.479,
+    },
+    'North Carolina': {
+      Regular: 3.140,
+      MidGrade: 3.553,
+      Premium: 3.925,
+      Diesel: 4.194,
+    },
+    'North Dakota': {
+      Regular: 3.499,
+      MidGrade: 3.794,
+      Premium: 4.125,
+      Diesel: 4.628,
+    },
+    Nebraska: {
+      Regular: 3.339,
+      MidGrade: 3.541,
+      Premium: 3.979,
+      Diesel: 4.521,
+    },
+    'New Hampshire': {
+      Regular: 3.416,
+      MidGrade: 3.885,
+      Premium: 4.300,
+      Diesel: 4.352,
+    },
+    'New Jersey': {
+      Regular: 3.369,
+      MidGrade: 3.990,
+      Premium: 4.264,
+      Diesel: 4.469,
+    },
+    'New Mexico': {
+      Regular: 3.331,
+      MidGrade: 3.686,
+      Premium: 3.961,
+      Diesel: 4.421,
+    },
+    Nevada: {
+      Regular: 4.509,
+      MidGrade: 4.781,
+      Premium: 5.008,
+      Diesel: 4.858,
+    },
+    'New York': {
+      Regular: 3.720,
+      MidGrade: 4.228,
+      Premium: 4.602,
+      Diesel: 4.676,
+    },
+    Ohio: {
+      Regular: 3.135,
+      MidGrade: 3.606,
+      Premium: 4.067,
+      Diesel: 4.246,
+    },
+    Oklahoma: {
+      Regular: 3.076,
+      MidGrade: 3.404,
+      Premium: 3.691,
+      Diesel: 4.362,
+    },
+    Oregon: {
+      Regular: 4.288,
+      MidGrade: 4.540,
+      Premium: 4.752,
+      Diesel: 4.902,
+    },
+    Pennsylvania: {
+      Regular: 3.673,
+      MidGrade: 4.047,
+      Premium: 4.355,
+      Diesel: 4.748,
+    },
+    'Rhode Island': {
+      Regular: 3.473,
+      MidGrade: 4.105,
+      Premium: 4.448,
+      Diesel: 4.474,
+    },
+    'South Carolina': {
+      Regular: 3.008,
+      MidGrade: 3.429,
+      Premium: 3.787,
+      Diesel: 4.113,
+    },
+    'South Dakota': {
+      Regular: 3.443,
+      MidGrade: 3.600,
+      Premium: 4.100,
+      Diesel: 4.440,
+    },
+    'Tennessee': {
+      Regular: 3.048,
+      MidGrade: 3.474,
+      Premium: 3.848,
+      Diesel: 4.123,
+    },
+    'Texas': {
+      Regular: 2.917,
+      MidGrade: 3.342,
+      Premium: 3.674,
+      Diesel: 3.926,
+    },
+    'Utah': {
+      Regular: 3.678,
+      MidGrade: 3.909,
+      Premium: 4.115,
+      Diesel: 4.442,
+    },
+    'Virginia': {
+      Regular: 3.244,
+      MidGrade: 3.696,
+      Premium: 4.051,
+      Diesel: 4.248,
+    },
+    'Vermont': {
+      Regular: 3.611,
+      MidGrade: 4.104,
+      Premium: 4.506,
+      Diesel: 4.483,
+    },
+    'Washington': {
+      Regular: 4.632,
+      MidGrade: 4.904,
+      Premium: 5.103,
+      Diesel: 5.395,
+    },
+    'Wisconsin': {
+      Regular: 3.153,
+      MidGrade: 3.607,
+      Premium: 4.041,
+      Diesel: 4.131,
+    },
+    'West Virginia': {
+      Regular: 3.304,
+      MidGrade: 3.644,
+      Premium: 3.994,
+      Diesel: 4.204,
+    },
+    'Wyoming': {
+      Regular: 3.553,
+      MidGrade: 3.810,
+      Premium: 4.083,
+      Diesel: 4.644,
+    },
+  };
+
+  if (gasPrices[state][fuelType]) {
+    return gasPrices[state][fuelType];
+  } else {
+    throw new Error(`Gas price for ${state} not found.`);
+  }
+}

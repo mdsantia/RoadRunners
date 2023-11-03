@@ -95,7 +95,6 @@ export default function Dashboard() {
             // Otherwise, we need to build the road trip
             const savedTrip = user.trips.find((trip) => trip._id === decodedTripDetails.id);
             if (savedTrip) {
-                console.log(savedTrip);
                 setTripDetails({
                     ...decodedTripDetails,
                     allStops: savedTrip.allStops,
@@ -103,6 +102,7 @@ export default function Dashboard() {
                     polyline: savedTrip.polyline,
                     chosenRoute: savedTrip.chosenRoute,
                     stops: savedTrip.stops, 
+
                 });
                 return;
             }
@@ -132,13 +132,16 @@ export default function Dashboard() {
             startLocation: tripDetails.startLocation,
             endLocation: tripDetails.endLocation,
             startDate: tripDetails.startDate,
-            endDate: tripDetails.endDate
+            endDate: tripDetails.endDate,
+            foodPref: tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : null,
+            mpg: tripDetails.minimumMPG,
         };
 
         axios
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
             directionsCallback(res.data);
+            console.log(res.data);
             //navigate(`/dashboard/${encodedTripDetails}`);
         })  
         .catch((err) => {
