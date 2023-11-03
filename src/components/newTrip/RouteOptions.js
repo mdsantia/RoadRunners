@@ -3,12 +3,13 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { Container, Typography, Grid, Divider } from '@mui/material';
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
+import { Container, Typography, Grid, Divider, Select, OutlinedInput, InputLabel, TextField } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, MenuItem, Button, Autocomplete } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import { useDashboardContext } from '../../context/DashboardContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Checkbox from '@mui/material/Checkbox';
+
 
 function RouteOptions() {
     const navigate = useNavigate();
@@ -17,22 +18,35 @@ function RouteOptions() {
     const [options, setOptions] = React.useState(null);
     const [chosenRoute, setChosenRoute] = React.useState(0);
     const [expanded, setExpanded] = React.useState(null);
+    const [selectedFilter, setSelectedFilter] = React.useState('');
+    const filterOptions = ["Scenic", "Eventful", "Fastest"];
 
-    React.useEffect(() => {
-        if (tripDetails) {
-            setOptions(tripDetails.options);
-            setChosenRoute(tripDetails.chosenRoute);
-        }
-    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
+    // const handleFilterChange = (event) => {
+    //     const {
+    //       target: { value },
+    //     } = event;
+    //     setSelectedFilters(
+    //       // On autofill we get a stringified value.
+    //       typeof value === 'string' ? value.split(',') : value,
+    //     );
+    // };
 
-    const handleChange = (panel) => (event, isExpanded) => {
+    const handleFilterChange = (event) => {
+        setSelectedFilter(event.target.value);
+    };
+    
+    const handleAccordionChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : null);
     };
-
+    
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
     };
 
+    const handleFilterSelect = (event) => {
+        // TODO
+    }
+    
     const getRouteDetails = (infoLabel, info) => {
         return (
             <Grid container alignItems="left" textAlign="left" spacing={0}>
@@ -49,9 +63,62 @@ function RouteOptions() {
             </Grid>
         );
     }
+    
+    React.useEffect(() => {
+        if (tripDetails) {
+            setOptions(tripDetails.options);
+            setChosenRoute(tripDetails.chosenRoute);
+        }
+    }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
 
     return (
         <div style={{ height: '58vh', overflowY: 'auto' }}>
+            <Grid container spacing={2} alignItems="center" textAlign="left">
+                <Grid item xs={10} sm={10} md={10}>
+                    <InputLabel>Filter By</InputLabel>
+                    <Select
+                        displayEmpty
+                        value={selectedFilter}
+                        onChange={handleFilterChange}
+                        input={<OutlinedInput label="Tag" />}
+                        // renderValue={(selected) => {
+                        //     if (selected.length === 0) {
+                        //     return <Typography sx={{ color: 'gray' }}>No Filter Selected</Typography>;
+                        //     }
+                
+                        //     return selected.join(', ');
+                        // }}
+                        sx={{ width: '100%', height: '5vh' }}
+                    >
+                        {filterOptions.map((option, index) => (
+                            <MenuItem key={index} value={option} sx={{ paddingLeft: '3%' }}>
+                                {/* <Checkbox checked={selectedFilters.indexOf(option) > -1} sx={{ padding: '2%' }} /> */}
+                                <ListItemText primary={option}/>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </Grid>
+                <Grid item xs={2} sm={2} md={2} alignItems="center">
+                    <Button 
+                        sx={{ 
+                            borderRadius: '10px',
+                            border: '1px solid #ccc',
+                            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                            backgroundColor: 'darkblue',
+                            color: 'white',
+                            marginTop: '22px',
+                            '&:hover': {
+                                backgroundColor: '#6495ed',
+                            },
+                        }}
+                        onClick={handleFilterSelect}
+                    >
+                        Filter
+                    </Button>
+                </Grid>
+            </Grid>
+            <br></br>
+            <Divider></Divider>
             <Container disableGutters>
                 <List>
                     {/* {routes && routes.map((path, index) => (
@@ -70,7 +137,7 @@ function RouteOptions() {
                                     },
                                 }}
                             >
-                                <Accordion expanded={expanded[index]} onChange={handleChange(index)} 
+                                <Accordion expanded={expanded[index]} onChange={handleAccordionChange(index)} 
                                     sx={{ 
                                         width: '100%',
                                         border: '1px solid #ccc',
@@ -113,7 +180,7 @@ function RouteOptions() {
                                 }}
                                 disableGutters
                             >
-                                <Accordion expanded={expanded === index} onChange={handleChange(index)} 
+                                <Accordion expanded={expanded === index} onChange={handleAccordionChange(index)} 
                                     sx={{ 
                                         width: '100%',
                                         backgroundColor: '#fff',
