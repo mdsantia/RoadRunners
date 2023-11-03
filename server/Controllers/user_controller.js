@@ -146,8 +146,9 @@ const saveTrip = async (req, res) => {
 
     // They are updating a trip
     if (id) {
+        console.log(id);
         for (let i = 0; i < user.trips.length; i++) {
-            if (user.trips[i]._id === id) {
+            if (user.trips[i]._id == id) {
                 const newTrip = {
                     _id: id,
                     hash: hash,
@@ -157,6 +158,7 @@ const saveTrip = async (req, res) => {
                     polyline: polyline,
                     stops: stops
                 }
+                
                 user.trips[i] = newTrip; 
                 await user.save();
                 res.status(200).json(user);

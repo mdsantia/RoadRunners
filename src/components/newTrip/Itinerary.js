@@ -116,7 +116,7 @@ export default function Itinerary() {
         numVehicles: tripDetails.numVehicles,
         selectedVehicles: tripDetails.selectedVehicles,
     }
-    if (!isNewTrip) {
+    if (tripDetails.id) {
       tripDetailsToHash.id = tripDetails.id;
     }
     await axios.post('/api/user/saveTrip', {
@@ -154,9 +154,12 @@ export default function Itinerary() {
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
       endDate: tripDetails.endDate,
-      preferences: tripDetails.preferences,
-      numVehicles: tripDetails.numVehicles,
-      selectedVehicles: tripDetails.selectedVehicles,
+      preferences: newTripDetails.preferences,
+      numVehicles: newTripDetails.numVehicles,
+      selectedVehicles: newTripDetails.selectedVehicles,
+    }
+    if (tripDetails.id) {
+      tripDetailsToHash.id = tripDetails.id;
     }
     const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetailsToHash}));
     navigate(`/dashboard/${encodedTripDetails}`);
