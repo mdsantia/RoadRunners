@@ -114,7 +114,6 @@ export const DashboardContextProvider = ({ children }) => {
           totalDuration: calculateTotalDuration(response.options),
           polyline: buildPolyline(response.options[0]),
         }
-        console.log("dis: " + newTripDetails.totalDistance);
         setTripDetails(newTripDetails);
     }
   };

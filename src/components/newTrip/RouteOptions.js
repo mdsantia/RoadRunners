@@ -21,9 +21,8 @@ function RouteOptions() {
     const [chosenRoute, setChosenRoute] = React.useState(0);
     const [expanded, setExpanded] = React.useState(null);
     const [selectedFilter, setSelectedFilter] = React.useState('');
-    const [fastestRoute, setFastestRoute] = React.useState(null);
-    const [shortestRoute, setShortestRoute] = React.useState(null);
-    const filterOptions = ["Shortest", "Fastest"];    
+    const [filteredRoutes, setFilteredRoutes] = React.useState([]);
+    const filterOptions = ["None", "Shortest", "Fastest"];    
 
     // const handleFilterChange = (event) => {
     //     const {
@@ -39,12 +38,62 @@ function RouteOptions() {
         if (tripDetails) {
             setOptions(tripDetails.options);
             setChosenRoute(tripDetails.chosenRoute);
+            setFilteredRoutes(tripDetails.options);
         }
     }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
+
+    
+    const getShortestRoutes = (totalDistance) => {
+        if (totalDistance && tripDetails.options) {
+            let index = 0;
+            const shortestRoutes = [];
+            shortestRoutes.push(options[0]);
+            for (let i = 1; i < totalDistance.length; i++) {
+                if (totalDistance[i] < totalDistance[index]) {
+                    shortestRoutes.pop();
+                    shortestRoutes.push(options[i]);
+                    index = i;
+                } else if (totalDistance[i] === totalDistance[index]) {
+                    shortestRoutes.push(options[i]);
+                }
+            }
+            console.log("shortest " + shortestRoutes.length);
+            return shortestRoutes;
+        }
+    }
+
+    const getFastestRoutes = (totalDuration) => {
+        if (totalDuration && tripDetails.options) {
+            let index = 0;
+            const fastestRoutes = [];
+            fastestRoutes.push(options[0]);
+            for (let i = 1; i < totalDuration.length; i++) {
+                if (totalDuration[i] < totalDuration[index]) {
+                    fastestRoutes.pop();
+                    fastestRoutes.push(options[i]);
+                    index = i;
+                } else if (totalDuration[i] === totalDuration[index]) {
+                    fastestRoutes.push(options[i]);
+                }
+            }
+            return fastestRoutes;
+        }
+    }
                 
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
     };
+
+    const handleFilterSelect = () => {
+        if (selectedFilter === 'Shortest') {
+            setFilteredRoutes(getShortestRoutes(tripDetails.totalDistance));
+        } else if (selectedFilter === 'Fastest') {
+            setFilteredRoutes(getFastestRoutes(tripDetails.totalDuration));
+        } else {
+            // If no filter is selected, show all routes
+            setFilteredRoutes(tripDetails.options);
+        }
+    }
 
     const handleAccordionChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : null);
@@ -53,10 +102,6 @@ function RouteOptions() {
     const handleButton = (event) => {
         updateChosenRoute(parseInt(event.currentTarget.id));
     };
-
-    const handleFilterSelect = (event) => {
-        // TODO
-    }
 
     const getRouteDetails = (infoLabel, info) => {
         return (
@@ -74,8 +119,6 @@ function RouteOptions() {
             </Grid>
         );
     }
-
-    console.log(tripDetails);
 
     return (
         <div style={{ height: '58vh', overflowY: 'auto' }}>
@@ -172,7 +215,7 @@ function RouteOptions() {
                         </ListItem>
                     ))}
                     {!routes && <p>Loading...</p>} */}
-                    {options && options.map((path, index) => (
+                    {filteredRoutes && filteredRoutes.map((path, index) => (
                         <ListItem key={index}>
                             <ListItemButton
                                 id={index}
