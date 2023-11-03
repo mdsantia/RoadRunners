@@ -4,7 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../Models/user_model');
 const axios = require('axios');
-const LZString = require('lz-string');
+const {mongoURI} = require('../Constants');
 
 /*
     Check if a user already exists, if they do update and return them
@@ -216,7 +216,7 @@ const saveTrip = async (req, res) => {
     
     */
    const addVehicle = async (req, res) => {
-    const {email, make, model, year, color, mpgGiven } = req.body;
+    const {email, make, model, year, color, mpgGiven, fuelGradeGiven } = req.body;
     var mpg = mpgGiven;
     
     // Check if user exists
@@ -229,7 +229,8 @@ const saveTrip = async (req, res) => {
 
     mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
     // mpg = -1 ? 20 : mpg;
-    // fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
+    const fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
+
     // Create new vehicle
     const newVehicle = {
         make,
@@ -237,6 +238,7 @@ const saveTrip = async (req, res) => {
         year,
         color,
         mpg,
+        fuelGrade: fuelGrade ? fuelGrade : 'Regular'
     };
 
     let i = 0;
@@ -296,7 +298,7 @@ const editVehicle = async (req, res) => {
 
     const mpg = mpgGiven ? mpgGiven : await getMPG(make, model, year);
     // mpg = -1 ? 20 : mpg;
-    // const fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
+    const fuelGrade = fuelGradeGiven ? fuelGradeGiven : await getFuelGrade(make, model, year);
     const newVehicle = {
         _id,
         year,
@@ -305,6 +307,7 @@ const editVehicle = async (req, res) => {
         color,
         ranking: i,
         mpg,
+        fuelGrade,
     }
     // Add editted vehicle to user
     user.vehicles[i] = newVehicle;
@@ -363,6 +366,8 @@ const removeVehicle = async (req, res) => {
         return;
     }
 
+    console.log(_id);
+
     for (let i = 0; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
         if (user.vehicles[i]._id === _id) {
@@ -420,9 +425,6 @@ const setPreferences = async (req, res) => {
 /* Helper Functions */
 const getMPG = async (make, model, year) => {
     // Mongodb Vehicle connection
-    const user = "mdsantia";
-    const pwd = "PkLnDkpIynsO9YR8";
-    const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
     const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
     var id = -1;
     try {
@@ -448,34 +450,32 @@ const getMPG = async (make, model, year) => {
     return mpg;
 }
 
-// const getFuelGrade = async (make, model, year) => {
-//     // Mongodb Vehicle connection
-//     const user = "mdsantia";
-//     const pwd = "PkLnDkpIynsO9YR8";
-//     const mongoURI = `mongodb+srv://${user}:${pwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
-//     const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
-//     var id = -1;
-//     try {
-//         await client.connect();
-//         const db = client.db("Vehicles");
-//         const col = db.collection(year + '');
-//         const query = {make: make, model: model};
-//         const document = await col.findOne(query);
-//         const fuelGradeData = document.mpgData;
-//         if (fuelGrade === 'N') {
-//             return -1;
-//         }
-//         id = document.id;
-//     } catch (error) {
-//         console.error('Error querying MongoDB:', error);
-//         return -1;
-//     } finally {
-//         await client.close();
-//     }
-//     const url = `https://www.fueleconomy.gov/ws/rest/ympg/shared/ympgVehicle/${id}`;
-//     const response = await axios.get(url);
-//     const fuelGrade = Math.round(response.data.avgMpg);
-//     return fuelGrade;
-// }
+const getFuelGrade = async (make, model, year) => {
+    // Mongodb Vehicle connection
+
+    const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+    var id = -1;
+    try {
+        await client.connect();
+        const db = client.db("Vehicles");
+        const col = db.collection(year + '');
+        const query = {make: make, model: model};
+        const document = await col.findOne(query);
+        let fuelGradeData = document.fuelType;
+        if (fuelGradeData) {
+            // Grab substring until space
+            const index = fuelGradeData.indexOf(' ');
+            fuelGradeData = fuelGradeData.substring(0, index);
+            return fuelGradeData; 
+        } else {
+            return 'Regular';
+        }
+    } catch (error) {
+        console.error('Error querying MongoDB:', error);
+        return -1;
+    } finally {
+        await client.close();
+    }
+}
 
 module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking, editVehicle, deleteTrip, clearTrips};

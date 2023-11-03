@@ -21,5 +21,7 @@ module.exports = {
     TicketMasterApiKey,
     TicketMasterSecret,
     YelpApiKey,
-    GoogleApiKey
+    GoogleApiKey,
+    mongoPwd,
+    mongoUser,
 }
