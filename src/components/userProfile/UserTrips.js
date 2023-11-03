@@ -4,7 +4,7 @@ import { Grid, Card, CardContent, Typography, Button, Divider } from '@mui/mater
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
-import LZString from 'lz-string';
+
 
 const VerticalTripCard = styled(Card)(({ theme }) => ({
     width: '100%',
@@ -26,9 +26,8 @@ const CardContentNoPadding = styled(CardContent)(`
 const UserTrips = ({ user, updateUser }) => {
     const navigate = useNavigate();
 
-    const handleTripClick = async (hash) => {
-        navigate(`/dashboard/${hash}`);
-        window.location.reload();
+    const handleTripClick = async (trip) => {
+        navigate(`/dashboard/${trip.hash}`);
     }
 
     const handleDeleteTrip = async (tripid, event) => {
@@ -90,11 +89,11 @@ const UserTrips = ({ user, updateUser }) => {
             </Button>
             {/* <Grid container spacing={2}> */}
                 {user.trips.map((trip) => {
-                    const tripDetails = JSON.parse(LZString.decompressFromUTF16(trip.hash)).tripDetails // Decode the trip.hash
+                    const tripDetails = JSON.parse(atob(trip.hash)).tripDetails // Decode the trip.hash
                     return (
                         <Grid container key={trip._id} alignItems="center" justify="center">
                             <Grid item xs={11} sm={11} md={11} lg={11} xl={11}>
-                                <Button style={{ textDecoration: 'none', padding: '5px', width: '100%' }} onClick={() => handleTripClick(trip.hash)}>
+                                <Button style={{ textDecoration: 'none', padding: '5px', width: '100%' }} onClick={() => handleTripClick(trip)}>
                                     <VerticalTripCard
                                         sx={{
                                             minWidth: '250',

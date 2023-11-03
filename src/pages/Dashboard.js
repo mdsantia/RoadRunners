@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
+const { useUserContext } = require('../hooks/useUserContext');
 
 const Container = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -72,11 +73,15 @@ const Wrapper = styled(Card)(({ theme }) => ({
 export default function Dashboard() {
     const {tripString} = useParams();
     const [nonce, setNonce] = useState('');
+    const { user } = useUserContext();
     const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
     const { tripDetails, setTripDetails, directionsCallback } = useDashboardContext();
 
     useEffect(() => {
+        if (!user) {
+            return;
+        }
         // Fake nonce generation for purposes of demonstration
         const uuid = uuidv4();
         // console.log('uuid:', uuid);
@@ -85,22 +90,41 @@ export default function Dashboard() {
         try {
             decodedTripDetails = JSON.parse(atob(tripString)).tripDetails;
             setTripDetails(decodedTripDetails);
+            // Check if saved users trips has an id that matches the id in the tripDetails
+            // If so, then we can use the saved trip's allStops, options, polyline, and chosenRoute
+            // Otherwise, we need to build the road trip
+            const savedTrip = user.trips.find((trip) => trip._id === decodedTripDetails.id);
+            if (savedTrip) {
+                console.log(savedTrip);
+                setTripDetails({
+                    ...decodedTripDetails,
+                    allStops: savedTrip.allStops,
+                    options: savedTrip.options,
+                    polyline: savedTrip.polyline,
+                    chosenRoute: savedTrip.chosenRoute,
+                    stops: savedTrip.stops, 
+                });
+                return;
+            }
         } catch (err) {
             console.log(err);
             setTripDetails(null);
             //navigate('/');
             return;
         }
-    }, [tripString]);
+    }, [tripString, user]);
 
     useEffect(() => {
-        if (tripDetails && !tripDetails.allStops) {
+        if (!tripDetails) {
+            return;
+        }
+        if (!tripDetails.allStops || !tripDetails.options || !tripDetails.polyline || !tripDetails.chosenRoute) {
             buildRoadTrip();
         }
     }, [tripDetails]);
 
     const buildRoadTrip = () => {
-        if (tripDetails.allStops) {
+        if (tripDetails && tripDetails.allStops) {
             console.log('Trip already built');
             return;
         }

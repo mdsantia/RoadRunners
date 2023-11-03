@@ -18,8 +18,6 @@ export const directionReducer = (state, action) => {
 }
 
 export const DashboardContextProvider = ({ children }) => {
-  const [polyline, setPolyline] = useState(null);
-  const [options, setOptions] = useState(null); 
   const [center, setCenter] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
 

@@ -81,8 +81,7 @@ export default function CreateTrip() {
           selectedVehicles: selectedVehicles,
         }
         const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetails}));
-        navigate(`/dashboard/${encodedTripDetails}`);
-        // window.location.reload();
+        navigate(`/dashboard/${encodedTripDetails}`); 
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);
