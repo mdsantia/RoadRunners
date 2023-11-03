@@ -128,7 +128,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
                 const newUser = response.data;
                 updateUser(newUser);
                 if (response.status === 201) {
-                    alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.\nBy default, we have set the MPG of our vehicle to be 20.");
+                    alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.\nBy default, we have set the MPG of your vehicle to be 20.");
                 } else {
                     alert("Your vehicle has been saved!");
                 }
