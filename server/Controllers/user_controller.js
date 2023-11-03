@@ -215,10 +215,9 @@ const saveTrip = async (req, res) => {
     responseCode: 400 if user is not found or duplicate vehicle is detected
     
     */
-const addVehicle = async (req, res) => {
-    const {email, make, model, year, color, mpgGiven, fuelGradeGiven } = req.body;
+   const addVehicle = async (req, res) => {
+    const {email, make, model, year, color, mpgGiven } = req.body;
     var mpg = mpgGiven;
-    var fuelGrade = fuelGradeGiven;
     
     // Check if user exists
     const user = await User.findOne({email});
@@ -238,7 +237,6 @@ const addVehicle = async (req, res) => {
         year,
         color,
         mpg,
-        fuelGrade
     };
 
     let i = 0;
@@ -307,7 +305,6 @@ const editVehicle = async (req, res) => {
         color,
         ranking: i,
         mpg,
-        fuelGrade
     }
     // Add editted vehicle to user
     user.vehicles[i] = newVehicle;
