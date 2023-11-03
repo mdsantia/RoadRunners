@@ -59,7 +59,7 @@ function RouteOptions() {
                 <Container disableGutters>
                     <List>
                         {options.map((path, index) => (
-                            <ListItem key={index} disablePadding>
+                            <ListItem key={index} >
                                 <ListItemButton
                                     id={index}
                                     value={index}
