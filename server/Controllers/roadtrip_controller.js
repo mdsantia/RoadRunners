@@ -188,7 +188,6 @@ async function getRestaurantsAlongRoute(stops, foodPref) {
 
 const yelpUrl = async (req, res) => {
   const {stops} = req.query;
-  console.log(stops)
 
   const promises = [];
   for (stop of stops) {

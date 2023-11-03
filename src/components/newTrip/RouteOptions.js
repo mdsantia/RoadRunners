@@ -255,7 +255,7 @@ function RouteOptions() {
                                         {/* {getRouteDetails("Trip Duration:", path.duration)} */}
                                         {getRouteDetails("Number of Stops:", path.length)}
                                         {getRouteDetails("Categories of Stops:", path[1].category)}   
-                                        {getRouteDetails("Popular Stops Along This Route:", path[0] + ", " + path[1] + ", " + path[2])}
+                                        {/* {getRouteDetails("Popular Stops Along This Route:", path[0] + ", " + path[1] + ", " + path[2])} */}
                                         <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>
                                             Stops: {path.map((stop, stopIndex) => (
                                                 stopIndex === path.length - 1 ? 
