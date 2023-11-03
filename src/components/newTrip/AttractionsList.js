@@ -59,7 +59,7 @@ export default function AttractionsList() {
   const [selectedHotels, setSelectedHotels] = useState([]);
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
-  const [Attractionsall, setAllAttractions] = useState([]);
+  const [allAttractions, setAllAttractions] = useState([]);
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
