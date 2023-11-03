@@ -56,6 +56,92 @@ async function getGeoLocation(address) {
   }
 }
 
+
+//Get State From Coordinates
+async function getStateFromCoordinates(lat, long) {
+  let endpoint = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${GoogleApiKey}`;
+  let response;
+  try {
+    response = await axios.get(endpoint);
+    const state = response.data.results[0].address_components.find(component => {
+      return component.types.includes('administrative_area_level_1');
+    });
+    return state.long_name;
+  } catch (error) {
+    console.log(response.data);
+    throw new Error(error.message);
+  }
+}
+
+
+//Get Gas Station Prices
+async function getGasStationPrices(geocode) {
+  const state = await getStateFromCoordinates(geocode.lat,geocode.long);
+  console.log("state", state);
+  const gasPrices = {
+    "Alaska": 4.229,
+    "Alabama": 3.028,
+    "Arkansas": 3.049,
+    "Arizona": 3.915,
+    "California":	5.210,
+    "Colorado":	3.503,
+    "Connecticut":	3.547,
+    "District of Columbia": 3.640,
+    "Delaware":	3.119,
+    "Florida":	3.228,
+    "Georgia":	2.934,
+    "Hawaii":	 4.760,
+    "Iowa": 3.172,
+    "Idaho":	3.866,
+    "Illinois": 3.544,
+    "Indiana": 3.296,
+    "Kansas": 3.260,
+    "Kentucky": 3.111,
+    "Louisiana": 3.011,
+    "Massachusetts": 3.543,
+    "Maryland": 3.321,
+    "Maine": 3.529,
+    "Michigan": 3.296,
+    "Minnesota": 3.338,
+    "Missouri": 3.121,
+    "Mississippi": 2.943,
+    "Montana": 3.693,
+    "North Carolina": 3.151,
+    "North Dakota": 3.522,
+    "Nebraska":3.359,
+    "New Hampshire": 3.428,
+    "New Jersey": 3.375,
+    "New Mexico": 3.353,
+    "Nevada": 4.527,
+    "New York": 3.727,
+    "Ohio": 3.129,
+    "Oklahoma": 3.097,
+    "Oregon": 4.305,
+    "Pennsylvania": 3.679,
+    "Rhode Island": 3.479,
+    "South Carolina": 3.021,
+    "South Dakota": 3.460,
+    "Tennessee": 3.063,
+    "Texas": 2.933,
+    "Utah": 3.696,
+    "Virginia": 3.258,
+    "Vermont": 3.618,
+    "Washington": 4.649,
+    "Wisconsin": 3.154,
+    "West Virginia": 3.312,
+    "Wyoming": 3.567
+  };
+
+  if (gasPrices[state]) {
+    return gasPrices[state];
+  } else {
+    throw new Error(`Gas price for ${state} not found.`);
+  }
+
+
+}
+
+
 async function decodePolyline(polyline) {
   const endpoint = 'https://maps.googleapis.com/maps/api/directions/json';
   const params = {

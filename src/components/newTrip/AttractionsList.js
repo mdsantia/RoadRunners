@@ -59,7 +59,7 @@ export default function AttractionsList() {
   const [selectedHotels, setSelectedHotels] = useState([]);
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
-  const [allAttractions, setAllAttractions] = useState([]);
+  const [Attractionsall, setAllAttractions] = useState([]);
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
@@ -71,6 +71,7 @@ export default function AttractionsList() {
       tripDetails.stops.forEach((stop) => {
         if (stop.category != 'start' && stop.category != 'end') {
           selectedAttractions.push(stop);
+          
         }
       });
     }
