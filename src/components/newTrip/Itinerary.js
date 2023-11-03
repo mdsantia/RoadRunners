@@ -20,6 +20,7 @@ import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext'
 import LZString from 'lz-string';
+import TripOverview from '../newTrip/TripOverview'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -199,6 +200,10 @@ export default function Itinerary() {
         <AttractionsList></AttractionsList>
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <TripOverview></TripOverview>
+        <br></br>
+        <Divider></Divider>
+        <br></br>
         {(tripDetails && tripDetails.id) ?  (
           <>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >

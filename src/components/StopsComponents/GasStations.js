@@ -45,6 +45,10 @@ export default function LiveEvents({data, selected, onSelectionChange}) {
                        {data.location}
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
+                        ${data.price}+ /gallon 
+                    </Grid>
+                   
+                    <Grid item xs={12} sx={{color:'grey'}}>
                         {data.hours} 
                     </Grid>
                   
