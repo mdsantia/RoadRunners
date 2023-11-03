@@ -235,30 +235,30 @@ export default function AttractionsList() {
 
 
   //Live Events Dummy Data
-   const LiveEventsDummyData = [
-     {
-       name: 'Doja Cat',
-       time: 'Fri, 7-11pm',
-       venue: 'United Centre',
-       location: 'Chicago, IL',
-       link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-     },
-     {
-       name: 'Taylor Swift',
-       time: 'Sat, 9-11pm',
-       venue: 'United Centre',
-       location: 'Chicago, IL',
-       link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-     },
-     {
-       name: 'John Mayer',
-       time: 'Sat, 6-9pm',
-       venue: 'Navy Pier',
-       location: 'Chicago, IL',
-       link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-     },
+  // const LiveEventsData = [
+  //   {
+  //     name: 'Doja Cat',
+  //     time: 'Fri, 7-11pm',
+  //     venue: 'United Centre',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
+  //   {
+  //     name: 'Taylor Swift',
+  //     time: 'Sat, 9-11pm',
+  //     venue: 'United Centre',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
+  //   {
+  //     name: 'John Mayer',
+  //     time: 'Sat, 6-9pm',
+  //     venue: 'Navy Pier',
+  //     location: 'Chicago, IL',
+  //     link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
+  //   },
 
-   ];
+  // ];
 
   if (allAttractions) {
     return (
@@ -318,8 +318,8 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        { <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
-          {LiveEventsDummyData.map((event, index) => (
+        { /*<TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+          {LiveEventsData && LiveEvents.length > 0 && LiveEventsData.map((event, index) => (
             <LiveEvents
               key={index}
               data={event}
@@ -327,7 +327,7 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
             />
           ))}
-        </TabPanel> }
+          </TabPanel> */}
         <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
           {allGasStations && allGasStations.map((gas, index) => (
             <GasStations
