@@ -49,7 +49,7 @@ export default function AddressSearch({label, onInputChange }) {
   }, [tripDetails]);
 
   const handleInputChange = (newInputValue) => {
-    if (newInputValue != null) {
+    if (newInputValue !== null) {
       onInputChange(newInputValue.description);
     }
   };

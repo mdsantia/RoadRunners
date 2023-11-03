@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -55,7 +56,7 @@ function a11yProps(index) {
 }
 
 export default function AttractionsList() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(2);
   const [selectedHotels, setSelectedHotels] = useState([]);
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
@@ -66,10 +67,10 @@ export default function AttractionsList() {
   const { tripDetails } = useDashboardContext();
   
   useEffect(() => {
-    if (tripDetails) {
+    if (tripDetails && tripDetails.allStops) {
       setAllAttractions(tripDetails.allStops);
       tripDetails.stops.forEach((stop) => {
-        if (stop.category != 'start' && stop.category != 'end') {
+        if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
           selectedAttractions.push(stop);
         }
       });
@@ -107,14 +108,39 @@ export default function AttractionsList() {
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
     const stopName = stop.name;
-    const isSelected = selectedList.some((selectedStop) => selectedStop.name === stopName);
+    const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.name === stopName);
+    const newStops = tripDetails.stops.map(stop => {
+      const stopCopy = { ...stop };
+      delete stopCopy.routeFromHere;
+      return stopCopy;
+    });
     
-    if (isSelected) {
-      setSelectedList((prevSelectedList) =>
-        prevSelectedList.filter((s) => s.name !== stopName)
-      );
+    if (index === -1) {
+      // Remove Stop from route
+      // setSelectedList((prevSelectedList) =>
+      //   prevSelectedList.filter((s) => s.name !== stopName)
+      //   );
+      axios
+      .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
+      .then((res) => {
+        // setSelectedList(res.data);
+        //navigate(`/dashboard/${encodedTripDetails}`);
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
     } else {
-      setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+      // Add Stop from route
+      // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+      axios
+      .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
+      .then((res) => {
+        // setSelectedList(res.data);
+        //navigate(`/dashboard/${encodedTripDetails}`);
+      })  
+      .catch((err) => {
+        console.log(err);
+      });
     }
   };
 
@@ -280,87 +306,90 @@ export default function AttractionsList() {
 
   ];
 
-
-  return (
-    <Box
-      sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
-    >
-      <Tabs
-        orientation="vertical"
-        variant="scrollable"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs example"
-        sx={{ borderRight: 1, borderColor: 'divider', width: '40%' }}
+  if (allAttractions) {
+    return (
+      <Box
+        sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
       >
-        <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
-        <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
-        <Tab icon={<MuseumIcon />} iconPosition="start" label="Attractions" {...a11yProps(2)} />
-        <Tab icon={<RestaurantIcon />} iconPosition="start" label="Restaurants" {...a11yProps(3)} />
-        <Tab icon={<TheaterComedyIcon />} iconPosition="start" label="Live Events" {...a11yProps(4)} />
-        <Tab icon={<LocalGasStationIcon />} iconPosition="start" label="Gas Stations" {...a11yProps(5)} />
-      </Tabs>
-      <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {HotelData.map((hotel, index) => (
-          <HotelCard
-            key={index}
-            data={hotel}
-            selected={isStopSelected(hotel, 'hotel')}
-            onSelectionChange={() => handleStopSelection(hotel, selectedHotels, setSelectedHotels)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {LandmarkData.map((landmark, index) => (
-          <Landmarks
-            key={index}
-            data={landmark}
-            selected={isStopSelected(landmark, 'landmark')}
-            onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {allAttractions.map((attraction, index) => (
-          <Attractions
-            key={index}
-            data={attraction}
-            selected={isStopSelected(attraction, 'attraction')}
-            onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {RestaurantsData.map((restaurant, index) => (
-          <Restaurants
-            key={index}
-            data={restaurant}
-            selected={isStopSelected(restaurant, 'restaurant')}
-            onSelectionChange={() => handleStopSelection(restaurant, selectedRestaurants, setSelectedRestaurants)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
-        {LiveEventsData.map((event, index) => (
-          <LiveEvents
-            key={index}
-            data={event}
-            selected={isStopSelected(event, 'liveEvent')}
-            onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
-          />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {GasStationData.map((gas, index) => (
-          <GasStations
-            key={index}
-            data={gas}
-            selected={isStopSelected(gas, 'gasStation')}
-            onSelectionChange={() => handleStopSelection(gas, selectedGasStations, setSelectedGasStations)}
-          />
-        ))}
-      </TabPanel>
-
-    </Box>
-  );
+        <Tabs
+          orientation="vertical"
+          variant="scrollable"
+          value={value}
+          onChange={handleChange}
+          aria-label="Vertical tabs example"
+          sx={{ borderRight: 1, borderColor: 'divider', width: '40%' }}
+        >
+          <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
+          <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
+          <Tab icon={<MuseumIcon />} iconPosition="start" label="Attractions" {...a11yProps(2)} />
+          <Tab icon={<RestaurantIcon />} iconPosition="start" label="Restaurants" {...a11yProps(3)} />
+          <Tab icon={<TheaterComedyIcon />} iconPosition="start" label="Live Events" {...a11yProps(4)} />
+          <Tab icon={<LocalGasStationIcon />} iconPosition="start" label="Gas Stations" {...a11yProps(5)} />
+        </Tabs>
+        <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {HotelData.map((hotel, index) => (
+            <HotelCard
+              key={index}
+              data={hotel}
+              selected={isStopSelected(hotel, 'hotel')}
+              onSelectionChange={() => handleStopSelection(hotel, selectedHotels, setSelectedHotels)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {LandmarkData.map((landmark, index) => (
+            <Landmarks
+              key={index}
+              data={landmark}
+              selected={isStopSelected(landmark, 'landmark')}
+              onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {allAttractions.map((attraction, index) => (
+            <Attractions
+              key={index}
+              data={attraction}
+              selected={isStopSelected(attraction, 'attraction')}
+              onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {RestaurantsData.map((restaurant, index) => (
+            <Restaurants
+              key={index}
+              data={restaurant}
+              selected={isStopSelected(restaurant, 'restaurant')}
+              onSelectionChange={() => handleStopSelection(restaurant, selectedRestaurants, setSelectedRestaurants)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+          {LiveEventsData.map((event, index) => (
+            <LiveEvents
+              key={index}
+              data={event}
+              selected={isStopSelected(event, 'liveEvent')}
+              onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
+            />
+          ))}
+        </TabPanel>
+        <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {GasStationData.map((gas, index) => (
+            <GasStations
+              key={index}
+              data={gas}
+              selected={isStopSelected(gas, 'gasStation')}
+              onSelectionChange={() => handleStopSelection(gas, selectedGasStations, setSelectedGasStations)}
+            />
+          ))}
+        </TabPanel>
+  
+      </Box>
+    );
+  } else {
+    // <div>Loading...</div>
+  }
 }

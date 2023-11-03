@@ -201,24 +201,35 @@ const newRoadTrip = async (req, res) => {
   res.status(201).json(result);
 };
 
-async function addStopInto (newStop, index, stops) {
+async function addStopInto (newStop, into, stops) {
+  const firstStop = parseInt(into) - 1;
   let promises = [];
   var request =  {
-    origin: stops[index - 1].locationString,
+    origin: stops[firstStop].locationString,
     destination: newStop.locationString,
     travelMode: 'DRIVING',
     drivingOptions: {
-      departureTime: startDate, // + time
+      // departureTime: startDate, // + time
       trafficModel: 'pessimistic'
     },
   };
   promises.push(roadtrip_apis.callDirectionService(request));
   request.origin = newStop.locationString;
-  request.destination = stops[index].locationString;
+  request.destination = stops[firstStop + 1].locationString;
   promises.push(roadtrip_apis.callDirectionService(request));
   const newRoutes = await Promise.all(promises);
-  stops[firstStop].routeFromHere = newRoutes[0];
-  newStop.routeFromHere = newRoutes[1];
+  const decoded = newRoutes.map((route) => {
+    return polyline.decode(route.routes[0].overview_polyline.points);
+  });
+  const paths = [];
+  for (const points of decoded) {
+    const path = points.map((point) => {
+      return { lat: point[0], lng: point[1] };
+    });
+    paths.push(path);
+  }
+  stops[firstStop].routeFromHere = paths[0];
+  newStop.routeFromHere = paths[1];
 
   const newStops = stops
   .slice(0, firstStop + 1) // Create a new array from the start to the specified position.
@@ -231,7 +242,7 @@ async function addStopInto (newStop, index, stops) {
 const addStop = async (req, res) => {
   const {newStop, stops} = req.query;
 
-  const connectTo = roadtrip_apis.nearestNextStop(newStop, stops);
+  var connectTo = roadtrip_apis.nearestNextStop(newStop, stops);
   const distance = roadtrip_apis.calculateDistance(connectTo, newStop);
 
   var leftDistance = Infinity;
@@ -243,36 +254,43 @@ const addStop = async (req, res) => {
     rightDistance = roadtrip_apis.calculateDistance(stops[connectTo + 1], newStop);
   }
 
-  const firstStop = leftDistance + distance > rightDistance + distance? connectTo - 1: connectTo;
+  const into = leftDistance + distance > rightDistance + distance? connectTo: connectTo + 1;
 
-  const newStops = await addStopInto(newStop, firstStop + 1, stops);
+  const newStops = await addStopInto(newStop, into, stops);
 
   res.status(201).json(newStops);
 }
 
-async function removeStopFrom (indexToRemove, stops) {
+async function removeStopFrom (index, stops) {
+  const indexToRemove = parseInt(index);
   var request =  {
     origin: stops[indexToRemove - 1].locationString,
     destination: stops[indexToRemove + 1].locationString,
     travelMode: 'DRIVING',
     drivingOptions: {
-      departureTime: startDate, // + time
+      // departureTime: startDate, // + time
       trafficModel: 'pessimistic'
     },
   };
   
   const replacementRoute = await roadtrip_apis.callDirectionService(request)
 
-  stops[indexToRemove - 1].routeFromHere = replacementRoute;
+  const decoded = polyline.decode(replacementRoute.routes[0].overview_polyline.points);
+  const path = decoded.map((point) => {
+    return { lat: point[0], lng: point[1] };
+  });
 
-  const newStops = stops.splice(indexToRemove, 1);
+  stops[indexToRemove - 1].routeFromHere = path;
 
-  return newStops;
+  stops.splice(indexToRemove, 1);
+
+  return stops;
 }
 
 const removeStop = async (req, res) => {
   const {indexToRemove, stops} = req.query;
 
+  console.log(stops);
   if (indexToRemove <= 0 || indexToRemove >= stops.length - 1) {
     throw new Error("Invalid index");
   }
