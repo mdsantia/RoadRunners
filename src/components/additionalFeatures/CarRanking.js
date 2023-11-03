@@ -61,6 +61,7 @@ function CarRanking({onSelectCar}) {
         model: vehicle.model,
         color: vehicle.color,
         ranking: vehicle.ranking,
+        fuelGrade: vehicle.fuelGrade,
         name: `${vehicle.color} ${vehicle.year} ${vehicle.make}`,
         thumb: '/images/carIcon.png'
       };
@@ -84,7 +85,8 @@ function CarRanking({onSelectCar}) {
         make: vehicle.make,
         model: vehicle.model,
         color: vehicle.color,
-        ranking: index
+        ranking: index,
+        fuelGrade: vehicle.fuelGrade,
     }});
 
     updateVehicles(items);
