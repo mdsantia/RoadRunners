@@ -123,6 +123,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
                 year: year,
                 color: color,
                 mpgGiven: mpg,
+                fuelGrade: fuelGrade,
             }).then(response => {
                 const newUser = response.data;
                 updateUser(newUser);
