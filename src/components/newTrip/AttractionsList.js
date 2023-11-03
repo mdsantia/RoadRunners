@@ -141,7 +141,7 @@ export default function AttractionsList() {
     }); 
     
     if (index === -1) {
-      // Remove Stop from route
+      // Add Stop from route
       axios
       .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
       .then((res) => {
@@ -152,7 +152,7 @@ export default function AttractionsList() {
         console.log(err);
       });
     } else {
-      // Add Stop from route
+      // Add Remove from route
       axios
       .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
       .then((res) => {
