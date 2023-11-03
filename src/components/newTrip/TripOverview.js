@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import HotelCard from '../StopsComponents/Hotels';
 import { useEffect } from 'react';
 import {useDashboardContext} from '../../context/DashboardContext'
-import { Container, Typography, CardMedia, CardContent, Grid, CardActions, Checkbox } from '@mui/material';
+import { Container, Typography, CardMedia, CardContent, Grid, CardActions, Checkbox, Divider } from '@mui/material';
 import AddLocationAltOutlinedIcon from '@mui/icons-material/AddLocationAltOutlined';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import LandMarkImage from '../../assets/FHV-image.jpeg';
