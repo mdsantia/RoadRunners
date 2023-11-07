@@ -20,7 +20,9 @@ import Restaurants from '../StopsComponents/Restaurants';
 import LiveEvents from '../StopsComponents/LiveEvents';
 import GasStations from '../StopsComponents/GasStations'
 import { useEffect } from 'react';
+import StopSearch from '../StopsComponents/StopSearch';
 import {useDashboardContext} from '../../context/DashboardContext'
+import { Stop } from '@mui/icons-material';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -300,7 +302,9 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <TabPanel value={value} index={2}>
+          <StopSearch data={allAttractions}></StopSearch>
+          <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
           {allAttractions.map((attraction, index) => (
             <Attractions
               key={index}
@@ -309,6 +313,8 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
             />
           ))}
+          </div>
+       
         </TabPanel>
         <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
           {allRestaurants && allRestaurants.map((restaurant, index) => (
