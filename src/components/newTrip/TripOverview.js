@@ -37,24 +37,24 @@ export default function AttractionsList() {
         setExpandedCard(index === expandedCard ? null : index);
     };
 
-    useEffect(() => {
-        if (tripDetails && tripDetails.stops) {
-            const newStops = [...tripDetails.stops];
-            newStops.forEach((stop) => {
-                    const newStop = {...stop};
-                    delete newStop.routeFromHere});
-            console.log(tripDetails.stops);
-            axios.get('/api/roadtrip/yelpUrl', { params: {stops: tripDetails.stops} })
-            .then((res) => {
-            // changeStops(res.data, 1);
-            // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
-                console.log(res.data);
-            })  
-            .catch((err) => {
-                console.log(err);
-            });
-        }
-    }, [tripDetails.stops]);
+    // useEffect(() => {
+    //     if (tripDetails && tripDetails.stops) {
+    //         const newStops = [...tripDetails.stops];
+    //         newStops.forEach((stop) => {
+    //                 const newStop = {...stop};
+    //                 delete newStop.routeFromHere});
+    //         console.log(tripDetails.stops);
+    //         axios.get('/api/roadtrip/yelpUrl', { params: {stops: tripDetails.stops} })
+    //         .then((res) => {
+    //         // changeStops(res.data, 1);
+    //         // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
+    //             console.log(res.data);
+    //         })  
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    //     }
+    // }, [tripDetails.stops]);
 
     useEffect(() => {
         if (tripDetails && tripDetails.allStops) {
@@ -79,7 +79,7 @@ export default function AttractionsList() {
       
       // Remove Stop from route
       axios
-      .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
+      .post('/api/roadtrip/removeStop', {indexToRemove: index, stops: newStops} )
       .then((res) => {
         changeStops(res.data, -1);
         setSelectedList((prevSelectedList) =>
@@ -107,8 +107,6 @@ export default function AttractionsList() {
             </Grid>
         );
     }
-
-    console.log(tripDetails);
 
     return (
         <Box

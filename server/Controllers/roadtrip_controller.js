@@ -79,7 +79,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   }
   const selectedStop = tempStops[optionNumber % tempStops.length];
   selectedStops.push(selectedStop);
-  if (idx < 0) {
+  if (idx < 2) {
     const mid = selectedStop.locationString;
     await Promise.all([
       computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius, optionNumber),
@@ -297,7 +297,7 @@ async function addStopInto (newStop, into, stops) {
 }
 
 const addStop = async (req, res) => {
-  const {newStop, stops} = req.query;
+  const {newStop, stops} = req.body;
 
   var connectTo = roadtrip_apis.nearestNextStop(newStop, stops);
   const distance = roadtrip_apis.calculateDistance(connectTo, newStop);
@@ -352,7 +352,7 @@ async function removeStopFrom (index, stops) {
 }
 
 const removeStop = async (req, res) => {
-  const {indexToRemove, stops} = req.query;
+  const {indexToRemove, stops} = req.body;
 
   if (indexToRemove <= 0 || indexToRemove >= stops.length - 1) {
     throw new Error("Invalid index");
@@ -367,7 +367,7 @@ const removeStop = async (req, res) => {
 }
 
 const moveStop = async (req, res) => {
-  const {indexFrom, indexTo, stops} = req.query;
+  const {indexFrom, indexTo, stops} = req.body;
 
   const stop = stops[indexFrom];
 
