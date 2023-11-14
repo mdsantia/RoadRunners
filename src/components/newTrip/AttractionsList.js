@@ -303,7 +303,6 @@ export default function AttractionsList() {
           ))}
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <StopSearch data={allAttractions}></StopSearch>
           <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
           {allAttractions.map((attraction, index) => (
             <Attractions
