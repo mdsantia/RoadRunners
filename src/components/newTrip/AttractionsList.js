@@ -20,7 +20,9 @@ import Restaurants from '../StopsComponents/Restaurants';
 import LiveEvents from '../StopsComponents/LiveEvents';
 import GasStations from '../StopsComponents/GasStations'
 import { useEffect } from 'react';
+import StopSearch from '../StopsComponents/StopSearch';
 import {useDashboardContext} from '../../context/DashboardContext'
+import { Stop } from '@mui/icons-material';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -131,7 +133,7 @@ export default function AttractionsList() {
     if (index === -1) {
       // Add Stop from route
       axios
-      .get('/api/roadtrip/addStop', { params: {newStop: stop, stops: newStops} })
+      .post('/api/roadtrip/addStop', { newStop: stop, stops: newStops })
       .then((res) => {
         changeStops(res.data, 1);
         setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
@@ -142,7 +144,7 @@ export default function AttractionsList() {
     } else {
       // Add Remove from route
       axios
-      .get('/api/roadtrip/removeStop', { params: {indexToRemove: index, stops: newStops} })
+      .post('/api/roadtrip/removeStop', { indexToRemove: index, stops: newStops})
       .then((res) => {
         changeStops(res.data, -1);
         setSelectedList((prevSelectedList) =>
@@ -301,7 +303,8 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <TabPanel value={value} index={2}>
+          <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
           {allAttractions.map((attraction, index) => (
             <Attractions
               key={index}
@@ -310,6 +313,8 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
             />
           ))}
+          </div>
+       
         </TabPanel>
         <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
           {allRestaurants && allRestaurants.map((restaurant, index) => (

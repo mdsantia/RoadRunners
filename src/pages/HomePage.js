@@ -33,7 +33,7 @@ const ResponsiveTypographyWrapper = styled('div')(({ theme }) => ({
   },
 }));
 const ImageCard = styled(Card)(({ theme }) => ({
-  position: 'relative',
+  position: 'fixed',
   maxWidth: 2000,
   width: '80%',
   padding: 5,

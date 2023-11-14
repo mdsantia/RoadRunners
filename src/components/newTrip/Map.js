@@ -41,7 +41,6 @@ export default function Map(props) {
   const iconSize = '10x10';
   var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
-
   function calculateCenter(polyline) {
     const midIdx = Math.floor(polyline.length / 2);
     const midPoint = polyline[midIdx];
