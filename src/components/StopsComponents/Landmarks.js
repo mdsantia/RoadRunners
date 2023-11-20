@@ -29,14 +29,14 @@ const handleClick = (name) => {
 export default function LandMarks({ data, selected, onSelectionChange }) {
     return (
 
-        <Item sx={{ display: 'flex', alignItems: 'left', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
+        <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
                 sx={{ height: 140, flex: '0 0 40%' }}
                 image={LandMarkImage}
                 title="LandMarkImage"
             />
             <CardContent sx={{ flex: '1' }}>
-                <Grid container spacing={0.5} justifyContent="left" alignItems="left">
+                <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                     <Grid item xs={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
                     <a
                             href="#"

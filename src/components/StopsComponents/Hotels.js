@@ -39,7 +39,7 @@ export default function HotelCard({ data, selected, onSelectionChange }) {
             />
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                    <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
+                    <Grid item xs={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
                  <a
                             href="#"
                             onClick={() => handleClick(data.name)}
