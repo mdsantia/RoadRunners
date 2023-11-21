@@ -186,7 +186,7 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
             <br></br>
             <Container>
                 <Typography variant="body1">
-                    Please enter the year, make, and model of the vehicle you would like to use for road trips.
+                    Please enter the year, make, model, and color of the vehicle you would like to use for road trips.
                 </Typography>
                 <br></br>
                 <FormControl variant="standard" sx={{ m: 1, minWidth: 500 }}>
