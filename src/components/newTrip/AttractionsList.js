@@ -274,7 +274,7 @@ export default function AttractionsList() {
           value={value}
           onChange={handleChange}
           aria-label="Vertical tabs example"
-          sx={{ borderRight: 1, borderColor: 'divider', width: '40%' }}
+          sx={{ borderRight: 1, borderColor: 'divider', width: '30%' }}
         >
           <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
           <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
@@ -283,7 +283,7 @@ export default function AttractionsList() {
           <Tab icon={<TheaterComedyIcon />} iconPosition="start" label="Live Events" {...a11yProps(4)} />
           <Tab icon={<LocalGasStationIcon />} iconPosition="start" label="Gas Stations" {...a11yProps(5)} />
         </Tabs>
-        <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto', width: '60%'}}>
           {HotelData.map((hotel, index) => (
             <HotelCard
               key={index}
@@ -293,7 +293,7 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {LandmarkData.map((landmark, index) => (
             <Landmarks
               key={index}
@@ -303,8 +303,8 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={2}>
-          <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
+          {/* <div style={{ maxHeight: '350px', overflowY: 'auto' }}> */}
           {allAttractions.map((attraction, index) => (
             <Attractions
               key={index}
@@ -313,10 +313,9 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
             />
           ))}
-          </div>
-       
+          {/* </div> */}
         </TabPanel>
-        <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {allRestaurants && allRestaurants.map((restaurant, index) => (
             <Restaurants
               key={index}
@@ -333,8 +332,8 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
             />
           ))}
-          </TabPanel>}
-        <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          </TabPanel> }
+        <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {allGasStations && allGasStations.map((gas, index) => (
             <GasStations
               key={index}

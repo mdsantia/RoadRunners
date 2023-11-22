@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Typography, Container } from '@mui/material';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
-import StrictModeDroppable from './StrictModeDroppable';
+import StrictModeDroppable from '../additionalFeatures/StrictModeDroppable';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useUserContext } from '../../hooks/useUserContext';
@@ -30,7 +30,6 @@ function CarRanking({onSelectCar}) {
       event.stopPropagation();
       return;
     }
-    // add alert
 
     await axios.post('/api/user/removeVehicle', {
       email: user.email,

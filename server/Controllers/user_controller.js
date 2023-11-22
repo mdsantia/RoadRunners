@@ -285,13 +285,16 @@ const editVehicle = async (req, res) => {
     }
 
     let i = 0;
+    let vehicleExists = false;
     for (; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
-        if (user.vehicles[i]._id === _id) {
+        if (user.vehicles[i]._id.toString() === _id) {
+            vehicleExists = true;
             break;
         }
     }
-    if (i === user.vehicles.length) {
+
+    if (!vehicleExists) {
         console.log(`ERROR Vehicle does not exist`.red.bold);
         res.status(400).json({error: 'Vehicle was not found'});
     }
@@ -366,11 +369,10 @@ const removeVehicle = async (req, res) => {
         return;
     }
 
-    console.log(_id);
-
+    console.log(user.vehicles.length);
     for (let i = 0; i < user.vehicles.length; i++) {
         // Check if vehicle already exists
-        if (user.vehicles[i]._id === _id) {
+        if (user.vehicles[i]._id.toString() === _id) {
             // Remove vehicle from user
             user.vehicles.splice(i, 1);
         }
