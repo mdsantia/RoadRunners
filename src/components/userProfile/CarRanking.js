@@ -30,7 +30,6 @@ function CarRanking({onSelectCar}) {
       event.stopPropagation();
       return;
     }
-    // add alert
 
     await axios.post('/api/user/removeVehicle', {
       email: user.email,
