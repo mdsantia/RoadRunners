@@ -133,12 +133,12 @@ function CarRanking({onSelectCar}) {
                             ...provided.draggableProps.style,
                           }}
                         >
-                          <ArrowBackIosNewIcon style={{ fontSize: '36px', textAlign: 'right', cursor:'pointer'}}/>
+                          {/* <ArrowBackIosNewIcon style={{ fontSize: '36px', textAlign: 'right', cursor:'pointer'}}/> */}
                           <div className="vehicles-thumb">
                             <img src={thumb} alt={`${name} Thumb`} />
                           </div>
                           <div>
-                          <p style={{ fontFamily: 'Arial', fontSize: '20px', textAlign: 'left', fontWeight: 'bold', color: '#8B008B'}}>
+                          <p style={{ fontFamily: 'Arial', fontSize: '15px', textAlign: 'left', fontWeight: 'bold', color: 'darkblue', textDecoration: 'underline'}}>
                           {ranking < rankNames.length? `${rankNames[ranking]}`:`${rankNames[rankNames.length - 1]}`}
                           </p>
                           <p style={{ fontFamily: 'Arial', fontSize: '16px', textAlign: 'right'}}>
