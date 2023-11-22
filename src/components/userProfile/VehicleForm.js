@@ -116,27 +116,40 @@ export default function VehicleForm({selectedCar, onSelectCar}) {
             setColorStatus('');
         }
         if (year.length !== 0 && make.length !== 0 && model.length !== 0 && color.length !== 0) {
-            await axios.post('/api/user/addVehicle', {
-                email: user.email,
-                make: make,
-                model: model,
-                year: year,
-                color: color,
-                mpgGiven: mpg,
-                fuelGradeGiven: fuelGrade,
-            }).then(response => {
-                const newUser = response.data;
-                updateUser(newUser);
-                if (response.status === 201) {
-                    alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.");
-                } else {
-                    alert("Your vehicle has been saved!");
+            let vehicleExists = false;
+            let i = 0;
+            for (; i < user.vehicles.length; i++) {
+                if (user.vehicles[i].year == year && user.vehicles[i].make == make && user.vehicles[i].model == model
+                    && user.vehicles[i].color == color) {
+                        vehicleExists = true;
+                        break;
                 }
-                handleCancel();
-            }).catch(error => {
-                console.log(error.response.data.error);
-                alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");
-            });
+            }
+            if (!vehicleExists) {
+                await axios.post('/api/user/addVehicle', {
+                    email: user.email,
+                    make: make,
+                    model: model,
+                    year: year,
+                    color: color,
+                    mpgGiven: mpg,
+                    fuelGradeGiven: fuelGrade,
+                }).then(response => {
+                    const newUser = response.data;
+                    updateUser(newUser);
+                    if (response.status === 201) {
+                        alert("Your vehicle has been saved, but we could not find the MPG for your vehicle.");
+                    } else {
+                        alert("Your vehicle has been saved!");
+                    }
+                    handleCancel();
+                }).catch(error => {
+                    console.log(error.response.data.error);
+                    alert("There was an error saving your vehicle: " + error.response.data.error + ".\nPlease try again.");
+                });
+            } else {
+                alert("You have already added this vehicle. Please add a different vehicle.");
+            }
         }
     }
 
