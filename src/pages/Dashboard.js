@@ -71,7 +71,7 @@ const Wrapper = styled(Card)(({ theme }) => ({
 
 
 export default function Dashboard() {
-    const {tripString} = useParams();
+    const {tripid, tempid} = useParams();
     const [nonce, setNonce] = useState('');
     const { user } = useUserContext();
     const navigate = useNavigate();
@@ -82,52 +82,61 @@ export default function Dashboard() {
         if (!user) {
             return;
         }
-        // Fake nonce generation for purposes of demonstration
-        const uuid = uuidv4();
-        // console.log('uuid:', uuid);
-        setNonce(`nonce-${uuid}`);
-        let decodedTripDetails;
-        try {
-            decodedTripDetails = JSON.parse(atob(tripString)).tripDetails;
-            setTripDetails(decodedTripDetails);
-            // Check if saved users trips has an id that matches the id in the tripDetails
-            // If so, then we can use the saved trip's allStops, options, polyline, and chosenRoute
-            // Otherwise, we need to build the road trip
-            const savedTrip = user.trips.find((trip) => trip._id === decodedTripDetails.id);
-            if (savedTrip) {
-                setTripDetails({
-                    ...decodedTripDetails,
-                    allStops: savedTrip.allStops,
-                    options: savedTrip.options,
-                    polyline: savedTrip.polyline,
-                    chosenRoute: savedTrip.chosenRoute,
-                    stops: savedTrip.stops, 
-
-                });
-                return;
-            }
-        } catch (err) {
-            console.log(err);
-            setTripDetails(null);
-            //navigate('/');
+        if (tripDetails) {
             return;
         }
-    }, [tripString, user]);
+        const fetchTrip = async () => {
+            axios.get(`/api/trip/getTrip/${tripid}`) 
+            .then((res) => {
+                if (res.data.user_email !== user.email) {
+                    setTripDetails(null);
+                    navigate('/');
+                }
+                console.log(res.data);
+                setTripDetails(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                setTripDetails(null);
+                navigate('/');
+            });
+        } 
+        if (tripid) {
+            fetchTrip();
+        } else if (tempid) {
+            // Fetch trip from local storage
+            const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
+            const trip = (tempTrips ? tempTrips[tempid] : null) || null;
+            if (!trip) {
+                setTripDetails(null);
+                navigate('/');
+            }
+            if (trip.user_email !== user.email) {
+                setTripDetails(null);
+                navigate('/');
+            }
+            if (trip.allStops && trip.polyline) {
+                setTripDetails(trip);
+            } else {
+                setTripDetails(trip);
+            }
+        }
+    }, [tripid, tempid, user]);
 
     useEffect(() => {
-        console.log('tripDetails:', tripDetails);
-        if (!tripDetails) {
+        if (tripDetails && tripDetails.allStops) {
             return;
         }
-        if (!tripDetails.allStops || !tripDetails.options || !tripDetails.polyline || !tripDetails.chosenRoute) {
+        if (tripDetails && tripDetails.startLocation && tripDetails.endLocation && tripDetails.startDate && tripDetails.endDate) {
             buildRoadTrip();
         }
-    }, [tripDetails]);
+    } , [tripDetails]);
 
     const buildRoadTrip = () => {
         if (tripDetails && tripDetails.allStops) {
             return;
         }
+        
         const roadtripParams = {
             startLocation: tripDetails.startLocation,
             endLocation: tripDetails.endLocation,
@@ -140,14 +149,12 @@ export default function Dashboard() {
         axios
         .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
         .then((res) => {
-            directionsCallback(res.data);
-            console.log(res.data);
-            //navigate(`/dashboard/${encodedTripDetails}`);
+            directionsCallback(res.data, tempid);
         })  
         .catch((err) => {
             console.log(err);
-        });
-    };
+        }); 
+    };  
 
       return (
         <div style={{ backgroundColor: '#F3F3F5'}}>

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const roadtrip_apis = require('./roadtrip_apis');
-const joining = require('./roadtrip_joining');
 const polyline = require('polyline');
 
 const getWarnings = (req, res) => {
@@ -79,7 +78,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   }
   const selectedStop = tempStops[optionNumber % tempStops.length];
   selectedStops.push(selectedStop);
-  if (idx < 2) {
+  if (idx < 1) {
     const mid = selectedStop.locationString;
     await Promise.all([
       computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius, optionNumber),
