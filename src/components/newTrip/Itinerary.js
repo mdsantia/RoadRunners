@@ -144,6 +144,10 @@ export default function Itinerary() {
     });
   }
 
+  const shareTrip = () => {
+    // share trip
+  }
+
   const handleGenerate = () => {
     const newTripDetails = {
       ...tripDetails,
@@ -220,12 +224,20 @@ export default function Itinerary() {
             </Button>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
-            </Button> 
+            </Button>
+            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+              Share Trip
+            </Button>  */}
           </>
-          ):(     
+          ):(  
+            <>
+            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
+              Share Trip
+            </Button> 
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
-            </Button>           
+            </Button>         
+            </>   
           )}  
           </Box>
       </TabPanel>

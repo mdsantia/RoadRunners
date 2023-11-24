@@ -135,7 +135,7 @@ export default function AttractionsList() {
             <Divider></Divider>
             <br></br>
             <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-                All Stops Along Your Route:
+                Stops Along Your Route:
             </Typography>
             {tripDetails.stops.slice(1, -1).map((stop, index) => ( // Slice to exclude first and last stops
             <div key={index}>

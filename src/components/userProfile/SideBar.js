@@ -70,7 +70,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end',
 }));
 
-export const pageOptions = ['Account', 'Trip Preferences', 'Vehicles', 'Trip History'];
+export const pageOptions = ['Account', 'Trip Preferences', 'Vehicles', 'Saved Trips'];
 const Icons = ['AccountCircleIcon', 'FavoriteIcon', 'DirectionsCarIcon', 'PublicIcon'];
 
 function SideBar(props) {
