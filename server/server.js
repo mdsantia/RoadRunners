@@ -2,7 +2,7 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const colors = require("colors");
 const mongoose = require('mongoose');
-const {mongoURI} = require('./Constants');
+const {mongoURI, GoogleClientID, GoogleClientSecret} = require('./Constants');
 
 const app = express();
 const port = 5010;
@@ -35,3 +35,5 @@ app.use('/api/roadtrip', roadtripRoutes);
 app.use('/api/vehiclesData', vehiclesData);
  
 app.listen(port, console.log(`Server is running on PORT ${port}....`.yellow.bold));
+const {sendEmail} = require("./Controllers/share_controller");
+// sendEmail("jjennyha18@gmail.com");
