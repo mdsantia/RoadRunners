@@ -37,7 +37,8 @@ function App() {
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/profile/:pageType/:id" element={<UserProfile />} />
-          <Route exact path="/dashboard/:tripString" element={<Dashboard />} />
+          <Route exact path="/dashboard/:tripid" element={<Dashboard />} />
+          <Route exact path="/dashboard/new/:tempid" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" replace />}/>
         </Routes>
       </div>
