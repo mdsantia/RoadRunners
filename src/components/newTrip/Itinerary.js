@@ -219,7 +219,8 @@ export default function Itinerary() {
         <br></br>
         <Divider></Divider>
         <br></br>
-        {(tripDetails && tripDetails.id) ?  (
+        {tripDetails && tripDetails.stops ?
+        (tripDetails.id ? (
           <>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
               Update Trip
@@ -227,7 +228,7 @@ export default function Itinerary() {
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>
-            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
               Share Trip
             </Button>  */}
           </>
@@ -240,7 +241,8 @@ export default function Itinerary() {
               Save Trip
             </Button>         
             </>   
-          )}  
+          )):(<></>)
+          }
           </Box>
       </TabPanel>
       <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>

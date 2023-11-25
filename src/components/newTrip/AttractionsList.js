@@ -263,7 +263,7 @@ export default function AttractionsList() {
 
   ];
 
-  if (allAttractions) {
+  if (tripDetails && tripDetails.stops) {
     return (
       <Box
         sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
@@ -344,7 +344,10 @@ export default function AttractionsList() {
   
       </Box>
     );
-  } else {
-    // <div>Loading...</div>
-  }
+  } 
+  return (
+    <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+    Awaiting for route suggestions...
+    </Typography> 
+  );
 }
