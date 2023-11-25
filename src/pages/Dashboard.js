@@ -77,9 +77,13 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
     const { tripDetails, setTripDetails, directionsCallback } = useDashboardContext();
-
     const location = useLocation();
+    const prevLocation = useRef(location);
   
+    if (prevLocation.current.pathname !== location.pathname) {
+        window.location.reload();
+    }
+
     useEffect(() => {
       // Check if the pathname has changed
       console.log(location);
@@ -128,7 +132,7 @@ export default function Dashboard() {
                 setTripDetails(trip);
             }
         }
-    }, [tripid, tempid, user, location]);
+    }, [tripid, tempid, user]);
 
     useEffect(() => {
         if (tripDetails && tripDetails.allStops) {
