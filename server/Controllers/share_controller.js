@@ -35,6 +35,7 @@ const shareTrip = async (req, res) => {
     // Update trip
     
     // Call email function to send
+    sendEmail(shareTo);
 
     // Save trip
     await trip.save();

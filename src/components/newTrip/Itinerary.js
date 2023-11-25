@@ -144,8 +144,17 @@ export default function Itinerary() {
     });
   }
 
-  const shareTrip = () => {
-    // share trip
+  const shareTrip = async (trip) => {
+    // await axios.post('/api/user/shareTrip', {
+    //   tripId: trip,
+    //   permission: false,
+    //   // shareTo: 'jjennyha18@gmail.com'
+    // }).then((response) => {
+    //    const data = response.data;
+    // }
+    // ).catch((error) => {
+    //   console.log(error);
+    // });
   }
 
   const handleGenerate = () => {
