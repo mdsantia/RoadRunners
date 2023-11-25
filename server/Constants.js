@@ -6,7 +6,13 @@ const mongoPwd = "efx777db3Fz8xHQi";
 const mongoURI = `mongodb+srv://${mongoUser}:${mongoPwd}@data.oknxymr.mongodb.net/Data?retryWrites=true&w=majority`;
 
 /* Google Constants */
+const roadRunnersEmail = "cs.roadrunners@gmail.com";
+const roadRunnersEmailPwd = "Ali_F@k3T3@mL3@d3r407";
+const roadRunnersShareEmail = "noreply.roadrunners@gmail.com";
+const roadRunnersShareEmailPwd = "tlie qyug lqxd udqn";
 const GoogleApiKey = 'AIzaSyDVjFUtCS2Dtwu47A3fx6jsRwkpIKbkI60';
+const GoogleClientID = "408913456682-h499jei755hbigq1oik6e17lvm4pu22n.apps.googleusercontent.com";
+const GoogleClientSecret = "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";
 
 /* TicketMaster Constants */
 // mdsantia
@@ -22,10 +28,17 @@ const YelpID = 'nVVrFJOn1461A5WBUMew1Q';
 
 module.exports = {
     mongoURI,
+    roadRunnersEmail,
+    GoogleClientID,
+    GoogleClientSecret,
     TicketMasterApiKey,
     TicketMasterSecret,
     YelpApiKey,
     GoogleApiKey,
     mongoPwd,
     mongoUser,
+    roadRunnersEmail,
+    roadRunnersEmailPwd,
+    roadRunnersShareEmail,
+    roadRunnersShareEmailPwd,
 }
