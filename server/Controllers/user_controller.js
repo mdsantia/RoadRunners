@@ -3,6 +3,7 @@ const { MongoClient } = require('mongodb');
 const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../Models/user_model');
+const Trip = require('../Models/trip_model');
 const axios = require('axios');
 const {mongoURI} = require('../Constants');
 
@@ -70,6 +71,13 @@ const deleteTrip = async (req, res) => {
     const {email, id} = req.body;
     // Check if user exists
     const user = await User.findOne({email});
+    try {
+        const trip = await Trip.findByIdAndDelete(id);
+    } catch (error) {
+        console.log(`ERROR in deleteTrip Trip was not found`.red.bold);
+        res.status(400).json({error: 'Trip not found'});
+        return;
+    }
 
     if (!user) {
         console.log(`ERROR in deleteTrip User was not found`.red.bold);
@@ -116,90 +124,14 @@ const clearTrips = async (req, res) => {
         return;
     }
 
+    // Delete trips with user_email = email
+    const Trips = await Trip.deleteMany({user_email: email});
+
     // Clear trips
     user.trips = [];
     await user.save();
     res.status(200).json(user);
     return;
-}
-
-/*
-    Saves a trip given the hash, and id if it exists (if it exists, it is an update)
-
-    API: /api/user/saveTrip
-    Method: POST
-    Request: {email, hash, id (optional)}
-    Response: {user}
-    responseCode: 200 if trip is saved
-    responseCode: 400 if user is not found
-*/
-
-const saveTrip = async (req, res) => {
-    const {email, hash, id, allStops, options, chosenRoute, polyline, stops} = req.body;
-    // Check if user exists
-    const user = await User.findOne({email});
-    if (!user) {
-        console.log(`ERROR in saveTrip User was not found`.red.bold);
-        res.status(400).json({error: 'User not found'});
-        return;
-    }
-
-    // They are updating a trip
-    if (id) {
-        console.log(id);
-        for (let i = 0; i < user.trips.length; i++) {
-            if (user.trips[i]._id == id) {
-                const newTrip = {
-                    _id: id,
-                    hash: hash,
-                    allStops: allStops,
-                    options: options,
-                    chosenRoute: chosenRoute,
-                    polyline: polyline,
-                    stops: stops
-                }
-                
-                user.trips[i] = newTrip; 
-                await user.save();
-                res.status(200).json(user);
-                return;
-            }
-        }
-        console.log(`ERROR in saveTrip Trip was not found`.red.bold);
-        res.status(400).json({error: 'Trip not found'});
-        return;
-    } 
-
-    const newTrip = { 
-        hash: hash,
-        allStops: allStops,
-        options: options,
-        chosenRoute: chosenRoute,
-        polyline: polyline,
-        stops: stops
-    }
-
-    // Add trip to user
-    user.trips.push(newTrip);
-    await user.save();
-    
-    let tripDetails = JSON.parse(atob(hash)).tripDetails;
-    tripDetails.id = user.trips[user.trips.length - 1]._id;
-    const tripDetailsToHash = {
-        startLocation: tripDetails.startLocation,
-        endLocation: tripDetails.endLocation,
-        startDate: tripDetails.startDate,
-        endDate: tripDetails.endDate,
-        preferences: tripDetails.preferences,
-        numVehicles: tripDetails.numVehicles,
-        selectedVehicles: tripDetails.selectedVehicles,
-        minimumMPG: tripDetails.minimumMPG,
-        id: tripDetails.id
-    }
-    const newHash = btoa(JSON.stringify({tripDetails: tripDetailsToHash}));
-    user.trips[user.trips.length - 1].hash = newHash;
-    await user.save();
-    res.status(200).json(user);
 }
 
 /*
@@ -378,6 +310,7 @@ const removeVehicle = async (req, res) => {
         }
     }
 
+
     // Update rankings
     for (let i = 0; i < user.vehicles.length; i++) {
         user.vehicles[i].ranking = i;
@@ -480,4 +413,4 @@ const getFuelGrade = async (make, model, year) => {
     }
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, saveTrip, vehicleRanking, editVehicle, deleteTrip, clearTrips};
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, editVehicle, deleteTrip, clearTrips};

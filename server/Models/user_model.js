@@ -35,33 +35,6 @@ const Vehicle = new Schema({
     }
 });
 
-const Trip = new Schema({
-    hash: {
-        type: String,
-        required: true
-    },
-    allStops: {
-        type: [{}],
-        required: true
-    },
-    options: {
-        type: [{}],
-        required: true
-    },
-    chosenRoute: {
-        type: Number,
-        required: true
-    },
-    polyline: {
-        type: [],
-        required: true
-    },
-    stops: {
-        type: [{}],
-        required: true
-    }
-});
-
 const Preferences = new Schema({
     budget: {
         type: String,
@@ -106,7 +79,7 @@ const User = new Schema({
         default: false
     },
     trips: {
-        type: [Trip],
+        type: [String],
         default: []
     },
     google_id: {
