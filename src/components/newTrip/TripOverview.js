@@ -108,6 +108,14 @@ export default function AttractionsList() {
         );
     }
 
+    if (tripDetails && !tripDetails.stops) {
+        return (
+            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+                Awaiting for route suggestions...
+            </Typography> 
+        );
+    }
+
     return (
         <Box
         sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}

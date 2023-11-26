@@ -120,6 +120,13 @@ function RouteOptions() {
         );
     }
 
+    if (tripDetails && !tripDetails.stops) {
+        return (
+            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+            Awaiting for route suggestions...
+            </Typography> 
+        )
+    }
     return (
         <div style={{ height: '58vh', overflowY: 'auto' }}>
             <Grid container spacing={2} alignItems="center" textAlign="left">
@@ -213,8 +220,7 @@ function RouteOptions() {
                                 </Accordion>
                             </ListItemButton>
                         </ListItem>
-                    ))}
-                    {!routes && <p>Loading...</p>} */}
+                    ))} */}
                     {filteredRoutes && filteredRoutes.map((path, index) => (
                         <ListItem key={index}>
                             <ListItemButton

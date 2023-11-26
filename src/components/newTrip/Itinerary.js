@@ -19,7 +19,6 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext'
-import LZString from 'lz-string';
 import TripOverview from '../newTrip/TripOverview'
 
 function TabPanel(props) {
@@ -108,39 +107,38 @@ export default function Itinerary() {
   }
 
   const saveTrip = async (isNewTrip) => {
-    const tripDetailsToHash = {
-        startLocation: tripDetails.startLocation,
-        endLocation: tripDetails.endLocation,
-        startDate: tripDetails.startDate,
-        endDate: tripDetails.endDate,
-        preferences: tripDetails.preferences,
-        numVehicles: tripDetails.numVehicles,
-        selectedVehicles: tripDetails.selectedVehicles,
-        minimumMPG: tripDetails.minimumMPG,
-    }
-    if (tripDetails.id) {
-      tripDetailsToHash.id = tripDetails.id;
-    }
-    await axios.post('/api/user/saveTrip', {
-      email: user.email,
-      hash: btoa(JSON.stringify({tripDetails: tripDetailsToHash})),
-      id: isNewTrip ? null : (tripDetails.id ? tripDetails.id : null),
+    await axios.post('/api/trip/saveTrip', {
+      id: isNewTrip ? null : tripDetails.id,
+      startLocation: tripDetails.startLocation,
+      endLocation: tripDetails.endLocation,
+      startDate: tripDetails.startDate,
+      endDate: tripDetails.endDate,
+      preferences: temporaryPrefs,
+      numVehicles: numVehicles,
+      selectedVehicles: selectedVehicles,
       allStops: tripDetails.allStops,
       options: tripDetails.options,
-      polyline: tripDetails.polyline,
       chosenRoute: tripDetails.chosenRoute,
-      stops: tripDetails.stops, 
-    }).then((response) => {
-       const newUser = response.data;
-       updateUser(newUser);
-       isNewTrip ? showMessage('Trip saved successfully!', 2000, 'success') : showMessage('Trip updated successfully!', 2000, 'success');
-       if(isNewTrip) {
-        const encodedTripDetails = newUser.trips[newUser.trips.length - 1].hash;
-        navigate(`/dashboard/${encodedTripDetails}`);
-       }
-    }
-    ).catch((error) => {
-      console.log(error);
+      polyline: tripDetails.polyline,
+      stops: tripDetails.stops,
+      user_email: user.email,
+    }).then((res) => {
+      if (isNewTrip) {
+        showMessage('Trip saved!', 2000, 'success');
+      } else {
+        showMessage('Trip updated!', 2000, 'success');
+      }
+      updateUser(res.data.user);
+      const oldid = tripDetails.tempid;
+      if (oldid) {
+        const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
+        delete tempTrips[oldid];
+        localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
+        navigate(`/dashboard/${res.data.id}`);
+      }
+    }).catch((err) => {
+      console.log(err);
+      showMessage('Error saving trip', 2000, 'error');
     });
   }
 
@@ -226,7 +224,8 @@ export default function Itinerary() {
         <br></br>
         <Divider></Divider>
         <br></br>
-        {(tripDetails && tripDetails.id) ?  (
+        {tripDetails && tripDetails.stops ?
+        (tripDetails._id ? (
           <>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
               Update Trip
@@ -234,20 +233,21 @@ export default function Itinerary() {
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>
-            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
-              Share Trip
-            </Button>  */}
-          </>
-          ):(  
-            <>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
               Share Trip
             </Button> 
+          </>
+          ):(  
+            <>
+            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
+              Share Trip
+            </Button>  */}
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
             </Button>         
             </>   
-          )}  
+          )):(<></>)
+          }
           </Box>
       </TabPanel>
       <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>

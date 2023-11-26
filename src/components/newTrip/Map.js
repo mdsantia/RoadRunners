@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GoogleMap, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
+import { useLocation } from 'react-router-dom';
 
 const infoWindowContainer = {
   background: 'white',
@@ -40,6 +41,8 @@ export default function Map(props) {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const iconSize = '10x10';
   var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+  const location = useLocation();
+  const prevLocation = useRef(location);
 
   function calculateCenter(polyline) {
     const midIdx = Math.floor(polyline.length / 2);

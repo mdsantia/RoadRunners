@@ -102,6 +102,7 @@ export const DashboardContextProvider = ({ children }) => {
     setTripDetails(newTripDetails);
   }
 
+
   const directionsCallback = (response) => {
     if (response !== null) {
         const newTripDetails = {
@@ -115,6 +116,12 @@ export const DashboardContextProvider = ({ children }) => {
           polyline: buildPolyline(response.options[0]),
         }
         setTripDetails(newTripDetails);
+        if (tripDetails.tempid) {
+          const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
+          tempTrips[tripDetails.tempid] = newTripDetails;
+          console.log(tempTrips);
+          localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
+        }
     }
   };
 

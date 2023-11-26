@@ -28,11 +28,13 @@ const dataRoutes = require('./Routes/data_routes');
 const userRoutes = require('./Routes/user_routes');
 const roadtripRoutes = require('./Routes/roadtrip_routes');
 const vehiclesData = require('./Routes/vehiclesData_routes');
+const tripRoutes = require('./Routes/trip_routes');
 
 app.use('/api/data', dataRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/roadtrip', roadtripRoutes);
 app.use('/api/vehiclesData', vehiclesData);
+app.use('/api/trip', tripRoutes);
  
 app.listen(port, console.log(`Server is running on PORT ${port}....`.yellow.bold));
 const {sendEmail} = require("./Controllers/share_controller");
