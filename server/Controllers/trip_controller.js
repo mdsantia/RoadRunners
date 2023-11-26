@@ -158,7 +158,12 @@ const deleteTrip = async (req, res) => {
         return;
     }
     await Trip.deleteOne({_id: id})
-    user.trips = user.trips.filter(trip => trip._id != id);
+    for (let i = 0; i < user.trips.length; i++) {
+        if (user.trips[i] == id) {
+            user.trips.splice(i, 1);
+            break;
+        }
+    }
     await user.save();
     res.status(200).json(user);
 }
