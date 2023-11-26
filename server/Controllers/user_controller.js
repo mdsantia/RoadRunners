@@ -56,83 +56,6 @@ const checkAndSaveUser = async (req, res) => {
     res.status(201).json({user: user, firstTime: false});
 }
 
-/*
-    Delete a trip 
-
-    API: /api/user/deleteTrip
-    Method: POST
-    Request: {email, id}
-    Response: {user}
-    responseCode: 200 if trip is deleted
-    responseCode: 400 if user is not found or trip is not found
-*/
-
-const deleteTrip = async (req, res) => {
-    const {email, id} = req.body;
-    // Check if user exists
-    const user = await User.findOne({email});
-    try {
-        const trip = await Trip.findByIdAndDelete(id);
-    } catch (error) {
-        console.log(`ERROR in deleteTrip Trip was not found`.red.bold);
-        res.status(400).json({error: 'Trip not found'});
-        return;
-    }
-
-    if (!user) {
-        console.log(`ERROR in deleteTrip User was not found`.red.bold);
-        res.status(400).json({error: 'User not found'});
-        return;
-    }
-
-    // Delete trip
-    for (let i = 0; i < user.trips.length; i++) {
-        if (user.trips[i]._id === id) {
-            user.trips.splice(i, 1);
-            await user.save();
-            res.status(200).json(user);
-            return;
-        }
-    }
-
-    console.log(`ERROR in deleteTrip Trip was not found`.red.bold);
-    res.status(400).json({error: 'Trip not found'});
-    return;
-}
-
-/* 
-    Clear all trips from a user
-
-    API: /api/user/clearTrips
-    Method: POST
-    Request: {email}
-    Response: {user}
-    responseCode: 200 if trips are cleared
-    responseCode: 400 if user is not found
-*/
-
-const clearTrips = async (req, res) => {
-
-    const {email} = req.body;
-
-    // Check if user exists
-    const user = await User.findOne({email});
-
-    if (!user) {
-        console.log(`ERROR in clearTrips User was not found`.red.bold);
-        res.status(400).json({error: 'User not found'});
-        return;
-    }
-
-    // Delete trips with user_email = email
-    const Trips = await Trip.deleteMany({user_email: email});
-
-    // Clear trips
-    user.trips = [];
-    await user.save();
-    res.status(200).json(user);
-    return;
-}
 
 /*
     Add a new vechile to the user array. If they have not already passed in MPG, 
@@ -413,4 +336,4 @@ const getFuelGrade = async (make, model, year) => {
     }
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, editVehicle, deleteTrip, clearTrips};
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, editVehicle};

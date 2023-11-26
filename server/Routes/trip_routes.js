@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-const {getAllTrips, getTrip, saveTrip, deleteTrip} = require('../Controllers/trip_controller');
+const {getAllTrips, getTrip, saveTrip, deleteTrip, clearAllTrips} = require('../Controllers/trip_controller');
 
 // Get requests
-router.get('/api/trip/getTrips/:email', getAllTrips);
-router.get('/api/trip/getTrip/:id', getTrip);
+router.get('/getTrips/:email', getAllTrips);
+router.get('/getTrip/:id', getTrip);
 
 // Post requests
-router.post('/api/trip/saveTrip', saveTrip);
-router.post('/api/trip/deleteTrip', deleteTrip);
+router.post('/saveTrip', saveTrip);
+router.post('/deleteTrip/:email/:id', deleteTrip);
+router.post('/clearTrips/:email', clearAllTrips);
 
 module.exports = router;

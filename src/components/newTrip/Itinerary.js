@@ -19,7 +19,6 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext'
-import LZString from 'lz-string';
 import TripOverview from '../newTrip/TripOverview'
 
 function TabPanel(props) {
@@ -129,16 +128,13 @@ export default function Itinerary() {
       } else {
         showMessage('Trip updated!', 2000, 'success');
       }
-      user.trips.push(res.data._id);
-      tripDetails.id = res.data._id;
-      if (tripDetails.tempid) {
+      updateUser(res.data.user);
+      const oldid = tripDetails.tempid;
+      if (oldid) {
         const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
-        tempTrips[tripDetails.tempid] = null;
+        delete tempTrips[oldid];
         localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
-        tripDetails.tempid = null;
-      }
-      if (isNewTrip) {
-        navigate(`/dashboard/${tripDetails.id}`);
+        navigate(`/dashboard/${res.data.id}`);
       }
     }).catch((err) => {
       console.log(err);
@@ -220,7 +216,7 @@ export default function Itinerary() {
         <Divider></Divider>
         <br></br>
         {tripDetails && tripDetails.stops ?
-        (tripDetails.id ? (
+        (tripDetails._id ? (
           <>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
               Update Trip
@@ -228,15 +224,15 @@ export default function Itinerary() {
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>
-            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
-              Share Trip
-            </Button>  */}
-          </>
-          ):(  
-            <>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
               Share Trip
             </Button> 
+          </>
+          ):(  
+            <>
+            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
+              Share Trip
+            </Button>  */}
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
             </Button>         

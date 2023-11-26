@@ -122,15 +122,11 @@ export default function Dashboard() {
                 setTripDetails(null);
                 navigate('/');
             }
-            if (trip.user_email !== user.email) {
+            if (trip.user_email != user.email) {
                 setTripDetails(null);
                 navigate('/');
             }
-            if (trip.allStops && trip.polyline) {
-                setTripDetails(trip);
-            } else {
-                setTripDetails(trip);
-            }
+            setTripDetails(trip);
         }
     }, [tripid, tempid, user]);
 
