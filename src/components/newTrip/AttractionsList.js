@@ -303,8 +303,9 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
-          {/* <div style={{ maxHeight: '350px', overflowY: 'auto' }}> */}
+        <TabPanel value={value} index={2} style={{ width: '70%' }}>
+        <StopSearch data={allAttractions}/>
+          <div style={{ maxHeight: '350px', overflowY: 'auto' }}> 
           {allAttractions.map((attraction, index) => (
             <Attractions
               key={index}
@@ -313,7 +314,7 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
             />
           ))}
-          {/* </div> */}
+          </div> 
         </TabPanel>
         <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {allRestaurants && allRestaurants.map((restaurant, index) => (
