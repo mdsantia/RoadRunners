@@ -69,7 +69,7 @@ export default function AttractionsList() {
   const [LiveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
-  /* 
+  
   useEffect(() => {
     axios
       .get('/api/roadtrip/getLiveEvents', {
@@ -80,12 +80,13 @@ export default function AttractionsList() {
       })
       .then((response) => {
         const value = response.data;
+        console.log(response.data)
         setLiveEventsData(response.data);
       })
       .catch((err) => {
         // setError(err.message);
       });
-  }, []); */
+  }, []);
 
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
@@ -262,7 +263,7 @@ export default function AttractionsList() {
 
   ];
 
-  if (allAttractions) {
+  if (tripDetails && tripDetails.stops) {
     return (
       <Box
         sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
@@ -302,8 +303,9 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
-          {/* <div style={{ maxHeight: '350px', overflowY: 'auto' }}> */}
+        <TabPanel value={value} index={2} style={{ width: '70%' }}>
+        <StopSearch data={allAttractions}/>
+          <div style={{ maxHeight: '350px', overflowY: 'auto' }}> 
           {allAttractions.map((attraction, index) => (
             <Attractions
               key={index}
@@ -312,7 +314,7 @@ export default function AttractionsList() {
               onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
             />
           ))}
-          {/* </div> */}
+          </div> 
         </TabPanel>
         <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {allRestaurants && allRestaurants.map((restaurant, index) => (
@@ -322,8 +324,8 @@ export default function AttractionsList() {
             />
           ))}
         </TabPanel>
-        { <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }} >
-          {LiveEventsDummyData.map((event, index) => (
+        {<TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+          {LiveEventsData && LiveEvents.length > 0 && LiveEventsData.map((event, index) => (
             <LiveEvents
               key={index}
               data={event}
@@ -343,7 +345,10 @@ export default function AttractionsList() {
   
       </Box>
     );
-  } else {
-    // <div>Loading...</div>
-  }
+  } 
+  return (
+    <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+    Awaiting for route suggestions...
+    </Typography> 
+  );
 }

@@ -14,7 +14,7 @@ import {useDashboardContext} from '../../hooks/useDashboardContext';
 import {useUserContext} from '../../hooks/useUserContext';
 import { useMediaQuery } from '@mui/material';
 import dayjs from 'dayjs';
-import LZString from 'lz-string';
+import { v4 as uuidv4 } from 'uuid';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   width: "80%",
@@ -70,18 +70,23 @@ export default function CreateTrip() {
             selectedVehicles.push(`${vehicle.color} ${vehicle.year} ${vehicle.make} ${vehicle.model}`);
           }
         }
+        const tempid = uuidv4();
         const tripDetails = {
-          id: null,
-          startLocation: startLocation,
-          endLocation: endLocation,
-          startDate: startDate,
-          endDate: endDate,
-          preferences: user ? user.preferences : null,
-          numVehicles: numVehicles,
-          selectedVehicles: selectedVehicles,
-        }
-        const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetails}));
-        navigate(`/dashboard/${encodedTripDetails}`); 
+          tempid,
+          startLocation,
+          endLocation,
+          startDate,
+          endDate,
+          selectedVehicles,
+          numVehicles,
+          preferences : user ? user.preferences : null,
+          user_email: user.email
+        };
+        // Add trip to local storage
+        const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
+        tempTrips[tempid] = tripDetails;
+        localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
+        navigate(`/dashboard/new/${tempid}`); 
       } else{
         console.log("invalid");
         setShouldDisplayWarning(true);
