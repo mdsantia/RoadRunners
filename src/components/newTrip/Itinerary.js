@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import RouteIcon from '@mui/icons-material/Route';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
-import { Button, Divider, Container } from '@mui/material';
+import { Button, Divider, Container, Dialog, DialogContent, TextField, Grid } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
 import axios from 'axios';
 import PreferencesForm from '../userProfile/PreferencesForm';
@@ -85,6 +85,13 @@ export default function Itinerary() {
   const [selectedVehicles, setSelectedVehicles] = React.useState([]);
   const [numVehicles, setNumVehicles] = React.useState(0);
   const [minimumMPG, setMinimumMPG] = React.useState(0);
+
+  /* Sharing Trips */
+  const [shareTripDialog, setShareTripDialog] = React.useState(false);
+  const [shareToEmails, setShareToEmails] = React.useState([]);
+  const handleShareTripDialog = (bool) => {
+    setShareTripDialog(bool);
+  }
 
   React.useEffect(() => {
     if (user) {
@@ -239,9 +246,9 @@ export default function Itinerary() {
           </>
           ):(  
             <>
-            {/* <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
+            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => handleShareTripDialog(true)}>
               Share Trip
-            </Button>  */}
+            </Button>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
             </Button>         
@@ -250,13 +257,61 @@ export default function Itinerary() {
           }
           </Box>
       </TabPanel>
+      {shareTripDialog && (
+        <Dialog open={shareTripDialog} onClose={() => handleShareTripDialog(false)}>
+          <DialogContent>
+            <div style={{textAlign: 'left'}}>
+              <Typography style={{ fontSize: '25px' }}>Share Trip from "{tripDetails.startLocation}" to "{tripDetails.endLocation}"</Typography>
+              <br></br>
+              <Container>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={10} sm={10} md={10}>
+                    <TextField
+                      id="shareToEmails"
+                      variant="outlined"
+                      placeholder="Add people"
+                      // value={shareTo}
+                      fullWidth
+                      inputProps={{ style: { height: '3%' } }}
+                      onChange={(event) => {
+                          // setShareToEmails([]);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={2} sm={2} md={2} alignItems="center">
+                      <Button
+                        sx={{ 
+                          borderRadius: '10px',
+                          border: '1px solid #ccc',
+                          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                          backgroundColor: 'darkblue',
+                          color: 'white',
+                          marginTop: '22px',
+                          '&:hover': {
+                              backgroundColor: '#6495ed',
+                          },
+                        }}
+                      >
+                        Add
+                      </Button>
+                  </Grid>
+                </Grid>
+                <br></br>
+                People with Access:
+                <br></br>
+                {shareToEmails.map((email, index) => (
+                  <Typography>{email}</Typography>
+                ))}
+              </Container>
+            </div>
+          </DialogContent>
+        </Dialog>     
+      )}
       <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
         <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
           {snackbarMessage}
         </MuiAlert>
-      </Snackbar>      
+      </Snackbar> 
     </Box>
   );
 }
-
-
