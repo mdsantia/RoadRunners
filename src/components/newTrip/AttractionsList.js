@@ -67,6 +67,7 @@ export default function AttractionsList() {
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [allGasStations, setAllGasStations] = useState([]);
   const [LiveEventsData, setLiveEventsData] = useState([]);
+  const [filteredAttractions, setFilteredAttractions] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
   
@@ -115,6 +116,23 @@ export default function AttractionsList() {
       }
     }
  }, [tripDetails]);
+
+
+     // Function to handle search input change
+     const handleSearch = (event, value) => {
+      if (!value) {
+        setFilteredAttractions(allAttractions); // Reset to show all attractions if the search input is empty
+        return;
+      }
+  
+      // Filter attractions based on the search query
+      const filtered = allAttractions.filter(
+        (attraction) =>
+          attraction.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredAttractions(filtered);
+    };
+ 
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
     if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
@@ -129,6 +147,7 @@ export default function AttractionsList() {
       delete stopCopy.routeFromHere;
       return stopCopy;
     }); 
+
     
     if (index === -1) {
       // Add Stop from route
