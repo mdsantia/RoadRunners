@@ -18,8 +18,9 @@ import RouteOptions from './RouteOptions';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
-import {useDashboardContext} from '../../context/DashboardContext'
-import TripOverview from '../newTrip/TripOverview'
+import {useDashboardContext} from '../../context/DashboardContext';
+import TripOverview from '../newTrip/TripOverview';
+import ShareTrip from '../additionalFeatures/ShareTrip';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -88,7 +89,6 @@ export default function Itinerary() {
 
   /* Sharing Trips */
   const [shareTripDialog, setShareTripDialog] = React.useState(false);
-  const [shareToEmails, setShareToEmails] = React.useState([]);
   const handleShareTripDialog = (bool) => {
     setShareTripDialog(bool);
   }
@@ -240,15 +240,12 @@ export default function Itinerary() {
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>
-            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => shareTrip(true)} >
+            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => handleShareTripDialog(true)}>
               Share Trip
             </Button> 
           </>
           ):(  
             <>
-            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => handleShareTripDialog(true)}>
-              Share Trip
-            </Button>
             <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
             </Button>         
@@ -258,52 +255,9 @@ export default function Itinerary() {
           </Box>
       </TabPanel>
       {shareTripDialog && (
-        <Dialog open={shareTripDialog} onClose={() => handleShareTripDialog(false)}>
+        <Dialog fullWidth open={shareTripDialog} onClose={() => handleShareTripDialog(false)}>
           <DialogContent>
-            <div style={{textAlign: 'left'}}>
-              <Typography style={{ fontSize: '25px' }}>Share Trip from "{tripDetails.startLocation}" to "{tripDetails.endLocation}"</Typography>
-              <br></br>
-              <Container>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={10} sm={10} md={10}>
-                    <TextField
-                      id="shareToEmails"
-                      variant="outlined"
-                      placeholder="Add people"
-                      // value={shareTo}
-                      fullWidth
-                      inputProps={{ style: { height: '3%' } }}
-                      onChange={(event) => {
-                          // setShareToEmails([]);
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={2} sm={2} md={2} alignItems="center">
-                      <Button
-                        sx={{ 
-                          borderRadius: '10px',
-                          border: '1px solid #ccc',
-                          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-                          backgroundColor: 'darkblue',
-                          color: 'white',
-                          marginTop: '22px',
-                          '&:hover': {
-                              backgroundColor: '#6495ed',
-                          },
-                        }}
-                      >
-                        Add
-                      </Button>
-                  </Grid>
-                </Grid>
-                <br></br>
-                People with Access:
-                <br></br>
-                {shareToEmails.map((email, index) => (
-                  <Typography>{email}</Typography>
-                ))}
-              </Container>
-            </div>
+            <ShareTrip></ShareTrip>
           </DialogContent>
         </Dialog>     
       )}
