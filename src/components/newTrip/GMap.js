@@ -103,9 +103,13 @@ const GMap = (props) => {
     }, []);
 
     useEffect(() => {
+        console.log('Initializing map...');
         map = new window.google.maps.Map(mapContainerRef.current, {
           center: center,
           zoom: zoom,
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullscreenControl: false
         });
       
         // Add a marker
@@ -195,7 +199,9 @@ const GMap = (props) => {
       }, [center]);
 
     return (
-        <div ref={mapContainerRef} style={{ width: '100%', height: '600px' }} />
+        <div style={{ height: '100%' }}>
+            <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
+        </div>
     );
 };
 
