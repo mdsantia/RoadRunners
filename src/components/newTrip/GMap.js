@@ -139,7 +139,7 @@ const GMap = (props) => {
             strokeColor: "#ffffff",
             scale: 0.04,
         }
-        
+
         const endIcon = {
             path: faFlag.icon[4],
             fillColor: "#d70404",
@@ -154,33 +154,37 @@ const GMap = (props) => {
         }
 
         stops.forEach((stop, index) => {
-            var markerIcon = {
+            setTimeout(() => {
+              const markerIcon = {
                 path: faMapPin.icon[4],
                 fillColor: "#2f6eda",
                 fillOpacity: 1,
                 anchor: new window.google.maps.Point(
-                    faMapPin.icon[0] / 2, // width
-                    faMapPin.icon[1], // height
+                  faMapPin.icon[0] / 2, // width
+                  faMapPin.icon[1] // height
                 ),
                 strokeWeight: 1,
                 strokeColor: "#ffffff",
                 scale: 0.04,
-            }
-            const marker = new window.google.maps.Marker({
-                position: { lat: stop.location.lat, lng: stop.location.lng },
+              };
+          
+              const marker = new window.google.maps.Marker({
+                position: stop.location,
                 map: map,
-                icon: index == 0 ? startIcon : index == stops.length - 1 ? endIcon : markerIcon,
+                icon: index === 0 ? startIcon : index === stops.length - 1 ? endIcon : markerIcon,
+                animation: window.google.maps.Animation.DROP,
                 title: `Stop ${index + 1}`,
-            });
-        
-            marker.addListener('click', () => {
+              });
+          
+              marker.addListener('click', () => {
                 const infoWindow = new window.google.maps.InfoWindow({
-                    content: `Stop ${index + 1}: ${stop.name}`, // Customize the content as needed
+                  content: `Stop ${index + 1}: ${stop.name}`, // Customize the content as needed
                 });
-        
+          
                 infoWindow.open(map, marker);
-            });
-        });
+              });
+            }, index * 400); // Multiply index by 200ms to stagger the markers
+          });
               
             return () => {
                 if (map) {
