@@ -109,7 +109,7 @@ const UserTrips = ({ user, updateUser }) => {
     if (!userTrips) {
         return (
             <>
-                <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Trip History</Typography>
+                <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Saved Trips</Typography>
                 <Typography style={{ fontSize: '12px', fontWeight: 'bold', color: '#555' }}>Loading</Typography>
             </>
         );
@@ -117,7 +117,7 @@ const UserTrips = ({ user, updateUser }) => {
 
     return (
         <>
-            <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Trip History</Typography>
+            <Typography style={{ fontSize: '25px', fontWeight: 'bold' }}>Saved Trips</Typography>
             <Button style={{ textDecoration: 'none' }} onClick={handleClearTrips}> 
                 <Typography style={{ fontSize: '12px', fontWeight: 'bold', color: '#555', cursor:'pointer' }}>Clear All</Typography>
             </Button>
