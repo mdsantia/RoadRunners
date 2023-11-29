@@ -176,12 +176,22 @@ const GMap = (props) => {
                 title: `Stop ${index + 1}`,
               });
           
+              // If marker is clicked, can't be clicked again for 2 seconds
               marker.addListener('click', () => {
+                if (marker.getAnimation() !== null) {
+                    return;
+                }
                 const infoWindow = new window.google.maps.InfoWindow({
                   content: `Stop ${index + 1}: ${stop.name}`, // Customize the content as needed
                 });
-          
+
+                marker.setAnimation(window.google.maps.Animation.BOUNCE);
                 infoWindow.open(map, marker);
+
+                setTimeout(() => {
+                    marker.setAnimation(null);
+                    infoWindow.close();
+                }, 2000);
               });
             }, index * 400); // Multiply index by 200ms to stagger the markers
           });
