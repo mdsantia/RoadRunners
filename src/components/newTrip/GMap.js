@@ -1,5 +1,31 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
+import {faMapPin, faFlag} from '@fortawesome/free-solid-svg-icons';
+
+const startIcon = {
+    path: faFlag.icon[4],
+    fillColor: "#05ff2f",
+    fillOpacity: 1,
+    anchor: new window.google.maps.Point(
+        faFlag.icon[0] / 2, // width
+        faFlag.icon[1], // height
+    ),
+    strokeWeight: 1,
+    strokeColor: "#ffffff",
+    scale: 0.04,
+}
+const endIcon = {
+    path: faFlag.icon[4],
+    fillColor: "#d70404",
+    fillOpacity: 1,
+    anchor: new window.google.maps.Point(
+        faFlag.icon[0] / 2, // width
+        faFlag.icon[1], // height
+    ),
+    strokeWeight: 1,
+    strokeColor: "#ffffff",
+    scale: 0.04,
+}
 
 const GMap = (props) => {
     let map;
@@ -59,31 +85,31 @@ const GMap = (props) => {
 
     useEffect(() => {
         if (tripDetails && tripDetails.polyline) {
-        setPolyline(tripDetails.polyline);
-        setAllStops(tripDetails.allStops);
-        setStops(tripDetails.stops);
-        setChosenRoute(tripDetails.chosenRoute);
-        calculateCenter(tripDetails.polyline);
-        calculateZoom(tripDetails.polyline);
-        if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].gasStations && tripDetails.stops[1].gasStations.length > 0) {
-            tripDetails.stops.forEach((stop) => {
-            if (stop.gasStations && stop.gasStations.length > 0) {
-                // If we didn't already add this gas station to the list, add it
-                for(let i = 0; i < stop.gasStations.length; i++) {
-                // If it already exists, don't add it
-                if (gasStations.find(gas => gas.place_id === stop.gasStations[i].place_id)) {
-                    continue;
+            setPolyline(tripDetails.polyline);
+            setAllStops(tripDetails.allStops);
+            setStops(tripDetails.stops);
+            setChosenRoute(tripDetails.chosenRoute);
+            calculateCenter(tripDetails.polyline);
+            calculateZoom(tripDetails.polyline);
+            if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].gasStations && tripDetails.stops[1].gasStations.length > 0) {
+                tripDetails.stops.forEach((stop) => {
+                if (stop.gasStations && stop.gasStations.length > 0) {
+                    // If we didn't already add this gas station to the list, add it
+                    for(let i = 0; i < stop.gasStations.length; i++) {
+                    // If it already exists, don't add it
+                    if (gasStations.find(gas => gas.place_id === stop.gasStations[i].place_id)) {
+                        continue;
+                    }
+                    gasStations.push(stop.gasStations[i]);
+                    }
                 }
-                gasStations.push(stop.gasStations[i]);
-                }
+                });
             }
-            });
-        }
-        console.log(gasStations);
-        if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].restaurants && tripDetails.stops[1].restaurants.length > 0) {
-            setRestaurants(tripDetails.stops[1].restaurants);
-        }
-        console.log(restaurants);
+            console.log(gasStations);
+            if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].restaurants && tripDetails.stops[1].restaurants.length > 0) {
+                setRestaurants(tripDetails.stops[1].restaurants);
+            }
+            console.log(restaurants);
         }
     }, [tripDetails]);
         
@@ -114,26 +140,59 @@ const GMap = (props) => {
         //   title: 'Hello World!',
         // });
 
-        if (tripDetails && tripDetails.polyline) {
-            const path = new window.google.maps.Polyline({
-                path: tripDetails.polyline,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2,
+    if (tripDetails && tripDetails.polyline) {
+        const path = new window.google.maps.Polyline({
+            path: tripDetails.polyline,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+        });
+        
+        // Set the polyline on the map
+        path.setMap(map);
+
+        console.log(allStops);
+        stops.forEach((stop, index) => {
+            var markerIcon = {
+                path: faMapPin.icon[4],
+                fillColor: "#2f6eda",
+                fillOpacity: 1,
+                anchor: new window.google.maps.Point(
+                    faMapPin.icon[0] / 2, // width
+                    faMapPin.icon[1], // height
+                ),
+                strokeWeight: 1,
+                strokeColor: "#ffffff",
+                scale: 0.04,
+            }
+            const marker = new window.google.maps.Marker({
+                position: { lat: stop.location.lat, lng: stop.location.lng },
+                map: map,
+                icon: index == 0 ? startIcon : index == stops.length - 1 ? endIcon : markerIcon,
+                title: `Stop ${index + 1}`,
             });
-            
-            // Set the polyline on the map
-            path.setMap(map);
+        
+            marker.addListener('click', () => {
+                const infoWindow = new window.google.maps.InfoWindow({
+                    content: `Stop ${index + 1}: ${stop.name}`, // Customize the content as needed
+                });
+        
+                infoWindow.open(map, marker);
+            });
+        });
+              
             return () => {
                 if (map) {
                   window.google.maps.event.clearInstanceListeners(map);
                 }
-              };
+            };
         }
       }, [center]);
 
-    return <div ref={mapContainerRef} style={{ width: '100%', height: '600px' }} />;
+    return (
+        <div ref={mapContainerRef} style={{ width: '100%', height: '600px' }} />
+    );
 };
 
 export default GMap;
