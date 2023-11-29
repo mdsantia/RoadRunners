@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Map from '../components/newTrip/Map';
+import GMap from '../components/newTrip/GMap';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
 const { useUserContext } = require('../hooks/useUserContext');
@@ -168,13 +169,14 @@ export default function Dashboard() {
             <TopBar></TopBar>
             <Container sx={{ marginTop: '75px' }}>
                 <CreateTripContainer>
-                    {/* Add your CreateTrip component here */}
                     <CreateTrip/>
                 </CreateTripContainer>
                 
                 <MapWrapper ref={mapWrapperRef}>
-                    {/* Add your Map component here */}
-                    <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
+                    {/* <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/> */}
+                    <div>
+                        <GMap size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
+                    </div>
                 </MapWrapper>
                 <Wrapper>
                     <Itinerary />
