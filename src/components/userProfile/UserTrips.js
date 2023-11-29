@@ -63,7 +63,13 @@ const UserTrips = ({ user, updateUser }) => {
         .then((response) => {
             const newUser = response.data;
             updateUser(newUser);
-            userTrips.filter(trip => trip._id != tripid);
+            for(let i = 0; i < userTrips.length; i++) {
+                if (userTrips[i]._id == tripid) {
+                    userTrips.splice(i, 1);
+                    setUserTrips(userTrips);
+                    break;
+                }
+            }
         }).catch((error) => {
             console.log(error);
         });
