@@ -2,31 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import {faMapPin, faFlag} from '@fortawesome/free-solid-svg-icons';
 
-const startIcon = {
-    path: faFlag.icon[4],
-    fillColor: "#05ff2f",
-    fillOpacity: 1,
-    anchor: new window.google.maps.Point(
-        faFlag.icon[0] / 2, // width
-        faFlag.icon[1], // height
-    ),
-    strokeWeight: 1,
-    strokeColor: "#ffffff",
-    scale: 0.04,
-}
-const endIcon = {
-    path: faFlag.icon[4],
-    fillColor: "#d70404",
-    fillOpacity: 1,
-    anchor: new window.google.maps.Point(
-        faFlag.icon[0] / 2, // width
-        faFlag.icon[1], // height
-    ),
-    strokeWeight: 1,
-    strokeColor: "#ffffff",
-    scale: 0.04,
-}
-
 const GMap = (props) => {
     let map;
     const mapContainerRef = useRef(null);
@@ -152,7 +127,32 @@ const GMap = (props) => {
         // Set the polyline on the map
         path.setMap(map);
 
-        console.log(allStops);
+        const startIcon = {
+            path: faFlag.icon[4],
+            fillColor: "#05ff2f",
+            fillOpacity: 1,
+            anchor: new window.google.maps.Point(
+                faFlag.icon[0] / 2, // width
+                faFlag.icon[1], // height
+            ),
+            strokeWeight: 1,
+            strokeColor: "#ffffff",
+            scale: 0.04,
+        }
+        
+        const endIcon = {
+            path: faFlag.icon[4],
+            fillColor: "#d70404",
+            fillOpacity: 1,
+            anchor: new window.google.maps.Point(
+                faFlag.icon[0] / 2, // width
+                faFlag.icon[1], // height
+            ),
+            strokeWeight: 1,
+            strokeColor: "#ffffff",
+            scale: 0.04,
+        }
+
         stops.forEach((stop, index) => {
             var markerIcon = {
                 path: faMapPin.icon[4],
