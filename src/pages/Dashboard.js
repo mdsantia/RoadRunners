@@ -174,9 +174,7 @@ export default function Dashboard() {
                 
                 <MapWrapper ref={mapWrapperRef}>
                     {/* <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/> */}
-                    <div>
-                        <GMap size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
-                    </div>
+                    <GMap size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
                 </MapWrapper>
                 <Wrapper>
                     <Itinerary />
