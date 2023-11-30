@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
-import {faMapPin, faFlag} from '@fortawesome/free-solid-svg-icons';
+import {faMapPin, faFlag, faGasPump, faUtensils} from '@fortawesome/free-solid-svg-icons';
 
 var map = null;
 var animating = false;
@@ -64,15 +64,16 @@ const GMap = (props) => {
         let list = [];
         gasStations.forEach((stop, index) => {
             const markerIcon = {
-                url: iconBase + 'gas_stations.png' + '?size=' + iconSize,
-                origin: new window.google.maps.Point(0, 0),
-                size: new window.google.maps.Size(40, 40),
-                // fillColor: "#0000",
-                // fillOpacity: 1,
-                anchor: new window.google.maps.Point(20, 20),
-                // strokeWeight: 1,
-                // strokeColor: "#ffffff",
-                // scale: 0.06,
+                path: faGasPump.icon[4],
+                fillColor: "#df0707",
+                fillOpacity: 1,
+                anchor: new window.google.maps.Point(
+                    faGasPump.icon[0] / 2, // width
+                    faGasPump.icon[1], // height
+                ),
+                strokeWeight: 1,
+                strokeColor: "#ffffff",
+                scale: 0.06,
             };
         
             const marker = new window.google.maps.Marker({
@@ -110,12 +111,16 @@ const GMap = (props) => {
         let list = markers;
         restaurants.forEach((stop, index) => {
             const markerIcon = {
-                path: /* global google */ google.maps.SymbolPath.CIRCLE,
-                fillColor: 'grey',
+                path: faUtensils.icon[4],
+                fillColor: "#88a5d8",
                 fillOpacity: 1,
-                scale: 10,
-                strokeColor: 'white',
-                strokeWeight: 2,
+                anchor: new window.google.maps.Point(
+                    faUtensils.icon[0] / 2, // width
+                    faUtensils.icon[1], // height
+                ),
+                strokeWeight: 1,
+                strokeColor: "#ffffff",
+                scale: 0.06,
             };
         
             const marker = new window.google.maps.Marker({
