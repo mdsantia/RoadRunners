@@ -200,7 +200,8 @@ const yelpUrl = async (req, res) => {
 }
 
 const newRoadTrip = async (req, res) => {
-  const { startLocation, endLocation, startDate, endDate, mpg, foodPref} = req.query;
+  let { startLocation, endLocation, startDate, endDate, mpg, foodPref} = req.query;
+  mpg = mpg===undefined||mpg<=0?10:mpg;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
   
   const result = {options: [], allStops: []};
