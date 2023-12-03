@@ -73,14 +73,13 @@ function ShareTrip ({handleShareTripDialog}) {
                             options={userList}
                             getOptionLabel={(user) => user.email}
                             renderOption={(props, user) => (
-                                <li {...props}>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Avatar src={user.profilePicture} alt="Profile" />
-                                        <div style={{ marginLeft: '10px' }}>
-                                            <Typography>{user.email}</Typography>
-                                        </div>
+                                <li {...props} style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Avatar src={user.profile_picture} alt="Profile" />
+                                    <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <Typography sx={{ fontSize: '15px' }}>{user.name}</Typography>
+                                    <Typography sx={{ fontSize: '12px', color: 'gray' }}>{user.email}</Typography>
                                     </div>
-                                </li>
+                              </li>
                             )}
                             filterOptions={(users, { inputValue }) =>
                                 users.filter((user) =>
@@ -91,7 +90,8 @@ function ShareTrip ({handleShareTripDialog}) {
                                 if (newValue) {
                                     setUserToAdd({
                                         email: newValue.email,
-                                        profilePicture: newValue.profilePicture,
+                                        name: newValue.name,
+                                        profile_picture: newValue.profile_picture,
                                     });
                                 } else {
                                     setUserToAdd({});
@@ -166,15 +166,25 @@ function ShareTrip ({handleShareTripDialog}) {
                     </Grid>
                 </Grid>
                 <Typography sx={{ fontWeight: 'bold', marginTop: '3%', marginBottom: '3%' }}>People with Access:</Typography>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%'}}>
-                    <Avatar src={user.profile_picture} alt="Profile" />
-                    <div style={{ marginLeft: '10px' }}>
-                        <Typography>{user.email}</Typography>
-                    </div>
-                </div>
+                <Grid container>
+                    <Grid item xs={9} sm={9} md={9}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
+                        <Avatar src={user.profile_picture} alt="Profile" />
+                        <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                            <Typography sx={{ fontSize: '15px' }}>{user.name} (you)</Typography>
+                            <Typography sx={{ fontSize: '12px', color: 'grey' }}>{user.email}</Typography>
+                        </div>
+                        </div>
+                    </Grid>
+                    <Grid item xs={3} sm={3} md={3}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
+                        <Typography sx={{ color: 'gray'}}>Owner</Typography>
+                        </div>
+                    </Grid>
+                </Grid>
                 {[...usersWithAccess, ...addedUsers].map((user, index) => (
                     <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '1%'}}>
-                        <Avatar src={user.profilePicture} alt="Profile" />
+                        <Avatar src={user.profile_picture} alt="Profile" />
                         <div style={{ marginLeft: '10px' }}>
                             <Typography>{user.email}</Typography>
                         </div>
