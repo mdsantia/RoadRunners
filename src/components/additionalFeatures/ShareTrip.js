@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Container, Avatar } from '@mui/material';
 import { Typography, Grid, Divider, Select, OutlinedInput, InputLabel, TextField } from '@mui/material';
 import { MenuItem, Button, Autocomplete } from '@mui/material';
+import { useUserContext } from '../../hooks/useUserContext';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
@@ -15,12 +16,14 @@ function ShareTrip ({handleShareTripDialog}) {
     const [addButtonClicked, setAddButtonClicked] = React.useState(false);
     const [permissionToAdd, setpermissionToAdd] = React.useState("");
     const [showAddButton, setShowAddButton] = React.useState(true);
+    const {user, updateUser} = useUserContext();
 
     React.useEffect(() => {
         const fetchData = async () => {
             await axios.get(`/api/user/getAllUsers`) 
             .then((res) => {
-               setUserList(res.data);
+                setUserList(res.data);
+                setUserList(prevUserList => prevUserList.filter(userOnList => userOnList.email !== user.email));
             })
             .catch((err) => {
                 console.log(err);
@@ -40,7 +43,6 @@ function ShareTrip ({handleShareTripDialog}) {
     const handleShareButton = () => {
         setUsersWithAccess(prevUsers => [...prevUsers, ...addedUsers]);
         setAddedUsers([]);
-        setUserToAdd({});
     }
 
     const handleCancelButton = () => {
@@ -164,6 +166,12 @@ function ShareTrip ({handleShareTripDialog}) {
                     </Grid>
                 </Grid>
                 <Typography sx={{ fontWeight: 'bold', marginTop: '3%', marginBottom: '3%' }}>People with Access:</Typography>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%'}}>
+                    <Avatar src={user.profile_picture} alt="Profile" />
+                    <div style={{ marginLeft: '10px' }}>
+                        <Typography>{user.email}</Typography>
+                    </div>
+                </div>
                 {[...usersWithAccess, ...addedUsers].map((user, index) => (
                     <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '1%'}}>
                         <Avatar src={user.profilePicture} alt="Profile" />
