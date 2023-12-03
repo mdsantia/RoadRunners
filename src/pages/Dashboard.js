@@ -98,7 +98,7 @@ export default function Dashboard() {
             return;
         }
         const fetchTrip = async () => {
-            axios.get(`/api/trip/getTrip/${tripid}`) 
+            await axios.get(`/api/trip/getTrip/${tripid}`) 
             .then((res) => {
                 if (res.data.user_email !== user.email) {
                     setTripDetails(null);
