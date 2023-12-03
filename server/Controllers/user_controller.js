@@ -336,4 +336,26 @@ const getFuelGrade = async (make, model, year) => {
     }
 }
 
-module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, editVehicle};
+/*
+ * API: /api/user/getAllUsers
+ *
+ *
+ * 
+*/
+
+const getAllUsers = async (req, res) => {
+    // Get all user emails
+    try {
+        // Use the find method to retrieve all documents and project only the 'email' field
+        const users = await User.find({}, 'email profile_picture');
+        const returnObj = users.map(user => ({
+            email: user.email,
+            profilePicture: user.profile_picture,
+          }));
+        res.status(200).json(returnObj);
+      } catch (error) {
+        console.error('Error retrieving emails:', error);
+        res.status(400).json({message: error});
+      }
+}
+module.exports = {checkAndSaveUser, addVehicle, removeVehicle, setPreferences, vehicleRanking, editVehicle, getAllUsers};
