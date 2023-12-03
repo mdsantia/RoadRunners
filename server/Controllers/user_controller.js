@@ -346,11 +346,12 @@ const getFuelGrade = async (make, model, year) => {
 const getAllUsers = async (req, res) => {
     // Get all user emails
     try {
-        // Use the find method to retrieve all documents and project only the 'email' field
-        const users = await User.find({}, 'email profile_picture');
+        // Use the find method to retrieve all documents and project only the 'email, name and profile_picture' fields
+        const users = await User.find({}, 'email name profile_picture');
         const returnObj = users.map(user => ({
             email: user.email,
-            profilePicture: user.profile_picture,
+            name: user.name,
+            profile_picture: user.profile_picture,
           }));
         res.status(200).json(returnObj);
       } catch (error) {
