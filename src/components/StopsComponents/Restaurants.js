@@ -38,7 +38,7 @@ function convertPrice(price) {
     return priceLevel;
 }
 
-export default function Attractions({data, selected, onSelectionChange}) {
+export default function Attractions({data, selected, onSelectionChange, viewOnly}) {
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
@@ -69,6 +69,7 @@ export default function Attractions({data, selected, onSelectionChange}) {
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
+            {!viewOnly && (
             <Checkbox
           {...label}
           icon={<AddLocationAltOutlinedIcon />}
@@ -76,6 +77,7 @@ export default function Attractions({data, selected, onSelectionChange}) {
           checked={selected} 
           onChange={onSelectionChange} 
         />
+            )}
             </CardActions>
         </Item>
     );

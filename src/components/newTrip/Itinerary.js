@@ -76,6 +76,7 @@ export default function Itinerary() {
   const navigate = useNavigate();
   const {tripDetails, setTripDetails} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
+  const [viewOnly, setViewOnly] = React.useState(true);
  
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
@@ -86,6 +87,7 @@ export default function Itinerary() {
   const [selectedVehicles, setSelectedVehicles] = React.useState([]);
   const [numVehicles, setNumVehicles] = React.useState(0);
   const [minimumMPG, setMinimumMPG] = React.useState(0);
+
 
   /* Sharing Trips */
   const [shareTripDialog, setShareTripDialog] = React.useState(false);
@@ -223,7 +225,7 @@ export default function Itinerary() {
         <RouteOptions/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <AttractionsList></AttractionsList>
+        <AttractionsList viewOnly={viewOnly}></AttractionsList>
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Box sx={{ overflowY: 'auto', maxHeight: '450px'}}>
@@ -246,9 +248,12 @@ export default function Itinerary() {
           </>
           ):(  
             <>
-            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+            {!viewOnly &&(
+              <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
-            </Button>         
+            </Button>  
+            )}
+                   
             </>   
           )):(<></>)
           }

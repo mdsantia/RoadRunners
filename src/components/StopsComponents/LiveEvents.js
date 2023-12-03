@@ -26,7 +26,7 @@ const handleClick = (name) => {
     window.open(searchUrl, '_blank');
 };
 
-export default function LiveEvents({ data, selected, onSelectionChange}) {
+export default function LiveEvents({ data, selected, onSelectionChange, viewOnly}) {
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
@@ -60,6 +60,7 @@ export default function LiveEvents({ data, selected, onSelectionChange}) {
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
+            {!viewOnly && (
             <Checkbox
           {...label}
           icon={<AddLocationAltOutlinedIcon />}
@@ -67,6 +68,7 @@ export default function LiveEvents({ data, selected, onSelectionChange}) {
           checked={selected} 
           onChange={onSelectionChange} 
         />
+            )}
             </CardActions>
         </Item>
     );
