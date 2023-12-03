@@ -257,7 +257,7 @@ export default function Itinerary() {
       {shareTripDialog && (
         <Dialog fullWidth open={shareTripDialog} onClose={() => handleShareTripDialog(false)}>
           <DialogContent>
-            <ShareTrip></ShareTrip>
+            <ShareTrip handleShareTripDialog={() => handleShareTripDialog(false)}></ShareTrip>
           </DialogContent>
         </Dialog>     
       )}
