@@ -1,22 +1,20 @@
 import * as React from 'react';
 import { Container, Avatar } from '@mui/material';
 import { Typography, Grid, Divider, Select, OutlinedInput, InputLabel, TextField } from '@mui/material';
-import { Accordion, AccordionDetails, AccordionSummary, MenuItem, Button, Autocomplete } from '@mui/material';
-import { useUserContext } from '../../hooks/useUserContext';
-import { useDashboardContext } from '../../context/DashboardContext';
-import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import { MenuItem, Button, Autocomplete } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
 
 
-
-function ShareTrip() {
-    const [shareToEmails, setShareToEmails] = React.useState([]);
-    const [emailToAdd, setEmailToAdd] = React.useState({});
+function ShareTrip ({handleShareTripDialog}) {
+    const [userList, setUserList] = React.useState([]);
+    const [userToAdd, setUserToAdd] = React.useState({});
+    const [addedUsers, setAddedUsers] = React.useState([]);
+    const [usersWithAccess, setUsersWithAccess] = React.useState([]);
     const [addButtonClicked, setAddButtonClicked] = React.useState(false);
     const [permissionToAdd, setpermissionToAdd] = React.useState("");
-    const [userList, setUserList] = React.useState([]);
+    const [showAddButton, setShowAddButton] = React.useState(true);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -35,23 +33,28 @@ function ShareTrip() {
         setAddButtonClicked(true);
     }
 
-    const handleCancelButton = () => {
-        // handle cancel
-    }
-
-    const handleShareButton = () => {
-        // handle share trip button
-    }
-
     const handlePermission = (event) => {
         setpermissionToAdd(event.target.value);
     };
+    
+    const handleShareButton = () => {
+        setUsersWithAccess(prevUsers => [...prevUsers, ...addedUsers]);
+        setAddedUsers([]);
+        setUserToAdd({});
+    }
+
+    const handleCancelButton = () => {
+        setAddedUsers([]);
+        setUserToAdd({});
+        handleShareTripDialog();
+    }
 
     React.useEffect(() => {
-        if (emailToAdd.email) {
-            setShareToEmails(prevEmails => [...prevEmails, emailToAdd]);
-            setEmailToAdd({});
+        if (userToAdd.email) {
+            setAddedUsers(prevUsers => [...prevUsers, userToAdd]);
+            setUserToAdd({});
             setAddButtonClicked(false);
+            setShowAddButton(false);
         }
     }, [addButtonClicked]);
 
@@ -64,7 +67,6 @@ function ShareTrip() {
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={10} sm={10} md={10} alignItems="center">
                         <Autocomplete
-                            freeSolo
                             id="shareToAutocomplete"
                             options={userList}
                             getOptionLabel={(user) => user.email}
@@ -78,21 +80,32 @@ function ShareTrip() {
                                     </div>
                                 </li>
                             )}
+                            filterOptions={(users, { inputValue }) =>
+                                users.filter((user) =>
+                                    user.email.toLowerCase().includes(inputValue.toLowerCase())
+                                )
+                            }
                             onChange={(event, newValue) => {
                                 if (newValue) {
-                                    setEmailToAdd({
+                                    setUserToAdd({
                                         email: newValue.email,
                                         profilePicture: newValue.profilePicture,
                                     });
                                 } else {
-                                    // Handle clearing the selection
-                                    setEmailToAdd({});
+                                    setUserToAdd({});
+                                }
+                                const userAlreadyAdded = addedUsers.some((existingUser) => existingUser.email === newValue.email);
+                                const userAlreadyHasAccess = usersWithAccess.some((existingUser) => existingUser.email === newValue.email);
+
+                                if (userAlreadyAdded || userAlreadyHasAccess) {
+                                    setShowAddButton(false);
+                                } else {
+                                    setShowAddButton(true);
                                 }
                             }}
                             onInputChange={(event, newInputValue) => {
-                                // Handle clearing the selection
                                 if (!newInputValue) {
-                                    setEmailToAdd({});
+                                    setUserToAdd({});
                                 }
                             }}
                             isOptionEqualToValue={(user, value) => user.email === value.email}
@@ -104,8 +117,7 @@ function ShareTrip() {
                                     fullWidth
                                     InputProps={{
                                         ...params.InputProps,
-                                        type: 'search',
-                                        value: emailToAdd.email || '',
+                                        value: userToAdd.email || '',
                                     }}
                                 />
                             )}
@@ -130,7 +142,8 @@ function ShareTrip() {
                         </FormControl>
                     </Grid>
                     <Grid item xs={2} sm={2} md={2} alignItems="center">
-                        <Button
+                        {showAddButton ? (
+                            <Button
                             sx={{
                                 borderRadius: '10px',
                                 border: '1px solid #ccc',
@@ -142,13 +155,16 @@ function ShareTrip() {
                                 },
                             }}
                             onClick={handleAddButtonClick}
-                        >
-                            Add
-                        </Button>
+                            >
+                                Add
+                            </Button>
+                        ) : (
+                            <Typography/>
+                        )}
                     </Grid>
                 </Grid>
                 <Typography sx={{ fontWeight: 'bold', marginTop: '3%', marginBottom: '3%' }}>People with Access:</Typography>
-                {shareToEmails.map((user, index) => (
+                {[...usersWithAccess, ...addedUsers].map((user, index) => (
                     <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '1%'}}>
                         <Avatar src={user.profilePicture} alt="Profile" />
                         <div style={{ marginLeft: '10px' }}>
@@ -171,7 +187,7 @@ function ShareTrip() {
                         fontSize: '12px',
                         width: '15%'
                     }}
-                    onClick={handleCancelButton()}
+                    onClick={handleCancelButton}
                 >
                     Cancel
                 </Button>
@@ -188,7 +204,7 @@ function ShareTrip() {
                         fontSize: '12px',
                         width: '15%'
                     }}
-                    onClick={handleShareButton()}
+                    onClick={handleShareButton}
                 >
                     Share
                 </Button>
