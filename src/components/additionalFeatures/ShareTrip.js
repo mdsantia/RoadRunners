@@ -23,12 +23,10 @@ function ShareTrip ({handleShareTripDialog}) {
             await axios.get(`/api/user/getAllUsers`) 
             .then((res) => {
                 setUserList(res.data);
-                setUserList(prevUserList => prevUserList.filter(userOnList => userOnList.email !== user.email));
-                const updatedUserList = userList.map((user) => ({
-                    ...user,
-                    permission: 3, // Set the default permission to 3 (no access)
-                }));
-                setUserList(updatedUserList);
+                setUserList(userList => userList.filter(userOnList => userOnList.email !== user.email));
+                for (let i = 0; i < userList.length; i++) {
+                    userList[i].permission = 3;
+                }
             })
             .catch((err) => {
                 console.log(err);
