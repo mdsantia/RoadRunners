@@ -36,8 +36,11 @@ function ShareTrip ({handleShareTripDialog}) {
         setAddButtonClicked(true);
     }
 
-    const handlePermission = (event) => {
-        setpermissionToAdd(event.target.value);
+    const handlePermissionChange = (event, selectedUser) => {
+        const updatedUsers = addedUsers.map((user) =>
+          user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
+        );
+        setAddedUsers(updatedUsers);
     };
     
     const handleShareButton = () => {
@@ -92,17 +95,18 @@ function ShareTrip ({handleShareTripDialog}) {
                                         email: newValue.email,
                                         name: newValue.name,
                                         profile_picture: newValue.profile_picture,
+                                        permission: 1
                                     });
+                                    const userAlreadyAdded = addedUsers.some((existingUser) => existingUser.email === newValue.email);
+                                    const userAlreadyHasAccess = usersWithAccess.some((existingUser) => existingUser.email === newValue.email);
+    
+                                    if (userAlreadyAdded || userAlreadyHasAccess) {
+                                        setShowAddButton(false);
+                                    } else {
+                                        setShowAddButton(true);
+                                    }
                                 } else {
                                     setUserToAdd({});
-                                }
-                                const userAlreadyAdded = addedUsers.some((existingUser) => existingUser.email === newValue.email);
-                                const userAlreadyHasAccess = usersWithAccess.some((existingUser) => existingUser.email === newValue.email);
-
-                                if (userAlreadyAdded || userAlreadyHasAccess) {
-                                    setShowAddButton(false);
-                                } else {
-                                    setShowAddButton(true);
                                 }
                             }}
                             onInputChange={(event, newInputValue) => {
@@ -119,31 +123,13 @@ function ShareTrip ({handleShareTripDialog}) {
                                     fullWidth
                                     InputProps={{
                                         ...params.InputProps,
-                                        value: userToAdd.email || '',
+                                        value: userToAdd ? userToAdd.email || '' : '',
                                     }}
                                 />
                             )}
                         />
                     </Grid>
-                </Grid>
-                <br></br>
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={5} sm={5} md={5} alignItems="center">
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Permission</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={permissionToAdd}
-                                label="Permission"
-                                onChange={handlePermission}
-                            >
-                                <MenuItem value={10}>Viewer</MenuItem>
-                                <MenuItem value={20}>Editor</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={2} sm={2} md={2} alignItems="center">
+                    <Grid item xs={2} sm={2} md={2}>
                         {showAddButton ? (
                             <Button
                             sx={{
@@ -166,7 +152,7 @@ function ShareTrip ({handleShareTripDialog}) {
                     </Grid>
                 </Grid>
                 <Typography sx={{ fontWeight: 'bold', marginTop: '3%', marginBottom: '3%' }}>People with Access:</Typography>
-                <Grid container>
+                <Grid container style={{ marginBottom: '3%' }}>
                     <Grid item xs={9} sm={9} md={9}>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
                         <Avatar src={user.profile_picture} alt="Profile" />
@@ -183,12 +169,38 @@ function ShareTrip ({handleShareTripDialog}) {
                     </Grid>
                 </Grid>
                 {[...usersWithAccess, ...addedUsers].map((user, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '1%'}}>
-                        <Avatar src={user.profile_picture} alt="Profile" />
-                        <div style={{ marginLeft: '10px' }}>
-                            <Typography>{user.email}</Typography>
-                        </div>
-                    </div>               
+                    <Grid container style={{ marginBottom: '3%'}}>
+                        <Grid item xs={9} sm={9} md={9}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
+                            <Avatar src={user.profile_picture} alt="Profile" />
+                            <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <Typography sx={{ fontSize: '15px' }}>{user.name}</Typography>
+                                <Typography sx={{ fontSize: '12px', color: 'grey' }}>{user.email}</Typography>
+                            </div>
+                            </div>
+                        </Grid>
+                        <Grid item xs={3} sm={3} md={3}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
+                                <FormControl fullWidth variant="standard" sx={{ width: '80%' }}>
+                                    <Select
+                                        labelId={`permission-label-${user.email}`}
+                                        id={`permission-select-${user.email}`}
+                                        value={user.permission}
+                                        onChange={(event) => handlePermissionChange(event, user)}
+                                        sx={{
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(0, 0, 0, 0.1)', // Set the desired background color on hover
+                                            },
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        <MenuItem value={1}>Viewer</MenuItem>
+                                        <MenuItem value={2}>Editor</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </div>
+                        </Grid>
+                    </Grid>
                 ))}
             </Container>
             <Container style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '3%' }}>
