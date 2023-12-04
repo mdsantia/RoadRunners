@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Container, Avatar } from '@mui/material';
 import { Typography, Grid, Divider, Select, TextField } from '@mui/material';
-import { MenuItem, Button, Autocomplete } from '@mui/material';
+import { MenuItem, Button, Autocomplete, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import { useUserContext } from '../../hooks/useUserContext';
 import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
@@ -16,6 +17,10 @@ function ShareTrip ({handleShareTripDialog}) {
     const [addButtonClicked, setAddButtonClicked] = React.useState(false);
     const [showAddButton, setShowAddButton] = React.useState(false);
     const [initialState, setInitialState] = React.useState(null);
+    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+    const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -86,6 +91,7 @@ function ShareTrip ({handleShareTripDialog}) {
     const handleDoneButton = () => {
         setAddedUsers([]);
         setUserToAdd({});
+        handleShareTripDialog();
     }
     
     const handleSaveButton = () => {
@@ -94,14 +100,25 @@ function ShareTrip ({handleShareTripDialog}) {
         setUsersWithAccess(newList);
         setAddedUsers([]);
         setInitialState(JSON.stringify(newList));
+        showMessage('Your changes have been saved!', 2000, 'success');
     }
-    
 
     const handleCancelButton = () => {
         setAddedUsers([]);
         setUserToAdd({});
         handleShareTripDialog();
     }
+
+    const showMessage = (message, duration, severity) => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarDuration(duration);
+        setSnackbarOpen(true);
+    };
+
+    const closeSnackbar = () => {
+        setSnackbarOpen(false);
+    };
 
     React.useEffect(() => {
         if (addButtonClicked) {
@@ -305,6 +322,11 @@ function ShareTrip ({handleShareTripDialog}) {
                     </Button>
                 )}
             </Container>
+            <Snackbar open={snackbarOpen} autoHideDuration={snackbarDuration} onClose={closeSnackbar}>
+                <MuiAlert elevation={6} variant="filled" onClose={closeSnackbar} severity={snackbarSeverity}>
+                    {snackbarMessage}
+                </MuiAlert>
+            </Snackbar> 
         </div>
     )
 }
