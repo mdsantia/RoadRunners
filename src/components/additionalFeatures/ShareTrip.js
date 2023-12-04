@@ -118,18 +118,22 @@ function ShareTrip ({handleShareTripDialog}) {
                                     user.email.toLowerCase().includes(inputValue.toLowerCase())
                                 )
                             }
-                            onChange={(newInputValue, user) => {
-                                setUserToAdd({
-                                    email: user.email,
-                                    name: user.name,
-                                    profile_picture: user.profile_picture,
-                                    permission: 1
-                                });
-                                handleShowAddButton(user);
+                            onChange={(event, user) => {
+                                if (user) {
+                                    setUserToAdd({
+                                        email: user.email,
+                                        name: user.name,
+                                        profile_picture: user.profile_picture,
+                                        permission: 1
+                                    });
+                                    handleShowAddButton(user);
+                                } else {
+                                    setUserToAdd({});
+                                    setShowAddButton(false);
+                                }
                             }}
                             renderInput={(params) => {
                                 params.inputProps.value = userToAdd.email ? userToAdd.email : "";
-                            
                                 return (
                                     <TextField
                                         {...params}
