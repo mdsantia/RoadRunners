@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Container, Avatar } from '@mui/material';
-import { Typography, Grid, Divider, Select, OutlinedInput, InputLabel, TextField } from '@mui/material';
+import { Typography, Grid, Divider, Select, TextField } from '@mui/material';
 import { MenuItem, Button, Autocomplete } from '@mui/material';
 import { useUserContext } from '../../hooks/useUserContext';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
 
@@ -12,11 +11,11 @@ function ShareTrip ({handleShareTripDialog}) {
     const {user, updateUser} = useUserContext();
     const [userList, setUserList] = React.useState([]);
     const [userToAdd, setUserToAdd] = React.useState({});
-    const [userLastAdded, setUserLastAdded] = React.useState({});
     const [addedUsers, setAddedUsers] = React.useState([]);
     const [usersWithAccess, setUsersWithAccess] = React.useState([]);
     const [addButtonClicked, setAddButtonClicked] = React.useState(false);
     const [showAddButton, setShowAddButton] = React.useState(false);
+    const [initialState, setInitialState] = React.useState(null);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -33,9 +32,21 @@ function ShareTrip ({handleShareTripDialog}) {
             });
         }
         fetchData();
+        
+        /** TODO API PULL SAVED VALUES FROM DATABSE */
+        let result = [];
+        setUsersWithAccess(result);
+        setInitialState(JSON.stringify(result));
+        setAddedUsers([]);
     }, []);
 
-    
+    const showCancelAndSaveButton = () => {
+        if (initialState !== JSON.stringify(usersWithAccess) || addedUsers.length) {
+            return true;
+        }
+        return false;
+    }
+
     const handlePermissionChange = (event, selectedUser) => {
         if (event.target.value === 3) {
             const updatedUsers = addedUsers.filter((user) => user.email !== selectedUser.email);
@@ -49,6 +60,10 @@ function ShareTrip ({handleShareTripDialog}) {
             const updatedUsers = addedUsers.map((user) =>
             user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
             );
+            const updatedUsersAccess = usersWithAccess.map((user) =>
+                user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
+            );
+            setUsersWithAccess(updatedUsersAccess);
             setAddedUsers(updatedUsers);
         }
     };
@@ -67,11 +82,20 @@ function ShareTrip ({handleShareTripDialog}) {
             setShowAddButton(true);
         }
     }
-    
-    const handleShareButton = () => {
-        setUsersWithAccess(prevUsers => [...prevUsers, ...addedUsers]);
+
+    const handleDoneButton = () => {
         setAddedUsers([]);
+        setUserToAdd({});
     }
+    
+    const handleSaveButton = () => {
+        /** TODO API SAVE IN DATABSE */
+        const newList = [...usersWithAccess, ...addedUsers];
+        setUsersWithAccess(newList);
+        setAddedUsers([]);
+        setInitialState(JSON.stringify(newList));
+    }
+    
 
     const handleCancelButton = () => {
         setAddedUsers([]);
@@ -82,7 +106,6 @@ function ShareTrip ({handleShareTripDialog}) {
     React.useEffect(() => {
         if (addButtonClicked) {
             setAddedUsers(prevUsers => [...prevUsers, userToAdd]);
-            setUserLastAdded(userToAdd);
             setUserToAdd({});
             setAddButtonClicked(false);
             setShowAddButton(false);
@@ -115,6 +138,7 @@ function ShareTrip ({handleShareTripDialog}) {
                             filterOptions={(users, { inputValue }) =>
                                 users.filter((user) =>
                                     !addedUsers.some((addedUser) => addedUser.email === user.email) &&
+                                    !usersWithAccess.some((userWithAccess) => userWithAccess.email === user.email) &&
                                     user.email.toLowerCase().includes(inputValue.toLowerCase())
                                 )
                             }
@@ -222,40 +246,64 @@ function ShareTrip ({handleShareTripDialog}) {
                 ))}
             </Container>
             <Container style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '3%' }}>
-                <Button
-                    sx={{
-                        borderRadius: '10px',
-                        border: '1px solid #ccc',
-                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-                        backgroundColor: 'darkblue',
-                        color: 'white',
-                        '&:hover': {
-                            backgroundColor: '#6495ed',
-                        },
-                        fontSize: '12px',
-                        width: '15%'
-                    }}
-                    onClick={handleCancelButton}
-                >
-                    Cancel
-                </Button>
-                <Button
-                    sx={{
-                        borderRadius: '10px',
-                        border: '1px solid #ccc',
-                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-                        backgroundColor: 'darkblue',
-                        color: 'white',
-                        '&:hover': {
-                            backgroundColor: '#6495ed',
-                        },
-                        fontSize: '12px',
-                        width: '15%'
-                    }}
-                    onClick={handleShareButton}
-                >
-                    Share
-                </Button>
+                {showCancelAndSaveButton() && (
+                    <>
+                        <Button
+                            sx={{
+                                borderRadius: '10px',
+                                border: '1px solid #ccc',
+                                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                                backgroundColor: 'darkblue',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#6495ed',
+                                },
+                                fontSize: '12px',
+                                width: '15%'
+                            }}
+                            onClick={handleCancelButton}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            sx={{
+                                borderRadius: '10px',
+                                border: '1px solid #ccc',
+                                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                                backgroundColor: 'darkblue',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#6495ed',
+                                },
+                                fontSize: '12px',
+                                width: '15%'
+                            }}
+                            onClick={handleSaveButton}
+                        >
+                            Save
+                        </Button>
+                    </>
+                )}
+                {!showCancelAndSaveButton() && (
+                    <Button
+                        sx={{
+                            borderRadius: '10px',
+                            border: '1px solid #ccc',
+                            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                            backgroundColor: 'darkblue',
+                            color: 'white',
+                            '&:hover': {
+                                backgroundColor: '#6495ed',
+                            },
+                            fontSize: '12px',
+                            width: '15%',
+                            marginLeft: 'auto',
+                        }}
+                        onClick={handleDoneButton}
+                    >
+                        Done
+                    </Button>
+                )}
             </Container>
         </div>
     )
