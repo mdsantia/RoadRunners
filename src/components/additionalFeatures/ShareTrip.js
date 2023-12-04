@@ -9,14 +9,14 @@ import axios from 'axios';
 
 
 function ShareTrip ({handleShareTripDialog}) {
+    const {user, updateUser} = useUserContext();
     const [userList, setUserList] = React.useState([]);
     const [userToAdd, setUserToAdd] = React.useState({});
+    const [userLastAdded, setUserLastAdded] = React.useState({});
     const [addedUsers, setAddedUsers] = React.useState([]);
     const [usersWithAccess, setUsersWithAccess] = React.useState([]);
     const [addButtonClicked, setAddButtonClicked] = React.useState(false);
-    const [permissionToAdd, setpermissionToAdd] = React.useState("");
     const [showAddButton, setShowAddButton] = React.useState(false);
-    const {user, updateUser} = useUserContext();
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -35,23 +35,38 @@ function ShareTrip ({handleShareTripDialog}) {
         fetchData();
     }, []);
 
-    const handleAddButtonClick = () => {
-        setAddButtonClicked(true);
-    }
-
+    
     const handlePermissionChange = (event, selectedUser) => {
         if (event.target.value === 3) {
-            // Remove the user from addedUsers
             const updatedUsers = addedUsers.filter((user) => user.email !== selectedUser.email);
             setAddedUsers(updatedUsers);
+            const updatedUsersAccess = usersWithAccess.filter((user) => user.email !== selectedUser.email);
+            setUsersWithAccess(updatedUsersAccess);
+            if (selectedUser.email === userToAdd.email) {
+                setShowAddButton(true);
+            }
         } else {
-            // Update the permission for other cases
             const updatedUsers = addedUsers.map((user) =>
-                user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
+            user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
             );
             setAddedUsers(updatedUsers);
         }
     };
+    
+    const handleAddButtonClick = () => {
+        setAddButtonClicked(true);
+    }
+
+    const handleShowAddButton = (user) => {
+        const userAlreadyAdded = addedUsers.some((existingUser) => existingUser.email === user.email);
+        const userAlreadyHasAccess = usersWithAccess.some((existingUser) => existingUser.email === user.email);
+
+        if (userAlreadyAdded || userAlreadyHasAccess) {
+            setShowAddButton(false);
+        } else {
+            setShowAddButton(true);
+        }
+    }
     
     const handleShareButton = () => {
         setUsersWithAccess(prevUsers => [...prevUsers, ...addedUsers]);
@@ -65,8 +80,9 @@ function ShareTrip ({handleShareTripDialog}) {
     }
 
     React.useEffect(() => {
-        if (userToAdd.email) {
+        if (addButtonClicked) {
             setAddedUsers(prevUsers => [...prevUsers, userToAdd]);
+            setUserLastAdded(userToAdd);
             setUserToAdd({});
             setAddButtonClicked(false);
             setShowAddButton(false);
@@ -85,60 +101,44 @@ function ShareTrip ({handleShareTripDialog}) {
                             id="shareToAutocomplete"
                             options={userList}
                             getOptionLabel={(user) => user.email}
-                            renderOption={(props, user) => (
-                                <li {...props} style={{ display: 'flex', alignItems: 'center' }}>
+                            renderOption={(props, user) => {
+                                return (
+                                <li {...props} style={{ display: 'flex', alignItems: 'center'}}  
+                                >
                                     <Avatar src={user.profile_picture} alt="Profile" />
                                     <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                     <Typography sx={{ fontSize: '15px' }}>{user.name}</Typography>
                                     <Typography sx={{ fontSize: '12px', color: 'gray' }}>{user.email}</Typography>
                                     </div>
                               </li>
-                            )}
+                            )}}
                             filterOptions={(users, { inputValue }) =>
                                 users.filter((user) =>
+                                    !addedUsers.some((addedUser) => addedUser.email === user.email) &&
                                     user.email.toLowerCase().includes(inputValue.toLowerCase())
                                 )
                             }
-                            onChange={(event, newValue) => {
-                                if (newValue) {
-                                    setUserToAdd({
-                                        email: newValue.email,
-                                        name: newValue.name,
-                                        profile_picture: newValue.profile_picture,
-                                        permission: 1
-                                    });
-                                    const userAlreadyAdded = addedUsers.some((existingUser) => existingUser.email === newValue.email);
-                                    const userAlreadyHasAccess = usersWithAccess.some((existingUser) => existingUser.email === newValue.email);
-    
-                                    if (userAlreadyAdded || userAlreadyHasAccess) {
-                                        setShowAddButton(false);
-                                    } else {
-                                        setShowAddButton(true);
-                                    }
-                                } else {
-                                    setUserToAdd({});
-                                    setShowAddButton(false);
-                                }
+                            onChange={(newInputValue, user) => {
+                                setUserToAdd({
+                                    email: user.email,
+                                    name: user.name,
+                                    profile_picture: user.profile_picture,
+                                    permission: 1
+                                });
+                                handleShowAddButton(user);
                             }}
-                            onInputChange={(event, newInputValue) => {
-                                if (!newInputValue) {
-                                    setUserToAdd({});
-                                    setShowAddButton(false);
-                                }
+                            renderInput={(params) => {
+                                params.inputProps.value = userToAdd.email ? userToAdd.email : "";
+                            
+                                return (
+                                    <TextField
+                                        {...params}
+                                        label="Add people"
+                                        variant="outlined"
+                                        fullWidth
+                                    />
+                                );
                             }}
-                            isOptionEqualToValue={(user, value) => user.email === value.email}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Add people"
-                                    variant="outlined"
-                                    fullWidth
-                                    InputProps={{
-                                        ...params.InputProps,
-                                        value: userToAdd ? userToAdd.email || '' : '',
-                                    }}
-                                />
-                            )}
                         />
                     </Grid>
                     <Grid item xs={2} sm={2} md={2}>
@@ -181,7 +181,7 @@ function ShareTrip ({handleShareTripDialog}) {
                     </Grid>
                 </Grid>
                 {[...usersWithAccess, ...addedUsers].map((user, index) => (
-                    <Grid container style={{ marginBottom: '3%'}}>
+                    <Grid container style={{ marginBottom: '3%'}} key={index}>
                         <Grid item xs={9} sm={9} md={9}>
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
                             <Avatar src={user.profile_picture} alt="Profile" />
