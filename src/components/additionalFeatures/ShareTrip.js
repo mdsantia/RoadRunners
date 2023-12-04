@@ -24,6 +24,11 @@ function ShareTrip ({handleShareTripDialog}) {
             .then((res) => {
                 setUserList(res.data);
                 setUserList(prevUserList => prevUserList.filter(userOnList => userOnList.email !== user.email));
+                const updatedUserList = userList.map((user) => ({
+                    ...user,
+                    permission: 3, // Set the default permission to 3 (no access)
+                }));
+                setUserList(updatedUserList);
             })
             .catch((err) => {
                 console.log(err);
@@ -37,10 +42,17 @@ function ShareTrip ({handleShareTripDialog}) {
     }
 
     const handlePermissionChange = (event, selectedUser) => {
-        const updatedUsers = addedUsers.map((user) =>
-          user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
-        );
-        setAddedUsers(updatedUsers);
+        if (event.target.value === 3) {
+            // Remove the user from addedUsers
+            const updatedUsers = addedUsers.filter((user) => user.email !== selectedUser.email);
+            setAddedUsers(updatedUsers);
+        } else {
+            // Update the permission for other cases
+            const updatedUsers = addedUsers.map((user) =>
+                user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
+            );
+            setAddedUsers(updatedUsers);
+        }
     };
     
     const handleShareButton = () => {
@@ -198,6 +210,8 @@ function ShareTrip ({handleShareTripDialog}) {
                                     >
                                         <MenuItem value={1}>Viewer</MenuItem>
                                         <MenuItem value={2}>Editor</MenuItem>
+                                        <Divider/>
+                                        <MenuItem value={3}>Remove Access</MenuItem>
                                     </Select>
                                 </FormControl>
                             </div>
