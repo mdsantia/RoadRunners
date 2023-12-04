@@ -15,7 +15,7 @@ function ShareTrip ({handleShareTripDialog}) {
     const [usersWithAccess, setUsersWithAccess] = React.useState([]);
     const [addButtonClicked, setAddButtonClicked] = React.useState(false);
     const [permissionToAdd, setpermissionToAdd] = React.useState("");
-    const [showAddButton, setShowAddButton] = React.useState(true);
+    const [showAddButton, setShowAddButton] = React.useState(false);
     const {user, updateUser} = useUserContext();
 
     React.useEffect(() => {
@@ -107,11 +107,13 @@ function ShareTrip ({handleShareTripDialog}) {
                                     }
                                 } else {
                                     setUserToAdd({});
+                                    setShowAddButton(false);
                                 }
                             }}
                             onInputChange={(event, newInputValue) => {
                                 if (!newInputValue) {
                                     setUserToAdd({});
+                                    setShowAddButton(false);
                                 }
                             }}
                             isOptionEqualToValue={(user, value) => user.email === value.email}
