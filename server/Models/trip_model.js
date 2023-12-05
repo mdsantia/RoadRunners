@@ -76,6 +76,12 @@ const Trip = new Schema({
         type: String,
         required: true
     },
+    owner: {
+        email: String,
+        name: String,
+        profile_picture: String,
+        permission: Number
+    },
     users_shared: {
         type: [{
             email: String,
