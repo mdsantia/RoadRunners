@@ -118,9 +118,8 @@ export default function Dashboard() {
                     access = true;
                 }
                 if (!access) {
-                    console.log('User does not have permission to view this trip');
-                    //setTripDetails(null);
-                    //navigate('/');
+                    setTripDetails(null);
+                    navigate('/');
                 }
                 setTripDetails(res.data);
             })
