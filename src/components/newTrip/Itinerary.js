@@ -90,14 +90,9 @@ export default function Itinerary() {
   /* Sharing Trips */
   const [shareTripDialog, setShareTripDialog] = React.useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
-  const handleShareTripDialog = (mayRequireConfirmDialog, bool) => {
-    if (mayRequireConfirmDialog) {
-      if (bool) {
-        setConfirmDialogOpen(true);
-      }
-    } else {
-      setShareTripDialog(bool);
-    }
+
+  const handleShareTripDialog = () => {
+    setShareTripDialog(false);
   }
   
   const shareTrip = async (trip) => {
@@ -247,7 +242,7 @@ export default function Itinerary() {
             <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>
-            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => handleShareTripDialog(false, true)}>
+            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => setShareTripDialog(true)}>
               Share Trip
             </Button> 
           </>
@@ -265,9 +260,10 @@ export default function Itinerary() {
           </Box>
       </TabPanel>
       {shareTripDialog && (
-        <Dialog fullWidth open={shareTripDialog} onClose={() => handleShareTripDialog(true, false)}>
+        <Dialog fullWidth open={shareTripDialog}>
+          {/** onClose={() => handleShareTripDialog(true, false)} */ }
           <DialogContent>
-            <ShareTrip handleShareTripDialog={() => handleShareTripDialog(false, false)}></ShareTrip>
+            <ShareTrip handleShareTripDialog={() => handleShareTripDialog()}></ShareTrip>
           </DialogContent>
         </Dialog>     
       )}
