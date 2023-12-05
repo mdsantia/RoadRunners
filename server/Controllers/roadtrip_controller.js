@@ -224,7 +224,7 @@ const newRoadTrip = async (req, res) => {
       chosenFood = 'Coffee';
     }
   }
-  await getRestaurantsAlongRoute(result.options[0], chosenFood);
+  await getRestaurantsAlongRoute(result.options[0], 'Fast Food');
   res.status(201).json(result);
 };
 

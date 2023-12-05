@@ -211,35 +211,51 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Box sx={{ overflowY: 'auto', maxHeight: '450px'}}>
-        <TripOverview viewOnly={viewOnly}></TripOverview>
-        <br></br>
-        <Divider></Divider>
-        <br></br>
-        {tripDetails && tripDetails.stops ?
-        (tripDetails._id ? (
-          <>
-            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
-              Update Trip
-            </Button>
-            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
-              Save as New Trip
-            </Button>
-            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => setShareTripDialog(true)}>
-              Share Trip
-            </Button> 
-          </>
-          ):(  
-            <>
-           
-              <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
-              Save Trip
-            </Button>  
-          
-                   
-            </>   
-          )):(<></>)
-          }
-          </Box>
+          <TripOverview viewOnly={viewOnly}></TripOverview>
+          <br></br>
+          <Divider></Divider>
+          <br></br>
+          {tripDetails && tripDetails.stops && 
+            (tripDetails._id && !sharedTrip ? (
+                <>
+                  <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
+                    Update Trip
+                  </Button>
+                  <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+                    Save as New Trip
+                  </Button>
+                  <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => setShareTripDialog(true)}>
+                    Share Trip
+                  </Button> 
+                </>
+                ):(  
+                  !sharedTrip && !tripDetails._id ? (
+                    <>
+                      <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+                        Save Trip
+                      </Button>   
+                    </>  
+                  ):(
+                    viewOnly ? (
+                      <>   
+                        <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+                          Save to My Trips as a New Trip
+                        </Button>
+                      </>
+                    ):(
+                      <>
+                        <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
+                          Update Trip
+                        </Button>                     
+                        <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+                          Save to My Trips as a New Trip
+                        </Button>
+                      </>
+                    )
+                  )
+              ))
+            }
+        </Box>
       </TabPanel>
       {shareTripDialog && (
         <Dialog fullWidth open={shareTripDialog}>
