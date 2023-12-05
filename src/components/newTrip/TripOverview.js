@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function AttractionsList(viewOnly) {
+export default function AttractionsList({viewOnly}) {
     const [value, setValue] = React.useState(0);
     const [selectedHotels, setSelectedHotels] = useState([]);
     const [selectedLandmarks, setSelectedLandmarks] = useState([]);
