@@ -27,7 +27,7 @@ const handleClick = (name) => {
 };
 
 
-export default function HotelCard({ data, selected, onSelectionChange }) {
+export default function HotelCard({ data, selected, onSelectionChange, viewOnly }) {
     
 
     return (
@@ -59,13 +59,16 @@ export default function HotelCard({ data, selected, onSelectionChange }) {
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
+            
             <Checkbox
           {...label}
           icon={<AddLocationAltOutlinedIcon />}
           checkedIcon={<AddLocationAltIcon />}
           checked={selected} 
           onChange={onSelectionChange} 
+          disabled={viewOnly}
         />
+            
             </CardActions>  
         </Item>
     );

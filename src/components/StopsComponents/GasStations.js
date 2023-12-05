@@ -38,7 +38,7 @@ function convertPrice(price) {
     return priceLevel;
 }
 
-export default function GasStations({data, selected, onSelectionChange}) {
+export default function GasStations({data, selected, onSelectionChange, viewOnly}) {
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
@@ -70,13 +70,16 @@ export default function GasStations({data, selected, onSelectionChange}) {
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
+     
             <Checkbox
           {...label}
           icon={<AddLocationAltOutlinedIcon />}
           checkedIcon={<AddLocationAltIcon />}
           checked={selected} 
           onChange={onSelectionChange} 
+          disabled={viewOnly}
         />
+            
             </CardActions>
         </Item>
     );

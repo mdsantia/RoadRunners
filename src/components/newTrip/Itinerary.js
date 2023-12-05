@@ -20,6 +20,7 @@ import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext';
 import TripOverview from '../newTrip/TripOverview';
+import ConfirmDialog from '../additionalFeatures/ConfirmDialog';
 import ShareTrip from '../additionalFeatures/ShareTrip';
 
 function TabPanel(props) {
@@ -76,12 +77,11 @@ export default function Itinerary() {
   const navigate = useNavigate();
   const {tripDetails, setTripDetails} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
- 
+  const [viewOnly, setViewOnly] = React.useState(false);
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   const [vehicleList, setVehicleList] = React.useState([]);
   const [selectedVehicles, setSelectedVehicles] = React.useState([]);
   const [numVehicles, setNumVehicles] = React.useState(0);
@@ -89,8 +89,10 @@ export default function Itinerary() {
 
   /* Sharing Trips */
   const [shareTripDialog, setShareTripDialog] = React.useState(false);
-  const handleShareTripDialog = (bool) => {
-    setShareTripDialog(bool);
+  const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
+
+  const handleShareTripDialog = () => {
+    setShareTripDialog(false);
   }
 
   React.useEffect(() => {
@@ -107,11 +109,6 @@ export default function Itinerary() {
       setMinimumMPG(tripDetails.minimumMPG);
     }
   }, [tripDetails]);
-
-  const numOptionsPerColumn = 10;
-  const findTotalColumns = (optionsList) => {
-    return Math.ceil(optionsList.length / numOptionsPerColumn);
-  }
 
   const saveTrip = async (isNewTrip) => {
     await axios.post('/api/trip/saveTrip', {
@@ -147,19 +144,6 @@ export default function Itinerary() {
       console.log(err);
       showMessage('Error saving trip', 2000, 'error');
     });
-  }
-
-  const shareTrip = async (trip) => {
-    // await axios.post('/api/user/shareTrip', {
-    //   tripId: trip,
-    //   permission: false,
-    //   // shareTo: 'jjennyha18@gmail.com'
-    // }).then((response) => {
-    //    const data = response.data;
-    // }
-    // ).catch((error) => {
-    //   console.log(error);
-    // });
   }
 
   const handleGenerate = () => {
@@ -209,12 +193,13 @@ export default function Itinerary() {
           setSelectedVehicles={setSelectedVehicles}
           minMPG={minimumMPG}
           setMinMPG={setMinimumMPG}
+          viewOnly={viewOnly}
         />
         <Divider></Divider>
         <br></br>
-        <PreferencesForm setDashboardPrefs={setTemporaryPrefs} type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
+        <PreferencesForm setDashboardPrefs={setTemporaryPrefs} viewOnly={viewOnly} type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
         <Divider></Divider>
-        <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={handleGenerate} >
+        <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={handleGenerate} >
           Re-Generate Trip
         </Button> 
         </Box>
@@ -223,41 +208,44 @@ export default function Itinerary() {
         <RouteOptions/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <AttractionsList></AttractionsList>
+        <AttractionsList viewOnly={viewOnly}></AttractionsList>
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Box sx={{ overflowY: 'auto', maxHeight: '450px'}}>
-        <TripOverview></TripOverview>
+        <TripOverview viewOnly={viewOnly}></TripOverview>
         <br></br>
         <Divider></Divider>
         <br></br>
         {tripDetails && tripDetails.stops ?
         (tripDetails._id ? (
           <>
-            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
+            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(false)} >
               Update Trip
             </Button>
-            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>
-            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => handleShareTripDialog(true)}>
+            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => setShareTripDialog(true)}>
               Share Trip
             </Button> 
           </>
           ):(  
             <>
-            <Button variant="contained" sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
+           
+              <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save Trip
-            </Button>         
+            </Button>  
+          
+                   
             </>   
           )):(<></>)
           }
           </Box>
       </TabPanel>
       {shareTripDialog && (
-        <Dialog fullWidth open={shareTripDialog} onClose={() => handleShareTripDialog(false)}>
+        <Dialog fullWidth open={shareTripDialog}>
           <DialogContent>
-            <ShareTrip></ShareTrip>
+            <ShareTrip handleShareTripDialog={() => handleShareTripDialog()}></ShareTrip>
           </DialogContent>
         </Dialog>     
       )}

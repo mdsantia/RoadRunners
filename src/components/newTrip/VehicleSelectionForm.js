@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 
-function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setNumVehicles, setSelectedVehicles, minMPG, setMinMPG }) {
+function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setNumVehicles, setSelectedVehicles, minMPG, setMinMPG, viewOnly }) {
   const [selectedVehiclesMPG, setSelectedVehiclesMPG] = useState([]);
   const handleNumVehiclesChange = (event) => {
       const newValue = parseInt(event.target.value, 10);
@@ -67,6 +67,7 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
             id="num-vehicles"
             type="number"
             variant="outlined"
+            disabled={viewOnly}
             value={numVehicles }
             fullWidth
             inputProps={{
@@ -94,6 +95,7 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
           <Select
             id="vehicle-select"
             multiple
+            disabled={viewOnly}
             value={selectedVehicles}
             onChange={handleVehicleSelectChange}
             fullWidth

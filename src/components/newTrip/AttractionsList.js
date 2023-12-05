@@ -57,7 +57,7 @@ function a11yProps(index) {
   };
 }
 
-export default function AttractionsList() {
+export default function AttractionsList({viewOnly}) {
   const [value, setValue] = React.useState(2);
   const [selectedHotels, setSelectedHotels] = useState([]);
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
@@ -288,6 +288,7 @@ export default function AttractionsList() {
             <HotelCard
               key={index}
               data={hotel}
+              viewOnly={viewOnly}
               selected={isStopSelected(hotel, 'hotel')}
               onSelectionChange={() => handleStopSelection(hotel, selectedHotels, setSelectedHotels)}
             />
@@ -298,6 +299,7 @@ export default function AttractionsList() {
             <Landmarks
               key={index}
               data={landmark}
+              viewOnly={viewOnly}
               selected={isStopSelected(landmark, 'landmark')}
               onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
             />
@@ -310,6 +312,7 @@ export default function AttractionsList() {
             <Attractions
               key={index}
               data={attraction}
+              viewOnly={viewOnly}
               selected={isStopSelected(attraction, 'attraction')}
               onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
             />
@@ -320,6 +323,7 @@ export default function AttractionsList() {
           {allRestaurants && allRestaurants.map((restaurant, index) => (
             <Restaurants
               key={index}
+              viewOnly={viewOnly}
               data={restaurant}
             />
           ))}
@@ -329,6 +333,7 @@ export default function AttractionsList() {
             <LiveEvents
               key={index}
               data={event}
+              viewOnly={viewOnly}
               selected={isStopSelected(event, 'liveEvent')}
               onSelectionChange={() => handleStopSelection(event, selectedLiveEvents, setSelectedLiveEvents)}
             />
@@ -338,6 +343,7 @@ export default function AttractionsList() {
           {allGasStations && allGasStations.map((gas, index) => (
             <GasStations
               key={index}
+              viewOnly={viewOnly}
               data={gas}
             />
           ))}
