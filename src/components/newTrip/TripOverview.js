@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function AttractionsList() {
+export default function AttractionsList({viewOnly}) {
     const [value, setValue] = React.useState(0);
     const [selectedHotels, setSelectedHotels] = useState([]);
     const [selectedLandmarks, setSelectedLandmarks] = useState([]);
@@ -186,6 +186,7 @@ export default function AttractionsList() {
                         icon={<AddLocationAltOutlinedIcon />}
                         checkedIcon={<AddLocationAltIcon />}
                         checked={true}
+                        disabled={viewOnly}
                         onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)}
                         />
                     </CardActions>

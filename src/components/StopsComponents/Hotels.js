@@ -59,15 +59,16 @@ export default function HotelCard({ data, selected, onSelectionChange, viewOnly 
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>
-            {!viewOnly && (
+            
             <Checkbox
           {...label}
           icon={<AddLocationAltOutlinedIcon />}
           checkedIcon={<AddLocationAltIcon />}
           checked={selected} 
           onChange={onSelectionChange} 
+          disabled={viewOnly}
         />
-            )}
+            
             </CardActions>  
         </Item>
     );
