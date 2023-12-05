@@ -20,6 +20,7 @@ import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext';
 import TripOverview from '../newTrip/TripOverview';
+import ConfirmDialog from '../additionalFeatures/ConfirmDialog';
 import ShareTrip from '../additionalFeatures/ShareTrip';
 
 function TabPanel(props) {
@@ -77,22 +78,39 @@ export default function Itinerary() {
   const {tripDetails, setTripDetails} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
   const [viewOnly, setViewOnly] = React.useState(false);
- 
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   const [vehicleList, setVehicleList] = React.useState([]);
   const [selectedVehicles, setSelectedVehicles] = React.useState([]);
   const [numVehicles, setNumVehicles] = React.useState(0);
   const [minimumMPG, setMinimumMPG] = React.useState(0);
 
-
   /* Sharing Trips */
   const [shareTripDialog, setShareTripDialog] = React.useState(false);
-  const handleShareTripDialog = (bool) => {
-    setShareTripDialog(bool);
+  const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
+  const handleShareTripDialog = (mayRequireConfirmDialog, bool) => {
+    if (mayRequireConfirmDialog) {
+      if (bool) {
+        setConfirmDialogOpen(true);
+      }
+    } else {
+      setShareTripDialog(bool);
+    }
+  }
+  
+  const shareTrip = async (trip) => {
+    // await axios.post('/api/user/shareTrip', {
+    //   tripId: trip,
+    //   permission: false,
+    //   // shareTo: 'jjennyha18@gmail.com'
+    // }).then((response) => {
+    //    const data = response.data;
+    // }
+    // ).catch((error) => {
+    //   console.log(error);
+    // });
   }
 
   React.useEffect(() => {
@@ -114,7 +132,6 @@ export default function Itinerary() {
   const findTotalColumns = (optionsList) => {
     return Math.ceil(optionsList.length / numOptionsPerColumn);
   }
-
   const saveTrip = async (isNewTrip) => {
     await axios.post('/api/trip/saveTrip', {
       id: isNewTrip ? null : tripDetails.id,
@@ -149,19 +166,6 @@ export default function Itinerary() {
       console.log(err);
       showMessage('Error saving trip', 2000, 'error');
     });
-  }
-
-  const shareTrip = async (trip) => {
-    // await axios.post('/api/user/shareTrip', {
-    //   tripId: trip,
-    //   permission: false,
-    //   // shareTo: 'jjennyha18@gmail.com'
-    // }).then((response) => {
-    //    const data = response.data;
-    // }
-    // ).catch((error) => {
-    //   console.log(error);
-    // });
   }
 
   const handleGenerate = () => {
@@ -243,7 +247,7 @@ export default function Itinerary() {
             <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => saveTrip(true)} >
               Save as New Trip
             </Button>
-            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => handleShareTripDialog(true)}>
+            <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={() => handleShareTripDialog(false, true)}>
               Share Trip
             </Button> 
           </>
@@ -261,9 +265,9 @@ export default function Itinerary() {
           </Box>
       </TabPanel>
       {shareTripDialog && (
-        <Dialog fullWidth open={shareTripDialog} onClose={() => handleShareTripDialog(false)}>
+        <Dialog fullWidth open={shareTripDialog} onClose={() => handleShareTripDialog(true, false)}>
           <DialogContent>
-            <ShareTrip handleShareTripDialog={() => handleShareTripDialog(false)}></ShareTrip>
+            <ShareTrip handleShareTripDialog={() => handleShareTripDialog(false, false)}></ShareTrip>
           </DialogContent>
         </Dialog>     
       )}
@@ -272,6 +276,11 @@ export default function Itinerary() {
           {snackbarMessage}
         </MuiAlert>
       </Snackbar> 
+      {/* <ConfirmDialog
+          open={confirmDialogOpen}
+          onClose={}
+          onConfirm={}
+      /> */}
     </Box>
   );
 }

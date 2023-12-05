@@ -5,6 +5,7 @@ import { MenuItem, Button, Autocomplete, Snackbar } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import { useUserContext } from '../../hooks/useUserContext';
 import FormControl from '@mui/material/FormControl';
+import ConfirmDialog from '../additionalFeatures/ConfirmDialog';
 import axios from 'axios';
 
 
@@ -21,6 +22,7 @@ function ShareTrip ({handleShareTripDialog}) {
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
     const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
+    const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -107,6 +109,14 @@ function ShareTrip ({handleShareTripDialog}) {
         setAddedUsers([]);
         setUserToAdd({});
         handleShareTripDialog();
+    }
+
+    const handleConfirmDialog = () => {
+        if (confirmDialogOpen) {
+            setConfirmDialogOpen(false);
+        } else {
+            setConfirmDialogOpen(true);
+        }
     }
 
     const showMessage = (message, duration, severity) => {
@@ -278,7 +288,7 @@ function ShareTrip ({handleShareTripDialog}) {
                                 fontSize: '12px',
                                 width: '15%'
                             }}
-                            onClick={handleCancelButton}
+                            onClick={handleConfirmDialog}
                         >
                             Cancel
                         </Button>
@@ -327,6 +337,11 @@ function ShareTrip ({handleShareTripDialog}) {
                     {snackbarMessage}
                 </MuiAlert>
             </Snackbar> 
+            <ConfirmDialog
+                open={confirmDialogOpen}
+                onClose={handleConfirmDialog}
+                onConfirm={handleCancelButton}
+            />
         </div>
     )
 }
