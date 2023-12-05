@@ -79,7 +79,9 @@ const Trip = new Schema({
     users_shared: {
         type: [{
             email: String,
-            share_type: String
+            name: String,
+            profile_picture: String,
+            permission: Number
         }],
         required: false,
         default: []

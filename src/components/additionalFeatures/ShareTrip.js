@@ -7,6 +7,7 @@ import { useUserContext } from '../../hooks/useUserContext';
 import FormControl from '@mui/material/FormControl';
 import ConfirmDialog from '../additionalFeatures/ConfirmDialog';
 import axios from 'axios';
+import { useDashboardContext } from '../../context/DashboardContext';
 
 
 function ShareTrip ({handleShareTripDialog}) {
@@ -23,6 +24,7 @@ function ShareTrip ({handleShareTripDialog}) {
     const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
     const [snackbarDuration, setSnackbarDuration] = React.useState(2000);
     const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
+    const { tripDetails, setTripDetails } = useDashboardContext();
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -40,8 +42,7 @@ function ShareTrip ({handleShareTripDialog}) {
         }
         fetchData();
         
-        /** TODO API PULL SAVED VALUES FROM DATABSE */
-        let result = [];
+        const result = tripDetails.users_shared;
         setUsersWithAccess(result);
         setInitialState(JSON.stringify(result));
         setAddedUsers([]);
@@ -96,13 +97,29 @@ function ShareTrip ({handleShareTripDialog}) {
         handleShareTripDialog();
     }
     
-    const handleSaveButton = () => {
-        /** TODO API SAVE IN DATABSE */
-        const newList = [...usersWithAccess, ...addedUsers];
-        setUsersWithAccess(newList);
-        setAddedUsers([]);
-        setInitialState(JSON.stringify(newList));
-        showMessage('Your changes have been saved!', 2000, 'success');
+    const handleSaveButton = async () => {
+        await shareTrip();
+    }
+
+    const shareTrip = async () => {
+        await axios.post('/api/trip/shareTrip', {
+          tripId: tripDetails._id,
+          senderName: user.name,
+          senderEmail: user.email,
+          senderProfilePicture: user.profile_picture,
+          usersWithAccess: usersWithAccess,
+          addedUsers: addedUsers
+        }).then((response) => {
+           const data = response.data;
+            setUsersWithAccess(data.users_shared);
+            setAddedUsers([]);
+            setInitialState(JSON.stringify(data.users_shared));
+            setTripDetails(data.trip);
+            showMessage('Your changes have been saved!', 2000, 'success');
+        }
+        ).catch((error) => {
+          console.log(error);
+        });
     }
 
     const handleCancelButton = () => {
