@@ -37,5 +37,3 @@ app.use('/api/vehiclesData', vehiclesData);
 app.use('/api/trip', tripRoutes);
  
 app.listen(port, console.log(`Server is running on PORT ${port}....`.yellow.bold));
-const {sendEmail} = require("./Controllers/share_controller");
-// sendEmail("jjennyha18@gmail.com");

@@ -94,19 +94,6 @@ export default function Itinerary() {
   const handleShareTripDialog = () => {
     setShareTripDialog(false);
   }
-  
-  const shareTrip = async (trip) => {
-    // await axios.post('/api/user/shareTrip', {
-    //   tripId: trip,
-    //   permission: false,
-    //   // shareTo: 'jjennyha18@gmail.com'
-    // }).then((response) => {
-    //    const data = response.data;
-    // }
-    // ).catch((error) => {
-    //   console.log(error);
-    // });
-  }
 
   React.useEffect(() => {
     if (user) {
@@ -123,10 +110,6 @@ export default function Itinerary() {
     }
   }, [tripDetails]);
 
-  const numOptionsPerColumn = 10;
-  const findTotalColumns = (optionsList) => {
-    return Math.ceil(optionsList.length / numOptionsPerColumn);
-  }
   const saveTrip = async (isNewTrip) => {
     await axios.post('/api/trip/saveTrip', {
       id: isNewTrip ? null : tripDetails.id,
@@ -261,7 +244,6 @@ export default function Itinerary() {
       </TabPanel>
       {shareTripDialog && (
         <Dialog fullWidth open={shareTripDialog}>
-          {/** onClose={() => handleShareTripDialog(true, false)} */ }
           <DialogContent>
             <ShareTrip handleShareTripDialog={() => handleShareTripDialog()}></ShareTrip>
           </DialogContent>
@@ -272,11 +254,6 @@ export default function Itinerary() {
           {snackbarMessage}
         </MuiAlert>
       </Snackbar> 
-      {/* <ConfirmDialog
-          open={confirmDialogOpen}
-          onClose={}
-          onConfirm={}
-      /> */}
     </Box>
   );
 }
