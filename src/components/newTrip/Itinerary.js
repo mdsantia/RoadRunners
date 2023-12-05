@@ -56,7 +56,7 @@ function a11yProps(index) {
   };
 }
 
-export default function Itinerary() {
+export default function Itinerary({viewOnly, sharedTrip}) {
 
   /* Feedback Message stuff */
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -77,7 +77,6 @@ export default function Itinerary() {
   const navigate = useNavigate();
   const {tripDetails, setTripDetails} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
-  const [viewOnly, setViewOnly] = React.useState(false);
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);

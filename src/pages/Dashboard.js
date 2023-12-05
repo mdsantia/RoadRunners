@@ -80,6 +80,8 @@ export default function Dashboard() {
     const { tripDetails, setTripDetails, directionsCallback } = useDashboardContext();
     const location = useLocation();
     const prevLocation = useRef(location);
+    const [viewOnly, setViewOnly] = useState(false);
+    const [sharedTrip, setSharedTrip] = useState(false);
   
     if (prevLocation.current.pathname !== location.pathname) {
         window.location.reload();
@@ -87,7 +89,6 @@ export default function Dashboard() {
 
     useEffect(() => {
       // Check if the pathname has changed
-      console.log(location);
     }, [location]);
 
     useEffect(() => {
@@ -98,13 +99,28 @@ export default function Dashboard() {
             return;
         }
         const fetchTrip = async () => {
+            let access = false;
             await axios.get(`/api/trip/getTrip/${tripid}`) 
             .then((res) => {
                 if (res.data.user_email !== user.email) {
+                    res.data.users_shared.forEach((shared) => {
+                        if (shared.email == user.email) {
+                            access = true;
+                            setSharedTrip(true);
+                            if (shared.permission == 1) {
+                                setViewOnly(true);
+                            } else if (shared.permission == 2) {
+                                setViewOnly(false);
+                            }
+                        }
+                    });
+                } else {
+                    access = true;
+                }
+                if (!access) {
                     setTripDetails(null);
                     navigate('/');
                 }
-                console.log(res.data);
                 setTripDetails(res.data);
             })
             .catch((err) => {
@@ -177,7 +193,7 @@ export default function Dashboard() {
                     <GMap size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
                 </MapWrapper>
                 <Wrapper>
-                    <Itinerary />
+                    <Itinerary viewOnly={viewOnly} sharedTrip={sharedTrip} />
                 </Wrapper>
             </Container>
         </div>
