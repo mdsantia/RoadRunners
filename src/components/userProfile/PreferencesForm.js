@@ -7,7 +7,7 @@ import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 
-export default function PreferencesForm(props) {
+export default function PreferencesForm(props, viewOnly) {
     const {user, updateUser} = useUserContext();
     const inDashboard = props.type === 'dashboard';
     const {tripDetails} = useDashboardContext();
@@ -265,6 +265,7 @@ export default function PreferencesForm(props) {
                             <Grid item xs={12} md={8}>
                                 <TextField
                                 id="budget"
+                                disabled={viewOnly}
                                 variant="outlined"
                                 placeholder="Enter your budget in Dollar and Cents format (e.g., 100.00)"
                                 value={budget}
@@ -304,6 +305,7 @@ export default function PreferencesForm(props) {
                                 <TextField
                                 id="commuteTime"
                                 variant="outlined"
+                                disabled={viewOnly}
                                 placeholder="Enter your commute time in HH:MM format (e.g., 01:00)"
                                 value={commuteTime}
                                 fullWidth
@@ -342,6 +344,7 @@ export default function PreferencesForm(props) {
                                 <Select
                                     name="carsickRating"
                                     value={carsickRating}
+                                    disabled={viewOnly}
                                     sx={{ height: '38px' }}
                                     onChange={(event) => {
                                         setCarsickRating(event.target.value);
@@ -375,6 +378,7 @@ export default function PreferencesForm(props) {
                                                 checked={attractionSelection.includes(attraction)}
                                                 onChange={handleAttractionSelection}
                                                 value={attraction}
+                                                disabled={viewOnly}
                                             />
                                             }
                                             label={attraction}
@@ -403,6 +407,7 @@ export default function PreferencesForm(props) {
                                                 checked={diningSelection.includes(diningPlace)}
                                                 onChange={handleDiningSelection}
                                                 value={diningPlace}
+                                                disabled={viewOnly}
                                             />
                                             }
                                             label={diningPlace}
@@ -431,6 +436,7 @@ export default function PreferencesForm(props) {
                                                             checked={housingSelection.includes(housingChoice)}
                                                             onChange={handleHousingSelection}
                                                             value={housingChoice}
+                                                            disabled={viewOnly}
                                                         />
                                                     }
                                                     label={housingChoice}
@@ -461,7 +467,7 @@ export default function PreferencesForm(props) {
                         </Button>
                     )}
                     {inDashboard && (
-                        <Button onClick={handleDashboardSave} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
+                        <Button onClick={handleDashboardSave} disabled={viewOnly} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
                             Confirm
                         </Button>
                     )} 
