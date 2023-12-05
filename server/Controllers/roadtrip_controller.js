@@ -46,11 +46,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     touristAttractionResult, 
     // stadiumResult
   ] = await Promise.all([
-    // roadtrip_apis.getStops(midpoint, radius, null, null, 'amusement_park'),
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'museum'),
-    // roadtrip_apis.getStops(midpoint, radius, null, null, 'bowling_alley'),
     roadtrip_apis.getStops(midpoint, radius, null, null, 'tourist_attraction'),
-    // roadtrip_apis.getStops(midpoint, radius, null, null, 'stadium')
   ]);
 
   const combinedStops = [].concat(
