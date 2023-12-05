@@ -184,7 +184,6 @@ const saveTrip = async (req, res) => {
         trip.chosenRoute = chosenRoute;
         trip.polyline = polyline;
         trip.stops = stops;
-        trip.user_email = user_email;
         await trip.save();
         res.status(200).json("Trip updated");
     }
@@ -204,6 +203,14 @@ const saveTrip = async (req, res) => {
         stops,
         user_email
     });
+
+    trip.owner = {
+        email: user.email,
+        name: user.name,
+        profile_picture: user.profile_picture
+    };
+    // SPECIFY IT HAS OWNER PERMISSION
+    trip.owner.permission = -1;
 
     await trip.save();
     user.trips.push(trip._id);
