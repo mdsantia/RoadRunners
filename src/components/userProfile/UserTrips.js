@@ -157,7 +157,7 @@ const UserTrips = ({ user, updateUser }) => {
                                             { console.log(user) }
                                             return (
                                                 <Grid container style={{ marginBottom: '2%', marginLeft:'4%' }} key={index}>
-                                                    <Grid item xs={9} sm={9} md={9}>
+                                                    <Grid item xs={4} sm={4} md={4}>
 
                                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
                                                             <Avatar src={user.profile_picture} alt="Profile" />
