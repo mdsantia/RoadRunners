@@ -24,6 +24,7 @@ const shareTrip = async (req, res) => {
 
     // Check if trip exists
     const trip = await Trip.findOne({_id: tripId});
+    console.log(trip);
 
     if (!trip) {
         // Return user
@@ -34,7 +35,7 @@ const shareTrip = async (req, res) => {
     // Call email function to send for each added user
     for (let i = 0; i < addedUsers.length; i++) {
         const sendTo = addedUsers[i];
-        sendEmail(tripId, senderName, senderEmail, senderProfilePicture, sendTo.permission, sendTo.email);
+        sendEmail(trip, senderName, senderEmail, senderProfilePicture, sendTo.permission, sendTo.email);
     }
 
     // Update trip
@@ -45,7 +46,7 @@ const shareTrip = async (req, res) => {
     res.status(200).json({users_shared: trip.users_shared, trip: trip});
 }
 
-const sendEmail = (tripId, senderName, senderEmail, senderProfilePicture, permission, recepientEmail) => {
+const sendEmail = (trip, senderName, senderEmail, senderProfilePicture, permission, recepientEmail) => {
     const noReplyEmail = roadRunnersShareEmail;
     const noReplyEmailPwd = roadRunnersShareEmailPwd;
     const permissionWord = (permission === 1) ? "view" : "edit";
@@ -71,17 +72,46 @@ const sendEmail = (tripId, senderName, senderEmail, senderProfilePicture, permis
         html: `<html>
                 <head>
                     <style>
+                        .container {
+                            display: grid;
+                            grid-template-columns: auto 1fr;
+                            gap: 1%;
+                            align-items: center;
+                        }
                         img.circular-profile {
-                            border-radius: 50%;
-                            width: 15%; /* Adjust the width as needed */
-                            height: 15%; /* Adjust the height as needed */
+                            border-radius: 100%;
+                            width: 50px;
+                            height: 50px;
+                        }
+                        a.button {
+                            display: inline-block;
+                            padding: 10px;
+                            background-color: darkblue;
+                            color: #fff;
+                            text-decoration: none;
+                            border-radius: 50px;
+                            margin: 0 auto;
                         }
                     </style>
                 </head>
                 <h2>${senderName} has shared a trip with you.</h2>
-                <img src="${senderProfilePicture}" class="circular-profile">
                 <body>
-                    ${senderName} (${senderEmail}) has invited you to <b>${permissionWord}</b> the following trip:
+                    <div class="container">
+                        <img src="${senderProfilePicture}" class="circular-profile" alt="Profile Picture">
+                        <p>${senderName} (${senderEmail}) has invited you to <b>${permissionWord}</b> the following trip:</p>
+                    </div>
+                    <br>
+                    <p>
+                        Starting&nbsp from &nbsp<b><i>${trip.startLocation}</i></b>&nbsp&nbsp to &nbsp<tr><td><b><i>${trip.endLocation}</i></b></td></tr>
+                        <br>
+                        Beginning&nbsp on &nbsp<b><i>${trip.startDate.toLocaleDateString()}</i></b>&nbsp&nbsp until &nbsp<b><i>${trip.endDate.toLocaleDateString()}</i></b>
+                        <br>
+                        Number of Stops: &nbsp<b><i>${trip.allStops.length}</i></b>
+                    </p>
+                    <br>
+                    <a href="http://localhost:3000" class="button">Open Trip</a>
+                    <br><br>
+                    <p style="font-size: 15px; color: gray;">Thank you for supporting RoadRunners, enjoy your trip!</p>
                 </body>
             </html>`
     };

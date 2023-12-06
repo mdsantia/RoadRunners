@@ -129,6 +129,7 @@ function ShareTrip ({handleShareTripDialog}) {
            const data = response.data;
             setUsersWithAccess(data.users_shared);
             setAddedUsers([]);
+            setUserToAdd(null);
             setInitialStateString(JSON.stringify(data.users_shared));
             setInitialState(data.users_shared);
             setTripDetails(data.trip);
