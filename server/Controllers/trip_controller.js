@@ -35,7 +35,7 @@ const shareTrip = async (req, res) => {
     // Call email function to send for each added user
     const sendTo = addedUsers.filter((addedUser) => !initialState.some((initialStateUser) => initialStateUser.email === addedUser.email));
     for (let i = 0; i < sendTo.length; i++) {
-        sendEmail(trip, senderName, senderEmail, senderProfilePicture, sendTo[i].permission, sendTo[i].email);
+        // sendEmail(trip, senderName, senderEmail, senderProfilePicture, sendTo[i].permission, sendTo[i].email);
         console.log("The email has been sent to " + sendTo[i].email + "!");
     }
 
