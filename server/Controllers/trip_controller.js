@@ -109,7 +109,7 @@ const sendEmail = (trip, senderName, senderEmail, senderProfilePicture, permissi
                         Number of Stops: &nbsp<b><i>${trip.allStops.length}</i></b>
                     </p>
                     <br>
-                    <a href="http://localhost:3000" class="button">Open Trip</a>
+                    <a href="http://localhost:3000/dashboard/${trip._id}" class="button">Open Trip</a>
                     <br><br>
                     <p style="font-size: 15px; color: gray;">Thank you for supporting RoadRunners, enjoy your trip!</p>
                 </body>
