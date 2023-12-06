@@ -286,10 +286,9 @@ function ShareTrip ({handleShareTripDialog}) {
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
                                 <FormControl fullWidth variant="standard" sx={{ width: '80%' }}>
                                     <Select
-                                        labelId={`permission-label-${user.email}`}
-                                        id={`permission-select-${user.email}`}
-                                        value={user.permission}
-                                        onChange={(event) => handlePermissionChange(event, user)}
+                                        id="permission-select"
+                                        value={u.permission}
+                                        onChange={(event) => handlePermissionChange(event, u)}
                                         sx={{
                                             '&:hover': {
                                                 backgroundColor: 'rgba(0, 0, 0, 0.1)', // Set the desired background color on hover
