@@ -160,7 +160,7 @@ const UserTrips = ({ user, updateUser }) => {
                                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
                                                             <Avatar src={user.profile_picture} alt="Profile" />
                                                             <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                                                <Typography sx={{ fontSize: '15px' }}>{user.name}{user.email === user.email ? ` (you)` : null}</Typography>
+                                                                <Typography sx={{ fontSize: '15px' }}>{user.name}</Typography>
                                                                 <Typography sx={{ fontSize: '12px', color: 'grey' }}>{user.email}</Typography>
                                                             </div>
                                                         </div>
@@ -168,8 +168,7 @@ const UserTrips = ({ user, updateUser }) => {
 
                                                     </Grid>
                                                     <Grid item xs={2} sm={2} md={2}>
-
-                                                        <IconButton aria-label="delete"
+                                                        <IconButton aria-label="delete" 
                                                         /*onClick={}*/
                                                         >
                                                             <RemoveCircleOutlineIcon />
