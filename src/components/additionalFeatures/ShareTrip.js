@@ -252,14 +252,14 @@ function ShareTrip ({handleShareTripDialog}) {
                         </div>
                     </Grid>
                 </Grid>
-                {[...usersWithAccess, ...addedUsers].map((user, index) => (
+                {[...usersWithAccess, ...addedUsers].map((u, index) => (
                     <Grid container style={{ marginBottom: '3%'}} key={index}>
                         <Grid item xs={9} sm={9} md={9}>
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
                             <Avatar src={user.profile_picture} alt="Profile" />
                             <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                <Typography sx={{ fontSize: '15px' }}>{user.name}{user.email === user.email ? ` (you)` : null}</Typography>
-                                <Typography sx={{ fontSize: '12px', color: 'grey' }}>{user.email}</Typography>
+                                <Typography sx={{ fontSize: '15px' }}>{u.name}{u.email === user.email ? ` (you)` : null}</Typography>
+                                <Typography sx={{ fontSize: '12px', color: 'grey' }}>{u.email}</Typography>
                             </div>
                             </div>
                         </Grid>

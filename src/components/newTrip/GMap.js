@@ -3,7 +3,6 @@ import { useDashboardContext } from '../../hooks/useDashboardContext';
 import {faMapPin, faFlag, faGasPump, faUtensils} from '@fortawesome/free-solid-svg-icons';
 
 var map = null;
-var animating = false;
 const GMap = (props) => {
     const mapContainerRef = useRef(null);
     const [userLocation, setUserLocation] = useState(null);
@@ -62,96 +61,100 @@ const GMap = (props) => {
 
     const addGasStations = () => {
         let list = [];
-        gasStations.forEach((stop, index) => {
-            const markerIcon = {
-                path: faGasPump.icon[4],
-                fillColor: "#df0707",
-                fillOpacity: 1,
-                anchor: new window.google.maps.Point(
-                    faGasPump.icon[0] / 2, // width
-                    faGasPump.icon[1], // height
-                ),
-                strokeWeight: 1,
-                strokeColor: "#ffffff",
-                scale: 0.06,
-            };
-        
-            const marker = new window.google.maps.Marker({
-                position: stop.location,
-                map: map,
-                icon: markerIcon,
-                animation: window.google.maps.Animation.DROP,
-                title: `Gas Station ${index + 1}`,
-            });
-
-            list.push(marker);
-        
-            // If marker is clicked, can't be clicked again for 2 seconds
-            marker.addListener('click', () => {
-                if (marker.getAnimation() !== null) {
-                    return;
-                }
-                const infoWindow = new window.google.maps.InfoWindow({
-                content: `Gas Station ${index + 1}: ${stop.name}`, // Customize the content as needed
+        if (gasStations) {
+            gasStations.forEach((stop, index) => {
+                const markerIcon = {
+                    path: faGasPump.icon[4],
+                    fillColor: "#df0707",
+                    fillOpacity: 1,
+                    anchor: new window.google.maps.Point(
+                        faGasPump.icon[0] / 2, // width
+                        faGasPump.icon[1], // height
+                    ),
+                    strokeWeight: 1,
+                    strokeColor: "#ffffff",
+                    scale: 0.06,
+                };
+            
+                const marker = new window.google.maps.Marker({
+                    position: stop.location,
+                    map: map,
+                    icon: markerIcon,
+                    animation: window.google.maps.Animation.DROP,
+                    title: `Gas Station ${index + 1}`,
                 });
 
-                marker.setAnimation(window.google.maps.Animation.BOUNCE);
-                infoWindow.open(map, marker);
+                list.push(marker);
+            
+                // If marker is clicked, can't be clicked again for 2 seconds
+                marker.addListener('click', () => {
+                    if (marker.getAnimation() !== null) {
+                        return;
+                    }
+                    const infoWindow = new window.google.maps.InfoWindow({
+                    content: `Gas Station ${index + 1}: ${stop.name}`, // Customize the content as needed
+                    });
 
-                setTimeout(() => {
-                    marker.setAnimation(null);
-                    infoWindow.close();
-                }, 2000);
+                    marker.setAnimation(window.google.maps.Animation.BOUNCE);
+                    infoWindow.open(map, marker);
+
+                    setTimeout(() => {
+                        marker.setAnimation(null);
+                        infoWindow.close();
+                    }, 2000);
+                });
             });
-        });
-        setMarkers(list);
+            setMarkers(list);
+        }
     }
 
     const addRestaurants = () => {
         let list = markers;
-        restaurants.forEach((stop, index) => {
-            const markerIcon = {
-                path: faUtensils.icon[4],
-                fillColor: "#88a5d8",
-                fillOpacity: 1,
-                anchor: new window.google.maps.Point(
-                    faUtensils.icon[0] / 2, // width
-                    faUtensils.icon[1], // height
-                ),
-                strokeWeight: 1,
-                strokeColor: "#ffffff",
-                scale: 0.06,
-            };
-        
-            const marker = new window.google.maps.Marker({
-                position: stop.location,
-                map: map,
-                icon: markerIcon,
-                animation: window.google.maps.Animation.DROP,
-                title: `Restaurant ${index + 1}`,
-            });
-
-            list.push(marker);
-        
-            // If marker is clicked, can't be clicked again for 2 seconds
-            marker.addListener('click', () => {
-                if (marker.getAnimation() !== null) {
-                    return;
-                }
-                const infoWindow = new window.google.maps.InfoWindow({
-                content: `Restaurant ${index + 1}: ${stop.name}`, // Customize the content as needed
+        if (restaurants) {
+            restaurants.forEach((stop, index) => {
+                const markerIcon = {
+                    path: faUtensils.icon[4],
+                    fillColor: "#88a5d8",
+                    fillOpacity: 1,
+                    anchor: new window.google.maps.Point(
+                        faUtensils.icon[0] / 2, // width
+                        faUtensils.icon[1], // height
+                    ),
+                    strokeWeight: 1,
+                    strokeColor: "#ffffff",
+                    scale: 0.06,
+                };
+            
+                const marker = new window.google.maps.Marker({
+                    position: stop.location,
+                    map: map,
+                    icon: markerIcon,
+                    animation: window.google.maps.Animation.DROP,
+                    title: `Restaurant ${index + 1}`,
                 });
-
-                marker.setAnimation(window.google.maps.Animation.BOUNCE);
-                infoWindow.open(map, marker);
-
-                setTimeout(() => {
-                    marker.setAnimation(null);
-                    infoWindow.close();
-                }, 2000);
+    
+                list.push(marker);
+            
+                // If marker is clicked, can't be clicked again for 2 seconds
+                marker.addListener('click', () => {
+                    if (marker.getAnimation() !== null) {
+                        return;
+                    }
+                    const infoWindow = new window.google.maps.InfoWindow({
+                    content: `Restaurant ${index + 1}: ${stop.name}`, // Customize the content as needed
+                    });
+    
+                    marker.setAnimation(window.google.maps.Animation.BOUNCE);
+                    infoWindow.open(map, marker);
+    
+                    setTimeout(() => {
+                        marker.setAnimation(null);
+                        infoWindow.close();
+                    }, 2000);
+                });
             });
-        });
-        setMarkers(list);
+            setMarkers(list);
+        }
     }
 
     /** Add all the stops, origin and destination with animations to the map */
@@ -183,51 +186,53 @@ const GMap = (props) => {
         }
 
         const list = markers;
-        stops.forEach((stop, index) => {
-            setTimeout(() => {
-                const markerIcon = {
-                    path: faMapPin.icon[4],
-                    fillColor: "#00008B",
-                    fillOpacity: 1,
-                    anchor: new window.google.maps.Point(
-                    faMapPin.icon[0] / 2, // width
-                    faMapPin.icon[1] // height
-                    ),
-                    strokeWeight: 1,
-                    strokeColor: "#ffffff",
-                    scale: 0.06,
-                };
-            
-                const marker = new window.google.maps.Marker({
-                    position: stop.location,
-                    map: map,
-                    icon: index === 0 ? startIcon : index === stops.length - 1 ? endIcon : markerIcon,
-                    animation: window.google.maps.Animation.DROP,
-                    title: `Stop ${index + 1}`,
-                });
-
-                list.push(marker);
-            
-                // If marker is clicked, can't be clicked again for 2 seconds
-                marker.addListener('click', () => {
-                    if (marker.getAnimation() !== null) {
-                        return;
-                    }
-                    const infoWindow = new window.google.maps.InfoWindow({
-                    content: `Stop ${index + 1}: ${stop.name}`, // Customize the content as needed
+        if (stops) {
+            stops.forEach((stop, index) => {
+                setTimeout(() => {
+                    const markerIcon = {
+                        path: faMapPin.icon[4],
+                        fillColor: "#00008B",
+                        fillOpacity: 1,
+                        anchor: new window.google.maps.Point(
+                        faMapPin.icon[0] / 2, // width
+                        faMapPin.icon[1] // height
+                        ),
+                        strokeWeight: 1,
+                        strokeColor: "#ffffff",
+                        scale: 0.06,
+                    };
+                
+                    const marker = new window.google.maps.Marker({
+                        position: stop.location,
+                        map: map,
+                        icon: index === 0 ? startIcon : index === stops.length - 1 ? endIcon : markerIcon,
+                        animation: window.google.maps.Animation.DROP,
+                        title: `Stop ${index + 1}`,
                     });
-
-                    marker.setAnimation(window.google.maps.Animation.BOUNCE);
-                    infoWindow.open(map, marker);
-
-                    setTimeout(() => {
-                        marker.setAnimation(null);
-                        infoWindow.close();
-                    }, 2000);
-                });
-            }, index * 400); // Multiply index by 200ms to stagger the markers
-        });
-        setMarkers(list);
+    
+                    list.push(marker);
+                
+                    // If marker is clicked, can't be clicked again for 2 seconds
+                    marker.addListener('click', () => {
+                        if (marker.getAnimation() !== null) {
+                            return;
+                        }
+                        const infoWindow = new window.google.maps.InfoWindow({
+                        content: `Stop ${index + 1}: ${stop.name}`, // Customize the content as needed
+                        });
+    
+                        marker.setAnimation(window.google.maps.Animation.BOUNCE);
+                        infoWindow.open(map, marker);
+    
+                        setTimeout(() => {
+                            marker.setAnimation(null);
+                            infoWindow.close();
+                        }, 2000);
+                    });
+                }, index * 400); // Multiply index by 200ms to stagger the markers
+            });
+            setMarkers(list);
+        }
     }
 
     /** Add the polyline to the map */
@@ -255,18 +260,20 @@ const GMap = (props) => {
             calculateCenter(tripDetails.polyline);
             calculateZoom(tripDetails.polyline);
             let gasStations = [];
-            tripDetails.options[0].forEach((stop) => {
-                if (stop.gasStations && stop.gasStations.length > 0) {
-                    // If we didn't already add this gas station to the list, add it
-                    for(let i = 0; i < stop.gasStations.length; i++) {
-                    // If it already exists, don't add it
-                    if (gasStations.find(gas => gas.place_id === stop.gasStations[i].place_id)) {
-                        continue;
+            if (tripDetails.options) {
+                tripDetails.options[0].forEach((stop) => {
+                    if (stop.gasStations && stop.gasStations.length > 0) {
+                        // If we didn't already add this gas station to the list, add it
+                        for(let i = 0; i < stop.gasStations.length; i++) {
+                        // If it already exists, don't add it
+                        if (gasStations.find(gas => gas.place_id === stop.gasStations[i].place_id)) {
+                            continue;
+                        }
+                        gasStations.push(stop.gasStations[i]);
+                        }
                     }
-                    gasStations.push(stop.gasStations[i]);
-                    }
-                }
-            });
+                });
+            }
             setGasStations(gasStations);
             console.log("GAS", gasStations);
             let restaurants = tripDetails.options[0][1].restaurants;
@@ -293,6 +300,7 @@ const GMap = (props) => {
     /** MAP RERENDERER */
     useEffect(() => {
         if (tripDetails && tripDetails.polyline) {
+            console.log(mapContainerRef.current, map);
             if (!map) {
                 console.log('Initializing map...');
                 map = new window.google.maps.Map(mapContainerRef.current, {
@@ -304,10 +312,12 @@ const GMap = (props) => {
                 });
             } else {
                 /** SUPPORT ANIMATIONS AND NOT RELOAD */
-                markers.forEach(marker => marker.setMap(null));
-                markers.length = 0; // Clear the markers array
+                if (markers && polyline) {
+                    markers.forEach(marker => marker.setMap(null));
+                    markers.length = 0; // Clear the markers array
 
-                polyline.setMap(null);
+                    polyline.setMap(null);
+                }
             }
             insertPolyline();
     
