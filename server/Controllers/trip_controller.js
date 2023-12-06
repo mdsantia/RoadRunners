@@ -25,7 +25,6 @@ const shareTrip = async (req, res) => {
 
     // Check if trip exists
     const trip = await Trip.findOne({_id: tripId});
-    console.log(trip);
 
     if (!trip) {
         // Return user
@@ -137,7 +136,7 @@ const sendEmail = (trip, senderName, senderEmail, senderProfilePicture, permissi
                         <br>
                         Beginning&nbsp on &nbsp<b><i>${trip.startDate.toLocaleDateString()}</i></b>&nbsp&nbsp until &nbsp<b><i>${trip.endDate.toLocaleDateString()}</i></b>
                         <br>
-                        Number of Stops: &nbsp<b><i>${trip.allStops.length}</i></b>
+                        Number of Stops: &nbsp<b><i>${trip.stops.length - 2}</i></b>
                     </p>
                     <br>
                     <a href="http://localhost:3000/dashboard/${trip._id}" class="button">Open Trip</a>
@@ -231,7 +230,7 @@ const getAllTrips = async (req, res) => {
                 selectedVehicles: trip.selectedVehicles,
                 user_email: trip.user_email,
                 users_shared: trip.users_shared,
-                _id: trip._id
+                _id: trip._id,
         }));
 
         res.status(200).json(tripList);
