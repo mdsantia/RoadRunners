@@ -13,11 +13,12 @@ import { useDashboardContext } from '../../context/DashboardContext';
 function ShareTrip ({handleShareTripDialog}) {
     const {user, updateUser} = useUserContext();
     const [userList, setUserList] = React.useState([]);
-    const [userToAdd, setUserToAdd] = React.useState({});
+    const [userToAdd, setUserToAdd] = React.useState(null);
     const [addedUsers, setAddedUsers] = React.useState([]);
     const [usersWithAccess, setUsersWithAccess] = React.useState([]);
     const [addButtonClicked, setAddButtonClicked] = React.useState(false);
     const [showAddButton, setShowAddButton] = React.useState(false);
+    const [initialStateString, setInitialStateString] = React.useState(null);
     const [initialState, setInitialState] = React.useState(null);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -44,13 +45,31 @@ function ShareTrip ({handleShareTripDialog}) {
         
         const result = tripDetails.users_shared;
         setUsersWithAccess(result);
-        setInitialState(JSON.stringify(result));
-        setAddedUsers([]);
+        setInitialStateString(JSON.stringify(result));
+        setInitialState(result);
     }, []);
 
     const showCancelAndSaveButton = () => {
-        if (initialState !== JSON.stringify(usersWithAccess) || addedUsers.length) {
-            return true;
+        if (initialStateString !== JSON.stringify(usersWithAccess) || addedUsers.length) {
+            // Checks to see if the users in addedUsers already exist in the initial list of usersWithAccess
+            if (addedUsers.length) {
+                const allUsersExist = addedUsers.every((addedUser) => initialState.some((initialStateUser) => initialStateUser.email === addedUser.email));
+                if (!allUsersExist || (addedUsers.length !== initialState.length)) {
+                    return true;
+                } else {
+                    // if the users in addedUsers already exist in the initial list of usersWithAccess,
+                    // then checks to see if their permissions are the same as they were initially
+                    const filteredInitialUsers = initialState.filter((initialStateUser) => addedUsers.some((addedUser) => addedUser.email === initialStateUser.email));
+                    for (let i = 0; i < filteredInitialUsers.length; i++) {
+                        const user = addedUsers.find((addedUser) => addedUser.email === filteredInitialUsers[i].email);
+                        if (user.permission !== filteredInitialUsers[i].permission) {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                return true;
+            }
         }
         return false;
     }
@@ -61,9 +80,6 @@ function ShareTrip ({handleShareTripDialog}) {
             setAddedUsers(updatedUsers);
             const updatedUsersAccess = usersWithAccess.filter((user) => user.email !== selectedUser.email);
             setUsersWithAccess(updatedUsersAccess);
-            if (selectedUser.email === userToAdd.email) {
-                setShowAddButton(true);
-            }
         } else {
             const updatedUsers = addedUsers.map((user) =>
             user.email === selectedUser.email ? { ...user, permission: event.target.value } : user
@@ -93,7 +109,7 @@ function ShareTrip ({handleShareTripDialog}) {
 
     const handleDoneButton = () => {
         setAddedUsers([]);
-        setUserToAdd({});
+        setUserToAdd(null);
         handleShareTripDialog();
     }
     
@@ -113,7 +129,8 @@ function ShareTrip ({handleShareTripDialog}) {
            const data = response.data;
             setUsersWithAccess(data.users_shared);
             setAddedUsers([]);
-            setInitialState(JSON.stringify(data.users_shared));
+            setInitialStateString(JSON.stringify(data.users_shared));
+            setInitialState(data.users_shared);
             setTripDetails(data.trip);
             showMessage('Your changes have been saved!', 2000, 'success');
         }
@@ -124,7 +141,7 @@ function ShareTrip ({handleShareTripDialog}) {
 
     const handleCancelButton = () => {
         setAddedUsers([]);
-        setUserToAdd({});
+        setUserToAdd(null);
         handleShareTripDialog();
     }
 
@@ -150,7 +167,7 @@ function ShareTrip ({handleShareTripDialog}) {
     React.useEffect(() => {
         if (addButtonClicked) {
             setAddedUsers(prevUsers => [...prevUsers, userToAdd]);
-            setUserToAdd({});
+            setUserToAdd(null);
             setAddButtonClicked(false);
             setShowAddButton(false);
         }
@@ -166,6 +183,7 @@ function ShareTrip ({handleShareTripDialog}) {
                     <Grid item xs={10} sm={10} md={10} alignItems="center">
                         <Autocomplete
                             id="shareToAutocomplete"
+                            value={userToAdd}
                             options={userList}
                             getOptionLabel={(user) => user.email}
                             renderOption={(props, user) => {
@@ -196,12 +214,12 @@ function ShareTrip ({handleShareTripDialog}) {
                                     });
                                     handleShowAddButton(user);
                                 } else {
-                                    setUserToAdd({});
+                                    setUserToAdd(null);
                                     setShowAddButton(false);
                                 }
                             }}
+                            isOptionEqualToValue={(user, value) => user.email === value.email}
                             renderInput={(params) => {
-                                params.inputProps.value = userToAdd.email ? userToAdd.email : "";
                                 return (
                                     <TextField
                                         {...params}

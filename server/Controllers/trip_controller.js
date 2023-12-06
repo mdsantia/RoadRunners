@@ -37,7 +37,6 @@ const shareTrip = async (req, res) => {
         sendEmail(tripId, senderName, senderEmail, senderProfilePicture, sendTo.permission, sendTo.email);
     }
 
-
     // Update trip
     trip.users_shared = usersWithAccess.concat(addedUsers);
 
@@ -49,6 +48,7 @@ const shareTrip = async (req, res) => {
 const sendEmail = (tripId, senderName, senderEmail, senderProfilePicture, permission, recepientEmail) => {
     const noReplyEmail = roadRunnersShareEmail;
     const noReplyEmailPwd = roadRunnersShareEmailPwd;
+    const permissionWord = (permission === 1) ? "view" : "edit";
 
     var transport = nodemailer.createTransport({
         service: "gmail",
@@ -68,7 +68,22 @@ const sendEmail = (tripId, senderName, senderEmail, senderProfilePicture, permis
         },
         to: recepientEmail,
         subject: "Trip Shared with You",
-        html: "<html><h1>" + senderName + "(" + senderEmail + ") has shared a trip with you.</h1><body><h4>"
+        html: `<html>
+                <head>
+                    <style>
+                        img.circular-profile {
+                            border-radius: 50%;
+                            width: 15%; /* Adjust the width as needed */
+                            height: 15%; /* Adjust the height as needed */
+                        }
+                    </style>
+                </head>
+                <h2>${senderName} has shared a trip with you.</h2>
+                <img src="${senderProfilePicture}" class="circular-profile">
+                <body>
+                    ${senderName} (${senderEmail}) has invited you to <b>${permissionWord}</b> the following trip:
+                </body>
+            </html>`
     };
     transport.sendMail(mailOptions, (err, res) => {
         if (err) {
