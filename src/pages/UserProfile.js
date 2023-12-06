@@ -9,6 +9,7 @@ import PreferencesForm from '../components/userProfile/PreferencesForm';
 import UserTrips from '../components/userProfile/UserTrips';
 import VehiclesForm from '../components/userProfile/VehicleInfo';
 import PreferencesInfo from '../components/userProfile/PreferencesInfo';
+import SharedTrips from '../components/userProfile/SharedTrips';
 
 
 const UserProfile = () => {
@@ -80,6 +81,12 @@ const UserProfile = () => {
           <Container maxWidth="xl">
             <Typography variant="h5">No trips yet!</Typography>
             <a href={`/`}><Typography variant="h6">Create trips to get started.</Typography></a>
+          </Container>
+        );
+      case pageOptions[4]: // Trips Shared With Me
+        return (
+          <Container maxWidth="xl">
+            <SharedTrips user={user} />
           </Container>
         );
       default:

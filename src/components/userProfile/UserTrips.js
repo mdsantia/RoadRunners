@@ -31,23 +31,20 @@ const CardContentNoPadding = styled(CardContent)(`
 const UserTrips = ({ user, updateUser }) => {
     const navigate = useNavigate();
     const [userTrips, setUserTrips] = useState([]);
-    //users_shared array of objects 
+
     useEffect(() => {
         if (!user) {
-            return;
-        }
-        if (userTrips.length > 0) {
             return;
         }
         async function fetchUserTrips() {
             await axios.get(`/api/trip/getTrips/${user.email}`)
                 .then((response) => {
-                    console.log(response.data);
                     setUserTrips(response.data);
                 }).catch((error) => {
                     console.log(error);
                 });
         }
+
         fetchUserTrips();
     }, [user]);
 
@@ -145,14 +142,15 @@ const UserTrips = ({ user, updateUser }) => {
                                         {getTripInfo("From:", new Date(trip.startDate).toLocaleDateString())}
                                         {getTripInfo("To:", new Date(trip.endDate).toLocaleDateString())}
                                         <Divider />
-                                        <Grid container alignitems="left" textAlign="left" spacing={0}>
-                                            <Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
-                                                <Typography variant="body1" style={{ fontSize: '14px', textTransform: 'none', fontWeight: 'bold' }}>
-                                                    Shared:
-                                                </Typography>
-                                            </Grid>
-
-                                        </Grid>
+                                        {trip.users_shared.length > 0 && (
+                                            <Grid container alignitems="left" textAlign="left" spacing={0}>
+                                                <Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
+                                                    <Typography variant="body1" style={{ fontSize: '14px', textTransform: 'none', fontWeight: 'bold' }}>
+                                                        Shared With:
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid> 
+                                        )}
                                         {trip.users_shared.map((user, index) => {
                                             { console.log(user) }
                                             return (

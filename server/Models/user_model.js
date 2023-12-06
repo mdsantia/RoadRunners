@@ -32,7 +32,7 @@ const Vehicle = new Schema({
     ranking: {
         type: Number,
         required: true
-    }
+    },
 });
 
 const Preferences = new Schema({
@@ -92,7 +92,12 @@ const User = new Schema({
     },
     profile_picture: {
         type: String,
-    }
+    },
+    //Trips shared with user
+    tripsShared: {
+        type: [String],
+        required: true
+    },
 });
 
 module.exports = mongoose.model('User', User);

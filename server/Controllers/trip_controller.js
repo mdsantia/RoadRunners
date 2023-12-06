@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 
 /*
     Check if the trip exists in Database to share to a recepient
+    View only: 1, Edit: 2
 
     API: /api/user/shareTrip
     Method: POST
@@ -37,6 +38,36 @@ const shareTrip = async (req, res) => {
         const sendTo = addedUsers[i];
         sendEmail(trip, senderName, senderEmail, senderProfilePicture, sendTo.permission, sendTo.email);
     }
+
+    let currentUsers = trip.users_shared;
+    // If user is in currentUsers, but not in usersWithAccess, remove trip id from user
+    const usersNotInNewUsers = currentUsers.filter(currentUser =>
+        !usersWithAccess.some(newUser => newUser.email === currentUser.email)
+    );
+
+    usersNotInNewUsers.forEach(async user => {
+        const userToRemoveFrom = await User.findOne({email: user.email});
+        if (!user) {
+            console.log(`ERROR in shareTrip User was not found`.red.bold);
+            res.status(400).json({error: 'User not found'});
+            return;
+        }
+        // Remove trip from user
+        userToRemoveFrom.tripsShared = userToRemoveFrom.tripsShared.filter(trip => trip != tripId);
+        userToRemoveFrom.save();
+    });
+
+    addedUsers.forEach(async user => {
+        const userToAdd = await User.findOne({email: user.email});
+        if (!user) {
+            console.log(`ERROR in shareTrip User was not found`.red.bold);
+            res.status(400).json({error: 'User not found'});
+            return;
+        }
+        // Add trip to user
+        userToAdd.tripsShared.push(tripId);
+        userToAdd.save();
+    });
 
     // Update trip
     trip.users_shared = usersWithAccess.concat(addedUsers);
@@ -125,7 +156,49 @@ const sendEmail = (trip, senderName, senderEmail, senderProfilePicture, permissi
     });
 }
 
+/*
+* Get all trips that are shared with a user (tripids in tripsShared)
+*
+* API: /api/trip/getAllSharedTrips
+* Method: GET
+* Params: user email
+* Response: List of trips: {tripId, ownerEmail, ownerProfilePicture, permission}
+* Errors: 400 - User not found
+*/
 
+const getAllSharedTrips = async (req, res) => {
+    const {email} = req.params;
+    
+    const user = await User.findOne({email});
+
+    if (!user) {
+        res.status(400).json({message: 'User not found'});
+        return;
+    }
+
+    const tripIds = user.tripsShared;
+    console.log(tripIds);
+    let trips = [];
+    for (let i = 0; i < tripIds.length; i++) {
+        const trip = await Trip.findOne({_id: tripIds[i]});
+        if (!trip) {
+            console.log(`ERROR in getAllSharedTrips Trip was not found`.red.bold);
+            res.status(400).json({error: 'Trip not found'});
+            return;
+        }
+        trips.push({
+            _id: trip._id,
+            owner: trip.owner,
+            startLocation: trip.startLocation,
+            endLocation: trip.endLocation,
+            startDate: trip.startDate,
+            endDate: trip.endDate,
+            permission: trip.users_shared.find(user => user.email == email).permission
+        });
+    }
+
+    res.status(200).json(trips);
+}
 /*
 *   Get all trips for a user
 *   
@@ -335,4 +408,4 @@ const clearAllTrips = async (req, res) => {
     return;
 }
 
-module.exports = {getAllTrips, getTrip, saveTrip, deleteTrip, clearAllTrips, shareTrip};
+module.exports = {getAllTrips, getTrip, saveTrip, deleteTrip, clearAllTrips, shareTrip, getAllSharedTrips};
