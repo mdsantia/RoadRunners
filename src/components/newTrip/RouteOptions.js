@@ -137,18 +137,10 @@ function RouteOptions() {
                         value={selectedFilter}
                         onChange={handleFilterChange}
                         input={<OutlinedInput label="Tag" />}
-                        // renderValue={(selected) => {
-                        //     if (selected.length === 0) {
-                        //     return <Typography sx={{ color: 'gray' }}>No Filter Selected</Typography>;
-                        //     }
-
-                        //     return selected.join(', ');
-                        // }}
                         sx={{ width: '100%', height: '5vh' }}
                     >
                         {filterOptions.map((option, index) => (
                             <MenuItem key={index} value={option} sx={{ paddingLeft: '3%' }}>
-                                {/* <Checkbox checked={selectedFilters.indexOf(option) > -1} sx={{ padding: '2%' }} /> */}
                                 <ListItemText primary={option}/>
                             </MenuItem>
                         ))}
@@ -177,50 +169,6 @@ function RouteOptions() {
             <Divider></Divider>
             <Container disableGutters>
                 <List>
-                    {/* {routes && routes.map((path, index) => (
-                        <ListItem key={index}>
-                            <ListItemButton
-                                id={index}
-                                value={index}
-                                onClick={(event) => handleButton(event)}
-                                sx={{
-                                    width: '100%',
-                                    backgroundColor: index === chosenRoute ? '#e3e3e3' : 'transparent', // Change the background color
-                                    color: index === chosenRoute ? '#fff' : 'inherit', // Change the text color
-                                    borderRadius: 2,
-                                    '&:hover': {
-                                        backgroundColor: index === chosenRoute ? '#d1d1d1' : '#f5f5f5', // Change the background color on hover
-                                    },
-                                }}
-                            >
-                                <Accordion expanded={expanded[index]} onChange={handleChange(index)} 
-                                <Accordion expanded={expanded[index]} onChange={handleAccordionChange(index)} 
-                                    sx={{ 
-                                        width: '100%',
-                                        border: '1px solid #ccc',
-                                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-                                        backgroundColor: '#fff',
-                                }}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        id={index}
-                                    >
-                                        <Typography sx={{ fontWeight: 'bold'}}>Route #{index}</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <Typography>
-                                            <span sx={{ fontWeight:'bold' }}>Distance: </span><span sx={{ fontStyle: 'italic' }}>{path.distance.text}</span>
-                                        </Typography>
-                                        <Typography sx={{ fontWeight: 'bold' }}>Duration: {path.duration.text}</Typography>
-                                        <Typography sx={{ fontWeight: 'bold' }}>Number of Stops: {path.stops.length}</Typography>
-                                        {path.stops && path.stops.map((stop, stopIndex) => (
-                                                <Typography key={stopIndex}>Stop #{stopIndex}: {stop.name}</Typography>
-                                        ))}
-                                    </AccordionDetails>
-                                </Accordion>
-                            </ListItemButton>
-                        </ListItem>
-                    ))} */}
                     {filteredRoutes && filteredRoutes.map((path, index) => (
                         <ListItem key={index}>
                             <ListItemButton
@@ -259,7 +207,7 @@ function RouteOptions() {
                                     <AccordionDetails sx={{ backgroundColor: index === chosenRoute ? '#f5f5f5' : 'inherit' }}>
                                         {/* {getRouteDetails("Total Distance:", path.distance)} */}
                                         {/* {getRouteDetails("Trip Duration:", path.duration)} */}
-                                        {getRouteDetails("Number of Stops:", path.length)}
+                                        {getRouteDetails("Number of Stops:", path.length - 2)}
                                         {getRouteDetails("Categories of Stops:", path[1].category)}   
                                         {/* {getRouteDetails("Popular Stops Along This Route:", path[0] + ", " + path[1] + ", " + path[2])} */}
                                         <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>

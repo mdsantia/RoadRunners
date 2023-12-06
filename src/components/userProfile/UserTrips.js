@@ -151,21 +151,19 @@ const UserTrips = ({ user, updateUser }) => {
                                                 </Grid>
                                             </Grid> 
                                         )}
+                                        <br></br>
                                         {trip.users_shared.map((user, index) => {
                                             { console.log(user) }
                                             return (
-                                                <Grid container style={{ marginBottom: '2%', marginLeft:'4%' }} key={index}>
-                                                    <Grid item xs={4} sm={4} md={4}>
-
-                                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
+                                                <Grid container style={{ marginBottom: '1%', marginLeft:'3%' }} key={index}>
+                                                    <Grid item xs={10} sm={10} md={10}>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
                                                             <Avatar src={user.profile_picture} alt="Profile" />
                                                             <div style={{ marginLeft: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                                                 <Typography sx={{ fontSize: '15px' }}>{user.name}</Typography>
                                                                 <Typography sx={{ fontSize: '12px', color: 'grey' }}>{user.email}</Typography>
                                                             </div>
                                                         </div>
-
-
                                                     </Grid>
                                                     <Grid item xs={2} sm={2} md={2}>
                                                         <IconButton aria-label="delete" 
@@ -185,7 +183,7 @@ const UserTrips = ({ user, updateUser }) => {
                                 </VerticalTripCard>
                             </Button>
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} lg={1} xl={1}>
+                        <Grid item xs={1} sm={1} md={1} lg={1} xl={1} style={{ display: 'flex' }}>
                             <Button onClick={(event) => handleDeleteTrip(trip._id, event)}>
                                 <VerticalTripCard sx={{ minWidth: '250', backgroundColor: '#f5f5f5' }}>
                                     <CardContentNoPadding alignitems="center">
