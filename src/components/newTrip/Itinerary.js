@@ -20,7 +20,6 @@ import MuiAlert from '@mui/material/Alert';
 import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext';
 import TripOverview from '../newTrip/TripOverview';
-import ConfirmDialog from '../additionalFeatures/ConfirmDialog';
 import ShareTrip from '../additionalFeatures/ShareTrip';
 
 function TabPanel(props) {
