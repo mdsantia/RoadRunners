@@ -124,7 +124,8 @@ function ShareTrip ({handleShareTripDialog}) {
           senderEmail: user.email,
           senderProfilePicture: user.profile_picture,
           usersWithAccess: usersWithAccess,
-          addedUsers: addedUsers
+          addedUsers: addedUsers,
+          initialState: initialState,
         }).then((response) => {
            const data = response.data;
             setUsersWithAccess(data.users_shared);

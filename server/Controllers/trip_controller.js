@@ -17,7 +17,7 @@ const nodemailer = require("nodemailer");
 */
 
 const shareTrip = async (req, res) => {
-    const {tripId, senderName, senderEmail, senderProfilePicture, usersWithAccess, addedUsers} = req.body;
+    const {tripId, senderName, senderEmail, senderProfilePicture, usersWithAccess, addedUsers, initialState} = req.body;
 
     console.log(`Share ${tripId} in progress \nSent by ${senderName},\n
     Changed Access: ${JSON.stringify(usersWithAccess)}\n
@@ -33,9 +33,10 @@ const shareTrip = async (req, res) => {
     }
 
     // Call email function to send for each added user
-    for (let i = 0; i < addedUsers.length; i++) {
-        const sendTo = addedUsers[i];
-        sendEmail(trip, senderName, senderEmail, senderProfilePicture, sendTo.permission, sendTo.email);
+    const sendTo = addedUsers.filter((addedUser) => !initialState.some((initialStateUser) => initialStateUser.email === addedUser.email));
+    for (let i = 0; i < sendTo.length; i++) {
+        sendEmail(trip, senderName, senderEmail, senderProfilePicture, sendTo[i].permission, sendTo[i].email);
+        console.log("The email has been sent to " + sendTo[i].email + "!");
     }
 
     let currentUsers = trip.users_shared;
