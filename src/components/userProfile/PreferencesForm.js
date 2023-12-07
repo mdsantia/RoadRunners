@@ -7,10 +7,11 @@ import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 
-export default function PreferencesForm(props, {viewOnly}) {
+export default function PreferencesForm(props) {
     const {user, updateUser} = useUserContext();
     const inDashboard = props.type === 'dashboard';
     const {tripDetails} = useDashboardContext();
+    const viewOnly = props.viewOnly;
 
     React.useEffect(() => {
         if (!user) {
