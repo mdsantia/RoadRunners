@@ -144,28 +144,37 @@ export default function Itinerary({viewOnly, sharedTrip}) {
     });
   }
 
-  const handleGenerate = () => {
+  const handleChangePrefs = async (newPrefs) => {
+    setTemporaryPrefs(newPrefs);
     const newTripDetails = {
       ...tripDetails,
       preferences: temporaryPrefs,
       numVehicles: numVehicles,
       selectedVehicles: selectedVehicles,
     }
-    const tripDetailsToHash = {
+    setTripDetails(newTripDetails);
+    await axios.post('/api/trip/saveTrip', {
+      id: tripDetails.id,
       startLocation: tripDetails.startLocation,
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
       endDate: tripDetails.endDate,
-      preferences: newTripDetails.preferences,
-      numVehicles: newTripDetails.numVehicles,
-      selectedVehicles: newTripDetails.selectedVehicles,
-      minimumMPG: tripDetails.minimumMPG,
-    }
-    if (tripDetails.id) {
-      tripDetailsToHash.id = tripDetails.id;
-    }
-    const encodedTripDetails = btoa(JSON.stringify({tripDetails: tripDetailsToHash}));
-    navigate(`/dashboard/${encodedTripDetails}`);
+      preferences: newPrefs,
+      numVehicles: numVehicles,
+      selectedVehicles: selectedVehicles,
+      allStops: tripDetails.allStops,
+      options: tripDetails.options,
+      chosenRoute: tripDetails.chosenRoute,
+      polyline: tripDetails.polyline,
+      stops: tripDetails.stops,
+      user_email: user.email,
+    }).then((res) => {
+      updateUser(res.data.user);
+      showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
+    }).catch((err) => {
+      console.log(err);
+      showMessage('Error updating preferences', 2000, 'error');
+    });
   }
 
   return (
@@ -195,11 +204,8 @@ export default function Itinerary({viewOnly, sharedTrip}) {
         />
         <Divider></Divider>
         <br></br>
-        <PreferencesForm setDashboardPrefs={setTemporaryPrefs} viewOnly={viewOnly} type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
+        <PreferencesForm setDashboardPrefs={handleChangePrefs} viewOnly={viewOnly} type={'dashboard'} showSkipButton={false} showDoneButton={false} showLogo={false}/>
         <Divider></Divider>
-        <Button variant="contained" disabled={viewOnly} sx={{m:2, backgroundColor: 'darkblue'}} onClick={handleGenerate} >
-          Re-Generate Trip
-        </Button> 
         </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
