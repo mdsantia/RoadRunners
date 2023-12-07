@@ -237,14 +237,19 @@ const newRoadTrip = async (req, res) => {
 const getLiveEvents = async(req, res) => {
   const {startLocation, endLocation, startDate, endDate} = req.query;
 
-  const attractions = await roadtrip_apis.callTicketmasterService(startLocation, endLocation, startDate, endDate);
-
+  const events = await roadtrip_apis.callTicketmasterService(startLocation, endLocation, startDate, endDate);
+  events.forEach(event => {
+    event.location = {lat: parseFloat(event._embedded.venues[0].location.latitude), lng: parseFloat(event._embedded.venues[0].location.longitude)};
+    event.locationString = `${event._embedded.venues[0].location.latitude},${event._embedded.venues[0].location.longitude}`;
+    delete event._embedded;
+    delete event._links;
+  });
   // if (attractions.message) {
   //   console.log("Ticket Master Error\n");
   //   res.status(401).json(attractions.message);
   // }
 
-  res.status(201).json(attractions);
+  res.status(201).json(events);
 }
 
 async function addStopInto (newStop, into, stops) {

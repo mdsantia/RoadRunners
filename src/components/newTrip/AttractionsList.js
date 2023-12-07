@@ -102,6 +102,7 @@ export default function AttractionsList({viewOnly}) {
         })
         .then((response) => {
           setLiveEventsData(response.data);
+          console.log(response.data);
         })
         .catch((err) => {
           // setError(err.message);
