@@ -308,15 +308,31 @@ export default function AttractionsList({viewOnly}) {
         <TabPanel value={value} index={2} style={{ width: '70%' }}>
         <StopSearch data={allAttractions}/>
           <div style={{ maxHeight: '350px', overflowY: 'auto' }}> 
-          {allAttractions.map((attraction, index) => (
-            <Attractions
-              key={index}
-              data={attraction}
-              viewOnly={viewOnly}
-              selected={isStopSelected(attraction, 'attraction')}
-              onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
-            />
-          ))}
+            {
+              allAttractions
+              .slice()
+              .sort((attractionA, attractionB) => {
+                const isSelectedA = isStopSelected(attractionA, 'attraction');
+                const isSelectedB = isStopSelected(attractionB, 'attraction');
+
+                // If both attractions are selected or both are not selected, maintain their original order
+                if (isSelectedA === isSelectedB) {
+                  return 0;
+                }
+
+                // If attractionA is selected, place it before attractionB
+                return isSelectedA ? -1 : 1;
+              })
+              .map((attraction, index) => (
+                <Attractions
+                  key={index}
+                  data={attraction}
+                  viewOnly={viewOnly}
+                  selected={isStopSelected(attraction, 'attraction')}
+                  onSelectionChange={() => handleStopSelection(attraction, selectedAttractions, setSelectedAttractions)}
+                />
+              ))
+            }
           </div> 
         </TabPanel>
         <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
