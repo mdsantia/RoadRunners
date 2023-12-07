@@ -70,9 +70,6 @@ export default function AttractionsList({viewOnly}) {
   const { tripDetails, changeStops } = useDashboardContext();
   
   useEffect(() => {
-    if (liveEventsData && liveEventsData.length > 0) {
-      setLiveEventsData(liveEventsData);
-    }
     const fetchEvents = async () => {
       await axios
         .get('/api/roadtrip/getLiveEvents', {
@@ -92,10 +89,10 @@ export default function AttractionsList({viewOnly}) {
         });
       }
 
-    if (tripDetails && tripDetails.stops) {
+    if (tripDetails && tripDetails.stops && value == 4) {
       fetchEvents();
     }
-  }, [tripDetails]);
+  }, [tripDetails, value]);
 
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
@@ -259,7 +256,7 @@ export default function AttractionsList({viewOnly}) {
           sx={{ borderRight: 1, borderColor: 'divider', width: '30%' }}
         >
           <Tab icon={<HotelIcon />} iconPosition="start" label="Hotels" {...a11yProps(0)} />
-          <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} />
+          {/* <Tab icon={<LandscapeIcon />} iconPosition="start" label="Landmarks" {...a11yProps(1)} /> */}
           <Tab icon={<MuseumIcon />} iconPosition="start" label="Attractions" {...a11yProps(2)} />
           <Tab icon={<RestaurantIcon />} iconPosition="start" label="Restaurants" {...a11yProps(3)} />
           <Tab icon={<TheaterComedyIcon />} iconPosition="start" label="Live Events" {...a11yProps(4)} />
