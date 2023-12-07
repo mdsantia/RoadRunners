@@ -69,6 +69,25 @@ export default function AttractionsList({viewOnly}) {
   const [selectedGasStations, setSelectedGasStations] = useState([]);
   const [liveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
+
+  useEffect(() => {
+      const getGas = async (stops) => {
+          await axios.post('/api/roadtrip/getGasStations', {
+                  stops: stops,
+                  mpg: 10,
+                  tankSize: 15,
+          })
+          .then((res) => {
+              console.log(res.data);
+          })
+          .catch((err) => {
+              console.log(err);
+          });
+      }
+      if (tripDetails && tripDetails.options && value == 4) {
+          //getGas(tripDetails.options[0]);
+      }
+  }, [tripDetails, value]);
   
   useEffect(() => {
     const fetchEvents = async () => {
@@ -83,7 +102,6 @@ export default function AttractionsList({viewOnly}) {
         })
         .then((response) => {
           setLiveEventsData(response.data);
-          console.log(response.data);
         })
         .catch((err) => {
           // setError(err.message);

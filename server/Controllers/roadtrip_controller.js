@@ -195,6 +195,12 @@ const yelpUrl = async (req, res) => {
   res.status(201).json(urls);
 }
 
+const getGasStations = async (req, res) => {
+  const {stops, mpg, tankSize} = req.body;
+  await getGasStationsAlongRoute(stops, mpg, tankSize, 'Regular');
+  res.status(201).json(stops);
+}
+
 const newRoadTrip = async (req, res) => {
   let { startLocation, endLocation, startDate, endDate, mpg, foodPref} = req.query;
   mpg = mpg===undefined||mpg<=0?10:mpg;
@@ -215,7 +221,7 @@ const newRoadTrip = async (req, res) => {
       }
     });
   })
-  await getGasStationsAlongRoute(result.options[0], mpg, 10, 'Regular');
+  await getGasStationsAlongRoute(result.options[0], mpg, 14, 'Regular');
   let chosenFood = 'Fast Food';
   if(foodPref && !foodPref.includes(chosenFood)) {
     if(foodPref.includes('Family Restaurants')) {
@@ -367,4 +373,4 @@ const moveStop = async (req, res) => {
   res.status(201).json(newStops);
 }
   
-module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents, yelpUrl};
+module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents, yelpUrl, getGasStations};

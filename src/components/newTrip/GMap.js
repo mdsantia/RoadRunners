@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import {faMapPin, faFlag, faGasPump, faUtensils} from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 var map = null;
 const GMap = (props) => {
@@ -92,7 +93,7 @@ const GMap = (props) => {
                         return;
                     }
                     const infoWindow = new window.google.maps.InfoWindow({
-                    content: `Gas Station ${index + 1}: ${stop.name}`, // Customize the content as needed
+                    content: `Gas Station: ${stop.name}\nPrices:`, // Customize the content as needed
                     });
 
                     marker.setAnimation(window.google.maps.Animation.BOUNCE);
@@ -274,6 +275,7 @@ const GMap = (props) => {
                 });
             }
             setGasStations(gasStations);
+            console.log(gasStations);
             let restaurants = tripDetails.options[0][1].restaurants;
             setRestaurants(restaurants);
         }
