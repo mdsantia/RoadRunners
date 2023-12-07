@@ -172,7 +172,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
     <Box sx={{ width: '100%', paddingTop: '14%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-          <Tab icon={<FavoriteIcon />} label="Preferences" {...a11yProps(0)} />
+          {!viewOnly && (<Tab icon={<FavoriteIcon />} label="Preferences" {...a11yProps(0)} />)}
           <Tab icon={<RouteIcon />} label="Routes" {...a11yProps(1)} />
           <Tab icon={<AddLocationAltIcon />} label="Stops" {...a11yProps(2)} />
           <Tab icon={<FormatListNumberedIcon />} label="Overview" {...a11yProps(3)} />
