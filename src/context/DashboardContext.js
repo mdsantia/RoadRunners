@@ -59,26 +59,7 @@ export const DashboardContextProvider = ({ children }) => {
     return poly;
   }
 
-  const changeStops = (newStops, type) => {
-    // remove is type -1, add is type 1
-    const stops = tripDetails.stops;
-    console.log(stops);
-    for (let i = 0; i < stops.length; i++) {
-      var index = -1;
-    
-      for (let j = 0; j < newStops.length; j++) {
-        if (newStops[j].place_id === stops[i].place_id) {
-          index = j;
-          break;
-        }
-      }
-    
-      if (index !== -1) {
-        if (!newStops[index].routeFromHere) {
-          newStops[index].routeFromHere = stops[i].routeFromHere;
-        }
-      }
-    }
+  const changeStops = (newStops) => {
     var newOptions = tripDetails.options;
     newOptions[tripDetails.chosenRoute] = newStops;
     const newTripDetails = {
