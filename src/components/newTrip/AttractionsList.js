@@ -66,6 +66,7 @@ export default function AttractionsList({viewOnly}) {
   const [allRestaurants, setAllRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [allGasStations, setAllGasStations] = useState([]);
+  const [selectedGasStations, setSelectedGasStations] = useState([]);
   const [liveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
@@ -173,6 +174,8 @@ export default function AttractionsList({viewOnly}) {
         return selectedAttractions.some((selectedAttraction) => selectedAttraction.name === stop.name);
       case 'liveEvent':
         return selectedLiveEvents.some((selectedLiveEvent) => selectedLiveEvent.name === stop.name);
+        case 'gasStations':
+          return selectedGasStations.some((selectedGasStations) => selectedGasStations.name === stop.name);
       default:
         return false;
     }
@@ -339,6 +342,8 @@ export default function AttractionsList({viewOnly}) {
             <GasStations
               key={index}
               viewOnly={viewOnly}
+               selected={isStopSelected(gas,'gasStation')}
+               onSelectionChange={() => handleStopSelection(gas,selectedGasStations, setAllGasStations)}
               data={gas}
             />
           ))}
