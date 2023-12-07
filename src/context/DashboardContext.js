@@ -85,7 +85,9 @@ export const DashboardContextProvider = ({ children }) => {
       ...tripDetails,
       stops: newStops,
       options: newOptions,
-      polyline: buildPolyline(newStops)
+      polyline: buildPolyline(newStops),
+      totalDistance: calculateTotalDistance(newOptions),
+      totalDuration: calculateTotalDuration(newOptions),
     }
     setTripDetails(newTripDetails);
   }
