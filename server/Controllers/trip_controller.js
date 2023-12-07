@@ -133,11 +133,11 @@ const sendEmail = (trip, senderName, senderEmail, senderProfilePicture, permissi
                     </div>
                     <br>
                     <p>
-                        Starting&nbsp from &nbsp<b><i>${trip.startLocation}</i></b>&nbsp&nbsp to &nbsp<tr><td><b><i>${trip.endLocation}</i></b></td></tr>
+                        Starting&nbsp; from &nbsp;<b><i>${trip.startLocation}</i></b>&nbsp;&nbsp; to &nbsp;<tr><td><b><i>${trip.endLocation}</i></b></td></tr>
                         <br>
-                        Beginning&nbsp on &nbsp<b><i>${trip.startDate.toLocaleDateString()}</i></b>&nbsp&nbsp until &nbsp<b><i>${trip.endDate.toLocaleDateString()}</i></b>
+                        Beginning&nbsp; on &nbsp;<b><i>${trip.startDate.toLocaleDateString()}</i></b>&nbsp;&nbsp; until &nbsp;<b><i>${trip.endDate.toLocaleDateString()}</i></b>
                         <br>
-                        Number of Stops: &nbsp<b><i>${trip.stops.length - 2}</i></b>
+                        Number of Stops: &nbsp;<b><i>${trip.stops.length - 2}</i></b>
                     </p>
                     <br>
                     <a href="http://localhost:3000/dashboard/${trip._id}" class="button">Open Trip</a>
