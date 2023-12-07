@@ -99,7 +99,7 @@ export default function AttractionsList({viewOnly}) {
     if (tripDetails && tripDetails.allStops) {
       setAllAttractions(tripDetails.allStops);
       tripDetails.stops.forEach((stop) => {
-        if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
+        if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.place_id === stop.place_id)) {
           selectedAttractions.push(stop);
         }
       });
