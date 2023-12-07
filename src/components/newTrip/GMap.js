@@ -253,7 +253,6 @@ const GMap = (props) => {
     /** GET UPDATED TRIP DETAILS */
     useEffect(() => {
         if (tripDetails && tripDetails.polyline) {
-            console.log(tripDetails)
             setAllStops(tripDetails.allStops);
             setStops(tripDetails.stops);
             setChosenRoute(tripDetails.chosenRoute);
@@ -275,10 +274,8 @@ const GMap = (props) => {
                 });
             }
             setGasStations(gasStations);
-            console.log("GAS", gasStations);
             let restaurants = tripDetails.options[0][1].restaurants;
             setRestaurants(restaurants);
-            console.log("Restaurants", restaurants);
         }
     }, [tripDetails]);
         

@@ -229,23 +229,14 @@ const newRoadTrip = async (req, res) => {
 };
 
 const getLiveEvents = async(req, res) => {
-  const {keyword, city} = req.query;
-  const request = {
-    size: 1,
-    keyword: keyword,
-    city: city,
-    // startEndDateTime
-    // size	Page size of the response	String	20	No
-    // page	Page number	String	0	No
-    // sort
-  }
+  const {startLocation, endLocation, startDate, endDate} = req.query;
 
-  const attractions = await roadtrip_apis.callTicketmasterService(request);
+  const attractions = await roadtrip_apis.callTicketmasterService(startLocation, endLocation, startDate, endDate);
 
-  if (attractions.message) {
-    console.log("Ticket Master Error\n");
-    res.status(401).json(attractions.message);
-  }
+  // if (attractions.message) {
+  //   console.log("Ticket Master Error\n");
+  //   res.status(401).json(attractions.message);
+  // }
 
   res.status(201).json(attractions);
 }

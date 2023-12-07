@@ -66,27 +66,36 @@ export default function AttractionsList({viewOnly}) {
   const [allRestaurants, setAllRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [allGasStations, setAllGasStations] = useState([]);
-  const [LiveEventsData, setLiveEventsData] = useState([]);
+  const [liveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
   
-  
   useEffect(() => {
-    axios
-      .get('/api/roadtrip/getLiveEvents', {
-        params: {
-          keyword: 'music',
-          city: 'New York',
-        },
-      })
-      .then((response) => {
-        const value = response.data;
-        console.log(response.data)
-        setLiveEventsData(response.data);
-      })
-      .catch((err) => {
-        // setError(err.message);
-      });
-  }, []);
+    if (liveEventsData && liveEventsData.length > 0) {
+      setLiveEventsData(liveEventsData);
+    }
+    const fetchEvents = async () => {
+      await axios
+        .get('/api/roadtrip/getLiveEvents', {
+          params: {
+            startLocation: tripDetails.stops[0].location,
+            endLocation: tripDetails.stops[tripDetails.stops.length - 1].location,
+            startDate: tripDetails.startDate,
+            endDate: tripDetails.endDate,
+          },
+        })
+        .then((response) => {
+          setLiveEventsData(response.data);
+          console.log(response.data);
+        })
+        .catch((err) => {
+          // setError(err.message);
+        });
+      }
+
+    if (tripDetails && tripDetails.stops) {
+      fetchEvents();
+    }
+  }, [tripDetails]);
 
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
@@ -236,33 +245,6 @@ export default function AttractionsList({viewOnly}) {
 
   ];
 
-
-  //Live Events Dummy Data
-  const LiveEventsDummyData = [
-    {
-      name: 'Doja Cat',
-      time: 'Fri, 7-11pm',
-      venue: 'United Centre',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
-    {
-      name: 'Taylor Swift',
-      time: 'Sat, 9-11pm',
-      venue: 'United Centre',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
-    {
-      name: 'John Mayer',
-      time: 'Sat, 6-9pm',
-      venue: 'Navy Pier',
-      location: 'Chicago, IL',
-      link: 'https://www.ticketmaster.com/doja-cat-tickets/artist/2062205'
-    },
-
-  ];
-
   if (tripDetails && tripDetails.stops) {
     return (
       <Box
@@ -345,7 +327,7 @@ export default function AttractionsList({viewOnly}) {
           ))}
         </TabPanel>
         {<TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
-          {LiveEventsData && LiveEvents.length > 0 && LiveEventsData.map((event, index) => (
+          {liveEventsData.map((event, index) => (
             <LiveEvents
               key={index}
               data={event}

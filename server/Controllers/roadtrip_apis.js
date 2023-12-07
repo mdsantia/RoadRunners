@@ -179,22 +179,31 @@ function nearestNextStop(from, stops) {
   return next;
 }
 
-async function callTicketmasterService(request) {
-  const baseUrl = 'https://app.ticketmaster.com/discovery/v2/attractions.json';
-  request.apikey = TicketMasterApiKey;
+async function callTicketmasterService(startLocation, endLocation, startDate, endDate) {
+  let url = `https://app.ticketmaster.com//discovery/v2/events.json?apikey=${TicketMasterApiKey}`;
+
+  const start = new Date(startDate).toISOString().split('T')[0] + 'T00:00:00Z';
+  const end = new Date(endDate).toISOString().split('T')[0] + 'T23:59:59Z';
+
+  const params = {
+    startDateTime: start,
+    endDateTime: end,
+    size: 10,
+    radius: 50,
+    sort: 'relevance,asc',
+    latlong: `${startLocation.lat},${startLocation.lng}`,
+    segmentName: "music,%20sports",
+  }
+
+  // Add params to url
+  for (const key in params) {
+    url += `&${key}=${params[key]}`;
+  }
 
   try {
-    const response = await axios.get(baseUrl, {
-      params: request,
-    });
+    const response = await axios.get(url);
 
-    if (response.data._embedded && response.data._embedded.attractions) {
-      const attractions = response.data._embedded.attractions;
-      return attractions;
-    } else {
-      console.error(`Error getting Ticketmaster attractions: ${response.data.error}`);
-      return { message: response.data.error };
-    }
+    return response.data._embedded.events;
   } catch (error) {
     console.error(`Error getting Ticketmaster attractions: ${error.message}`);
     return { message: error.message };

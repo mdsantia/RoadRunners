@@ -21,9 +21,8 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const handleClick = (name) => {
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(name)}`;
-    window.open(searchUrl, '_blank');
+const handleClick = (url ) => {
+    window.open(url, '_blank');
 };
 
 export default function LiveEvents({ data, selected, onSelectionChange, viewOnly}) {
@@ -32,15 +31,15 @@ export default function LiveEvents({ data, selected, onSelectionChange, viewOnly
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
                 sx={{ height: 140, flex: '0 0 40%' }}
-                image={LandMarkImage}
-                title="LandMarkImage"
+                image={data.images[0].url}
+                title="Live Events"
             />
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
                     <Grid item xs={12} sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
                     <a
                             href="#"
-                            onClick={() => handleClick(data.name)}
+                            onClick={() => handleClick(data.url)}
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                             onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
@@ -49,13 +48,12 @@ export default function LiveEvents({ data, selected, onSelectionChange, viewOnly
                         </a>
                     </Grid>
                     <Grid item xs={12} sx={{ color: 'grey' }}>
-                        {data.time}
+                       {data.dates.start && (`Start: ${data.dates.start.localDate} ${data.dates.start.localTime}`)}
+                        <br/>
+                        {data.dates.end && (`End: ${data.dates.end.localDate} ${data.dates.end.localTime}`)}
                     </Grid>
                     <Grid item xs={12} sx={{ color: 'grey' }}>
-                        {data.venue}
-                    </Grid>
-                    <Grid item xs={12} sx={{ fontWeight: 'bold' }}>
-                        {data.location}
+                        Price: {data.priceRanges ? `$${data.priceRanges[0].min} - $${data.priceRanges[0].max}`: 'N/A'} 
                     </Grid>
                 </Grid>
             </CardContent>
