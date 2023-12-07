@@ -89,7 +89,7 @@ export default function AttractionsList({viewOnly}) {
         });
       }
 
-    if (tripDetails && tripDetails.stops && value == 4) {
+    if (tripDetails && tripDetails.stops && value == 3) {
       fetchEvents();
     }
   }, [tripDetails, value]);
@@ -273,7 +273,7 @@ export default function AttractionsList({viewOnly}) {
             />
           ))}
         </TabPanel>
-        <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
+        {/* <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {LandmarkData.map((landmark, index) => (
             <Landmarks
               key={index}
@@ -283,8 +283,8 @@ export default function AttractionsList({viewOnly}) {
               onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
             />
           ))}
-        </TabPanel>
-        <TabPanel value={value} index={2} style={{ width: '70%' }}>
+        </TabPanel> */}
+        <TabPanel value={value} index={1} style={{ width: '70%' }}>
         <StopSearch data={allAttractions}/>
           <div style={{ maxHeight: '350px', overflowY: 'auto' }}> 
             {
@@ -314,7 +314,7 @@ export default function AttractionsList({viewOnly}) {
             }
           </div> 
         </TabPanel>
-        <TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
+        <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {allRestaurants && allRestaurants.map((restaurant, index) => (
             <Restaurants
               key={index}
@@ -323,7 +323,7 @@ export default function AttractionsList({viewOnly}) {
             />
           ))}
         </TabPanel>
-        {<TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto' }} >
+        {<TabPanel value={value} index={3} style={{ maxHeight: '400px', overflowY: 'auto' }} >
           {liveEventsData.map((event, index) => (
             <LiveEvents
               key={index}
@@ -334,7 +334,7 @@ export default function AttractionsList({viewOnly}) {
             />
           ))}
           </TabPanel> }
-        <TabPanel value={value} index={5} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
+        <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
           {allGasStations && allGasStations.map((gas, index) => (
             <GasStations
               key={index}
