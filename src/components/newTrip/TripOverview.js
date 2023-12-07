@@ -12,7 +12,7 @@ import LandMarkImage from '../../assets/FHV-image.jpeg';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import StarRateIcon from '@mui/icons-material/StarRate';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from '../additionalFeatures/StrictModeDroppable';
 
 
@@ -34,6 +34,7 @@ export default function AttractionsList({viewOnly}) {
     const [selectedGasStations, setSelectedGasStations] = useState([]);
     const { tripDetails, changeStops } = useDashboardContext();
     const [expandedCard, setExpandedCard] = useState(null);
+    const [stops, updateStops] = useState([]);
 
     const handleExpandCard = (index) => {
         setExpandedCard(index === expandedCard ? null : index);
@@ -66,6 +67,7 @@ export default function AttractionsList({viewOnly}) {
                 selectedAttractions.push(stop);
                 }
             });
+            updateStops(tripDetails.stops.slice(1, -1));
         }
     }, [tripDetails, tripDetails && tripDetails.stops]);
 
@@ -111,7 +113,13 @@ export default function AttractionsList({viewOnly}) {
     }
 
     async function handleOnDragEnd (result) {
-        // if (!result.destination) return;
+        if (!result.destination) return;
+
+        const oldStops = tripDetails.stops;
+        const newStops = Array.from(stops);
+        const [reorderedStop] = newStops.splice(result.source.index, 1);
+        newStops.splice(result.destination.index, 0, reorderedStop);
+        updateStops(newStops);
         
         // const oldItems = vehicles;
         // const items = Array.from(vehicles);
@@ -185,7 +193,7 @@ export default function AttractionsList({viewOnly}) {
                 <StrictModeDroppable droppableId="stops" direction="vertical">
                     {(provided) => (
                         <div ref={provided.innerRef} {...provided.droppableProps}>
-                            {tripDetails.stops.slice(1, -1).map((stop, index) => {
+                            {stops.map((stop, index) => {
                                 return (
                                     <Draggable key={index} draggableId={`stop-${index}`} index={index}>
                                         {(provided, snapshot) => (
