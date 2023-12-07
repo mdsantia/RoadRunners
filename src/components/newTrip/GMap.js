@@ -59,8 +59,7 @@ const GMap = (props) => {
         setZoom(Math.ceil(zoom));
     };
 
-    const addGasStations = () => {
-        let list = [];
+    const addGasStations = (list) => {
         if (gasStations) {
             gasStations.forEach((stop, index) => {
                 const markerIcon = {
@@ -104,12 +103,10 @@ const GMap = (props) => {
                     }, 2000);
                 });
             });
-            setMarkers(list);
         }
     }
 
-    const addRestaurants = () => {
-        let list = markers;
+    const addRestaurants = (list) => {
         if (restaurants) {
             restaurants.forEach((stop, index) => {
                 const markerIcon = {
@@ -153,12 +150,11 @@ const GMap = (props) => {
                     }, 2000);
                 });
             });
-            setMarkers(list);
         }
     }
 
     /** Add all the stops, origin and destination with animations to the map */
-    const addStops = () => {
+    const addStops = (list) => {
         const startIcon = {
             path: faFlag.icon[4],
             fillColor: "#05ff2f",
@@ -185,7 +181,6 @@ const GMap = (props) => {
             scale: 0.06,
         }
 
-        const list = markers;
         if (stops) {
             stops.forEach((stop, index) => {
                 setTimeout(() => {
@@ -231,7 +226,6 @@ const GMap = (props) => {
                     });
                 }, index * 400); // Multiply index by 200ms to stagger the markers
             });
-            setMarkers(list);
         }
     }
 
@@ -260,7 +254,7 @@ const GMap = (props) => {
             calculateZoom(tripDetails.polyline);
             let gasStations = [];
             if (tripDetails.options) {
-                tripDetails.options[0].forEach((stop) => {
+                tripDetails.options[tripDetails.chosenRoute].forEach((stop) => {
                     if (stop.gasStations && stop.gasStations.length > 0) {
                         // If we didn't already add this gas station to the list, add it
                         for(let i = 0; i < stop.gasStations.length; i++) {
@@ -274,7 +268,7 @@ const GMap = (props) => {
                 });
             }
             setGasStations(gasStations);
-            let restaurants = tripDetails.options[0][1].restaurants;
+            let restaurants = tripDetails.options[tripDetails.chosenRoute][1].restaurants;
             setRestaurants(restaurants);
         }
     }, [tripDetails]);
@@ -317,12 +311,16 @@ const GMap = (props) => {
                 }
             }
             insertPolyline();
+
+            let m = [];
     
-            addGasStations();
+            addGasStations(m);
 
-            addStops();
+            addStops(m);
 
-            addRestaurants();
+            addRestaurants(m);
+
+            setMarkers(m);
 
             return () => {
                 if (map) {
