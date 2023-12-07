@@ -28,7 +28,7 @@ function TopBar() {
   };
 
   const handleProfile = () => {
-    navigate(`/profile/${pageOptions[pageOptions.length - 1]}/${user._id}`);
+    navigate(`/profile/${pageOptions[pageOptions.length - 2]}/${user._id}`);
   };
 
   const handleLogout = () => {

@@ -12,6 +12,8 @@ import LandMarkImage from '../../assets/FHV-image.jpeg';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import StarRateIcon from '@mui/icons-material/StarRate';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import StrictModeDroppable from '../additionalFeatures/StrictModeDroppable';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -108,6 +110,40 @@ export default function AttractionsList({viewOnly}) {
         );
     }
 
+    async function handleOnDragEnd (result) {
+        // if (!result.destination) return;
+        
+        // const oldItems = vehicles;
+        // const items = Array.from(vehicles);
+        // const [reorderedItem] = items.splice(result.source.index, 1);
+        // items.splice(result.destination.index, 0, reorderedItem);
+    
+        // const newVehicles = items.map((vehicle, index) => {
+        //   return {
+        //     _id: vehicle._id,
+        //     mpg: vehicle.mpg,
+        //     year: vehicle.year,
+        //     make: vehicle.make,
+        //     model: vehicle.model,
+        //     color: vehicle.color,
+        //     ranking: index,
+        //     fuelGrade: vehicle.fuelGrade,
+        // }});
+    
+    //     updateVehicles(items);
+    //     await axios.post('/api/user/vehicleRanking', {
+    //       email: user.email,
+    //       vehicles: newVehicles
+    //     }).then(response => {
+    //       const newUser = response.data;
+    //       updateUser(newUser);
+    //   }).catch(error => {
+    //       console.log(error.response.data.error);
+    //       updateVehicles(oldVehicles);
+    //       alert("There was an error saving your vehicle ranking: " + error.response.data.error + ".\nPlease try again.");
+    //   });
+      }
+
     if (tripDetails && !tripDetails.stops) {
         return (
             <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
@@ -145,54 +181,75 @@ export default function AttractionsList({viewOnly}) {
             <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
                 Stops Along Your Route:
             </Typography>
-            {tripDetails.stops.slice(1, -1).map((stop, index) => ( // Slice to exclude first and last stops
-            <div key={index}>
-                <Item
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        maxWidth: '100%',
-                        margin: '0 auto',
-                        marginTop: '3%',
-                        cursor: 'pointer',
-                        transition: 'height 0.3s', // Define the transition property
-                        height: expandedCard === index ? 140 : 60, // Set initial and expanded height
-                        backgroundColor: '#f5f5f5'
-                    }}
-                    onClick={() => handleExpandCard(index)}
-                >
-                    <CardContent sx={{ flex: '1' }}>
-                        <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                        <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
-                            <a
-                            href={stop.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ textDecoration: 'none', color: 'inherit' }}
-                            onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                            onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
-                            >
-                            {stop.name}
-                            </a>
-                        </Grid>
-                        </Grid>
-                    </CardContent>
-                    <CardActions 
-                      sx={{ justifyContent: 'center', flex: '0 0 5%' }}
-                      onClick={(e) => {
-                          e.stopPropagation(); // Stop the click event from propagating to the parent element
-                      }}>
-                        <Checkbox
-                        icon={<AddLocationAltOutlinedIcon />}
-                        checkedIcon={<AddLocationAltIcon />}
-                        checked={true}
-                        disabled={viewOnly}
-                        onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)}
-                        />
-                    </CardActions>
-                </Item>
-            </div>
-            ))}
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+                <StrictModeDroppable droppableId="stops" direction="vertical">
+                    {(provided) => (
+                        <div ref={provided.innerRef} {...provided.droppableProps}>
+                            {tripDetails.stops.slice(1, -1).map((stop, index) => {
+                                return (
+                                    <Draggable key={index} draggableId={`stop-${index}`} index={index}>
+                                        {(provided, snapshot) => (
+                                            <Item
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    margin: '0 auto',
+                                                    marginTop: '3%',
+                                                    marginBottom: '3%',
+                                                    cursor: 'pointer',
+                                                    transition: 'height 0.3s',
+                                                    height: '60px',
+                                                    width: '100%',
+                                                    backgroundColor: '#f5f5f5',
+                                                    boxShadow: snapshot.isDragging ? '0 4px 8px rgba(0, 0, 0, 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.2)',
+                                                    cursor: snapshot.isDragging ? 'grabbing' : 'pointer',
+                                                    ...provided.draggableProps.style,
+                                                }}
+                                                // onClick={() => handleExpandCard(index)}
+                                            >
+                                                <CardContent sx={{ flex: '1' }}>
+                                                    <Grid container spacing={0.5} justifyContent="center" alignItems="center">
+                                                        <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                                                            <a
+                                                                href={stop.link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                style={{ textDecoration: 'none', color: 'black' }}
+                                                                // onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                                                                // onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                                                            >
+                                                                {stop.name}
+                                                            </a>
+                                                        </Grid>
+                                                    </Grid>
+                                                </CardContent>
+                                                <CardActions 
+                                                    sx={{ justifyContent: 'center', flex: '0 0 5%' }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); // Stop the click event from propagating to the parent element
+                                                    }}
+                                                >
+                                                    <Checkbox
+                                                        icon={<AddLocationAltOutlinedIcon />}
+                                                        checkedIcon={<AddLocationAltIcon />}
+                                                        checked={true}
+                                                        disabled={viewOnly}
+                                                        onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)}
+                                                    />
+                                                </CardActions>
+                                            </Item>
+                                        )}
+                                    </Draggable>
+                                );
+                            })}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </StrictModeDroppable>
+            </DragDropContext>
         </Container>
         </Box>
     );
