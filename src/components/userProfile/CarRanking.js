@@ -111,7 +111,7 @@ function CarRanking({onSelectCar}) {
           <Typography>Drag and drop to rank your vehicles.<br></br>Click on a vehicle to load its information and edit it.</Typography>
         </Container>
         <DragDropContext onDragEnd={handleOnDragEnd}>
-          <StrictModeDroppable droppableId="vehicles">
+          <StrictModeDroppable droppableId="vehicles" direction="vertical">
             {(provided) => (
               <ul className="vehicles" style={{ textAlign: 'right'}} {...provided.droppableProps} ref={provided.innerRef}>
                 {vehicles.map(({id, ranking, name, thumb}, index) => {
