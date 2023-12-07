@@ -106,12 +106,12 @@ function RouteOptions() {
     const getRouteDetails = (infoLabel, info) => {
         return (
             <Grid container alignItems="left" textAlign="left" spacing={0}>
-                <Grid item xs={5} sm={5} md={5}>
+                <Grid item xs={4} sm={4} md={4}>
                     <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>
                         {infoLabel}
                     </Typography>
                 </Grid>
-                <Grid item xs={7} sm={7} md={7}>
+                <Grid item xs={8} sm={8} md={8}>
                     <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
                         {info}
                     </Typography>
@@ -200,7 +200,7 @@ function RouteOptions() {
                                         }}
                                     >
                                         <Typography variant="button" style={{ fontSize: '13px' }}>
-                                            Route #{index + 1}
+                                            Route &nbsp; {index + 1}
                                         </Typography>
                                     </AccordionSummary>
                                     <Divider></Divider>
@@ -210,13 +210,22 @@ function RouteOptions() {
                                         {getRouteDetails("Number of Stops:", path.length - 2)}
                                         {getRouteDetails("Categories of Stops:", path[1].category)}   
                                         {/* {getRouteDetails("Popular Stops Along This Route:", path[0] + ", " + path[1] + ", " + path[2])} */}
-                                        <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>
-                                            Stops: {path.map((stop, stopIndex) => (
-                                                stopIndex === path.length - 1 ? 
-                                                    <span key={stopIndex}> {stop.name}</span> :
-                                                    <span key={stopIndex}> {stop.name} ={'>'} </span>
-                                            ))}
-                                        </Typography>
+                                        {/* <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}> */}
+                                        <Grid container alignItems="left" textAlign="left" spacing={0}>
+                                            <Grid item xs={4} sm={4} md={4}>
+                                                <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}>
+                                                    Stops:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={8} sm={8} md={8}>
+                                                {path.slice(1, -1).map((stop, stopIndex) => (
+                                                    <Typography key={stopIndex} variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
+                                                        {stop.name}
+                                                    </Typography>
+                                                ))}
+                                            </Grid>
+                                        </Grid>
+                                        {/* </Typography> */}
                                     </AccordionDetails>
                                 </Accordion>
                             </ListItemButton>

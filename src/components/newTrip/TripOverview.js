@@ -166,15 +166,16 @@ export default function AttractionsList({viewOnly}) {
         >
         <Container value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto', textAlign: 'left', alignItems: 'left'}}>
             {getRouteDetails("Starting Location:", tripDetails.stops[0].name)}
-            <br></br>
             {getRouteDetails("Destination:", tripDetails.stops[tripDetails.stops.length - 1].name)}
+            <br></br>
+            {getRouteDetails("Start Date:", new Date(tripDetails.startDate).toLocaleDateString())}
+            {getRouteDetails("End Date:", new Date(tripDetails.endDate).toLocaleDateString())}
             <br></br>
             {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
             <br></br>
-            {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
-            <br></br>
             <Divider></Divider>
             <br></br>
+            {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
             <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
                 Your Selected Vehicle(s) for This Trip:
             </Typography>
