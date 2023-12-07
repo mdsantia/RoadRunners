@@ -3,13 +3,13 @@ import { useDashboardContext } from '../../hooks/useDashboardContext';
 import {faMapPin, faFlag, faGasPump, faUtensils} from '@fortawesome/free-solid-svg-icons';
 
 var map = null;
+var markers = [];
+var polyline = null;
 const GMap = (props) => {
     const mapContainerRef = useRef(null);
     const [userLocation, setUserLocation] = useState(null);
-    const [polyline, setPolyline] = useState(null);
     const [center, setCenter] = useState(null);
     const [allStops, setAllStops] = useState(null);
-    const [markers, setMarkers] = useState([]);
     const [stops, setStops] = useState(null);
     const [zoom, setZoom] = useState(5);
     const { tripDetails } = useDashboardContext();
@@ -60,7 +60,6 @@ const GMap = (props) => {
     };
 
     const addGasStations = () => {
-        let list = [];
         if (gasStations) {
             gasStations.forEach((stop, index) => {
                 const markerIcon = {
@@ -84,7 +83,7 @@ const GMap = (props) => {
                     title: `Gas Station ${index + 1}`,
                 });
 
-                list.push(marker);
+                markers.push(marker);
             
                 // If marker is clicked, can't be clicked again for 2 seconds
                 marker.addListener('click', () => {
@@ -104,12 +103,10 @@ const GMap = (props) => {
                     }, 2000);
                 });
             });
-            setMarkers(list);
         }
     }
 
     const addRestaurants = () => {
-        let list = markers;
         if (restaurants) {
             restaurants.forEach((stop, index) => {
                 const markerIcon = {
@@ -133,7 +130,7 @@ const GMap = (props) => {
                     title: `Restaurant ${index + 1}`,
                 });
     
-                list.push(marker);
+                markers.push(marker);
             
                 // If marker is clicked, can't be clicked again for 2 seconds
                 marker.addListener('click', () => {
@@ -153,7 +150,6 @@ const GMap = (props) => {
                     }, 2000);
                 });
             });
-            setMarkers(list);
         }
     }
 
@@ -185,7 +181,6 @@ const GMap = (props) => {
             scale: 0.06,
         }
 
-        const list = markers;
         if (stops) {
             stops.forEach((stop, index) => {
                 setTimeout(() => {
@@ -210,7 +205,7 @@ const GMap = (props) => {
                         title: `Stop ${index + 1}`,
                     });
     
-                    list.push(marker);
+                    markers.push(marker);
                 
                     // If marker is clicked, can't be clicked again for 2 seconds
                     marker.addListener('click', () => {
@@ -231,7 +226,6 @@ const GMap = (props) => {
                     });
                 }, index * 400); // Multiply index by 200ms to stagger the markers
             });
-            setMarkers(list);
         }
     }
 
@@ -247,7 +241,7 @@ const GMap = (props) => {
         
         // Set the polyline on the map
         path.setMap(map);
-        setPolyline(path);
+        polyline = path;
     }
 
     /** GET UPDATED TRIP DETAILS */
@@ -260,7 +254,7 @@ const GMap = (props) => {
             calculateZoom(tripDetails.polyline);
             let gasStations = [];
             if (tripDetails.options) {
-                tripDetails.options[0].forEach((stop) => {
+                tripDetails.options[tripDetails.chosenRoute].forEach((stop) => {
                     if (stop.gasStations && stop.gasStations.length > 0) {
                         // If we didn't already add this gas station to the list, add it
                         for(let i = 0; i < stop.gasStations.length; i++) {
@@ -274,7 +268,7 @@ const GMap = (props) => {
                 });
             }
             setGasStations(gasStations);
-            let restaurants = tripDetails.options[0][1].restaurants;
+            let restaurants = tripDetails.options[tripDetails.chosenRoute][1].restaurants;
             setRestaurants(restaurants);
         }
     }, [tripDetails]);
@@ -297,7 +291,12 @@ const GMap = (props) => {
     /** MAP RERENDERER */
     useEffect(() => {
         if (tripDetails && tripDetails.polyline) {
-            console.log(mapContainerRef.current, map);
+            if (markers && polyline) {
+                markers.forEach(marker => marker.setMap(null));
+                markers.length = 0; // Clear the markers array
+
+                polyline.setMap(null);
+            }
             if (!map) {
                 console.log('Initializing map...');
                 map = new window.google.maps.Map(mapContainerRef.current, {
@@ -307,26 +306,33 @@ const GMap = (props) => {
                     mapTypeControl: false,
                     fullscreenControl: false
                 });
-            } else {
-                /** SUPPORT ANIMATIONS AND NOT RELOAD */
-                if (markers && polyline) {
-                    markers.forEach(marker => marker.setMap(null));
-                    markers.length = 0; // Clear the markers array
+            } if (map) {
+                if (mapContainerRef.current && mapContainerRef.current.childElementCount === 0) {
+                    mapContainerRef.current.appendChild(map.getDiv());
 
-                    polyline.setMap(null);
+                    // console.log(mapContainerRef.current);
                 }
+                /** SUPPORT ANIMATIONS AND NOT RELOAD */
             }
             insertPolyline();
-    
+
             addGasStations();
 
             addStops();
 
             addRestaurants();
 
+            
             return () => {
                 if (map) {
                     window.google.maps.event.clearInstanceListeners(map);
+
+                    if (markers && polyline) {
+                        markers.forEach(marker => marker.setMap(null));
+                        markers.length = 0; // Clear the markers array
+    
+                        polyline.setMap(null);
+                    }
                 }
             };
         }
