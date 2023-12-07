@@ -145,14 +145,6 @@ export default function Itinerary({viewOnly, sharedTrip}) {
   }
 
   const handleChangePrefs = async (newPrefs) => {
-    setTemporaryPrefs(newPrefs);
-    const newTripDetails = {
-      ...tripDetails,
-      preferences: temporaryPrefs,
-      numVehicles: numVehicles,
-      selectedVehicles: selectedVehicles,
-    }
-    setTripDetails(newTripDetails);
     await axios.post('/api/trip/saveTrip', {
       id: tripDetails.id,
       startLocation: tripDetails.startLocation,
@@ -171,6 +163,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
     }).then((res) => {
       updateUser(res.data.user);
       showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
+      navigate(`/dashboard/${res.data.id}`);
     }).catch((err) => {
       console.log(err);
       showMessage('Error updating preferences', 2000, 'error');
