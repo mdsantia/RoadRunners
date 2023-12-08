@@ -164,6 +164,16 @@ async function buildARoute(req, optionNumber) {
   return({stops: sortedStops, allStops: allStops});
 }
 
+async function getHotels(req, res) {
+  const {endLocation, preference} = req.query;
+  const results = await roadtrip_apis.getStops(endLocation, 50000, preference && preference.length > 0 ? preference : null, 'lodging', null);
+  results.sort((a, b) => {
+    return b.rating - a.rating;
+  });
+  results.splice(4);
+  res.status(201).json(results);
+}
+
 async function getGasStationsAlongRoute(stops, mpg, tankSize, fuelType) {
   let promises = [];
   for (let i = 0; i < stops.length - 1; i++) {
@@ -411,4 +421,4 @@ const rearrangeStops = async (req, res) => {
   res.status(201).json(stops);
 }
   
-module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents, yelpUrl, rearrangeStops};
+module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents, yelpUrl, rearrangeStops, getHotels};

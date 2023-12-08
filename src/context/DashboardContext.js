@@ -21,6 +21,7 @@ export const DashboardContextProvider = ({ children }) => {
   const [center, setCenter] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
   const [liveEvents, setLiveEvents] = useState([]);
+  const [hotels, setHotels] = useState([]);
 
   function calculateTotalDistance(options) {
     const distanceArray = [];
@@ -121,6 +122,8 @@ export const DashboardContextProvider = ({ children }) => {
         changeStops,
         liveEvents,
         setLiveEvents,
+        hotels,
+        setHotels,
       }}
     >
       {children}
