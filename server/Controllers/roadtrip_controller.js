@@ -89,7 +89,6 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     if (i % 2 && customResult && customResult[i % customResult.length]) {
       stop = customResult[i % customResult.length];
     }
-    combinedStops = [...customResult, ...combinedStops];
     if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
       allStops.push(stop);
       numStops++;
@@ -97,6 +96,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     }
     i++;
   }
+  combinedStops = [...customResult, ...combinedStops];
   const selectedStop = tempStops[optionNumber % tempStops.length];
   selectedStops.push(selectedStop);
   if (idx < 1) {
