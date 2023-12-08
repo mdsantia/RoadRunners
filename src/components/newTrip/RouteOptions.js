@@ -25,24 +25,23 @@ function RouteOptions() {
     const [selectedFilter, setSelectedFilter] = React.useState('');
     const [filteredRoutes, setFilteredRoutes] = React.useState([]);
     const filterOptions = ["None", "Shortest", "Fastest"];    
-
-    // const handleFilterChange = (event) => {
-    //     const {
-    //       target: { value },
-    //     } = event;
-    //     setSelectedFilters(
-    //       // On autofill we get a stringified value.
-    //       typeof value === 'string' ? value.split(',') : value,
-    //     );
-    // };
                 
     React.useEffect(() => {
         if (tripDetails) {
             setOptions(tripDetails.options);
             setChosenRoute(tripDetails.chosenRoute);
             setFilteredRoutes(tripDetails.options);
+            console.log(tripDetails);
         }
     }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
+
+    const getTotalDistance = (route) => {
+        let totalDistance = 0;
+        for (let i = 0; i < route.length - 1; i++) {
+            totalDistance += route[i].distance;
+        }
+        return totalDistance;
+    }
     
     const getShortestRoutes = (totalDistance) => {
         if (totalDistance && tripDetails.options) {
@@ -235,10 +234,9 @@ function RouteOptions() {
                                     </AccordionSummary>
                                     <Divider></Divider>
                                     <AccordionDetails sx={{ backgroundColor: index === chosenRoute ? '#f5f5f5' : 'inherit' }}>
-                                        {/* {getRouteDetails("Total Distance:", path.distance)} */}
-                                        {/* {getRouteDetails("Trip Duration:", path.duration)} */}
                                         {getRouteDetails("Number of Stops:", path.length - 2)}
-                                        {getRouteDetails("Categories of Stops:", path[1].category)}   
+                                        {/* {getRouteDetails("Total Distance:", getTotalDistance(path) + " miles")} */}
+                                        {/* {getRouteDetails("Categories of Stops:", path[1].category)}    */}
                                         {/* {getRouteDetails("Popular Stops Along This Route:", path[0] + ", " + path[1] + ", " + path[2])} */}
                                         {/* <Typography variant="body1" style={{ fontSize: '12px', textTransform: 'none', fontWeight: 'bold' }}> */}
                                         <Grid container alignItems="left" textAlign="left" spacing={0}>
