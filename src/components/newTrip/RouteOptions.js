@@ -12,6 +12,7 @@ import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Checkbox from '@mui/material/Checkbox';
 import LinearProgress from '@mui/material/LinearProgress';
+import { Opacity } from '@mui/icons-material';
 
 
 function RouteOptions() {
@@ -120,11 +121,39 @@ function RouteOptions() {
         );
     }
 
+    
+
     if (tripDetails && !tripDetails.stops) {
         return (
-            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-            Awaiting for route suggestions...
-            <LinearProgress />
+            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold'}}>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit"/>
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
             </Typography> 
         )
     }
