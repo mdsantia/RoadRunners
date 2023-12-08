@@ -304,6 +304,7 @@ const saveTrip = async (req, res) => {
         trip.stops = stops;
         await trip.save();
         res.status(200).json("Trip updated");
+        return;
     }
 
     const trip = new Trip({

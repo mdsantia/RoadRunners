@@ -81,7 +81,7 @@ const GMap = (props) => {
                     map: map,
                     icon: markerIcon,
                     animation: window.google.maps.Animation.DROP,
-                    title: `Gas Station ${index + 1}`,
+                    title: `Gas Station`,
                 });
 
                 markers.push(marker);
@@ -128,7 +128,7 @@ const GMap = (props) => {
                     map: map,
                     icon: markerIcon,
                     animation: window.google.maps.Animation.DROP,
-                    title: `Restaurant ${index + 1}`,
+                    title: `Food`,
                 });
     
                 markers.push(marker);
@@ -139,7 +139,7 @@ const GMap = (props) => {
                         return;
                     }
                     const infoWindow = new window.google.maps.InfoWindow({
-                    content: `Restaurant ${index + 1}: ${stop.name}`, // Customize the content as needed
+                    content: `Food: ${stop.name}`, // Customize the content as needed
                     });
     
                     marker.setAnimation(window.google.maps.Animation.BOUNCE);
@@ -203,7 +203,7 @@ const GMap = (props) => {
                         map: map,
                         icon: index === 0 ? startIcon : index === stops.length - 1 ? endIcon : markerIcon,
                         animation: window.google.maps.Animation.DROP,
-                        title: `Stop ${index + 1}`,
+                        title: index === 0 ? `Origin` : index === stops.length - 1 ? `Destination` : `Stop ${index}`,
                     });
     
                     markers.push(marker);
@@ -214,7 +214,7 @@ const GMap = (props) => {
                             return;
                         }
                         const infoWindow = new window.google.maps.InfoWindow({
-                        content: `Stop ${index + 1}: ${stop.name}`, // Customize the content as needed
+                            content: index === 0 ? `${stop.name}` : index === stops.length - 1 ? `${stop.name}` : `Stop ${index}: ${stop.name}`, // Customize the content as needed
                         });
     
                         marker.setAnimation(window.google.maps.Animation.BOUNCE);
