@@ -226,13 +226,22 @@ async function callTicketmasterService(startLocation, endLocation, startDate, en
 //   }
 // }
 
-async function getStops(location, radius, keyword, preferences, type, rankby) {
+async function getStops(location, radius, attractionPref) {
+  let keyword = "tourist_attraction";
+  if (attractionPref && attractionPref.length > 0) {
+    const min = 0;
+    const max = attractionPref.length - 1; 
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    keyword = attractionPref[randomNumber];
+  } 
+  console.log(keyword);
   try {
     const locationString = `${location.lat},${location.lng}`;
     endpoint = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
     params = {
       location: locationString,
       type: type,
+      keyword: keyword,
       // minprice: , 
       // maxprice: ,
       // rankby: 'prominance'/'distance',

@@ -27,7 +27,7 @@ function decodePath(route) {
   return path;
 }
 
-async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius, optionNumber) {
+async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius, optionNumber, attractionPref) {
   var request =  {
     origin: left,
     destination: right,
@@ -46,7 +46,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     touristAttractionResult, 
     // stadiumResult
   ] = await Promise.all([
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'tourist_attraction'),
+    roadtrip_apis.getStops(midpoint, radius, attractionPref),
   ]);
 
   const combinedStops = [].concat(
@@ -84,7 +84,7 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
 }
 
 async function buildARoute(req, optionNumber) {
-  const { startLocation, endLocation, startDate } = req.query;
+  const { startLocation, endLocation, startDate, attractionPref } = req.query;
   const stops = [];
   const radius = 50000; // 50 km
   const allStops = [];
@@ -119,7 +119,7 @@ async function buildARoute(req, optionNumber) {
   endObj.locationString = right;
   
   await Promise.all([
-    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber),
+    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber, attractionPref),
   ]);
 
   const sortedStops = [startObj];
