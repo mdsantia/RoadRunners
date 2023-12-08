@@ -42,14 +42,10 @@ export default function GasStations({data, selected, onSelectionChange, viewOnly
     return (
 
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
-            <CardMedia
-                sx={{ height: 140 , flex: '0 0 40%'  }}
-                image={LandMarkImage}
-                title="LandMarkImage"
-            />
+          
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
+                <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1.2rem'}}>
                 <a
                             href="#"
                             onClick={() => handleClick(data.name)}
@@ -60,19 +56,14 @@ export default function GasStations({data, selected, onSelectionChange, viewOnly
                             {data.name}
                         </a>
                     </Grid>
-                    <Grid item xs={12} sx={{color:'grey'}}>
-                        <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon>{data.rating}
-                        {/* {data.rating}   ({data.reviews}) */}
-                    </Grid>
+                    <Grid item xs={12} >
+                    <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon>({data.rating})
+                        {/* {data.rating}   ({data.reviews}) */} {data.vicinity}
+                    </Grid>   
                     <Grid item xs={12} sx={{fontWeight:'bold'}}>
-                        Address: {data.vicinity}
-                    </Grid>
-                    <Grid item xs={12} sx={{fontWeight:'bold'}}>
-                        {`Prices: `}
-                        <br />
-                        {`Regular: $${data.price.Regular || 'N/A'} MidGrade: $${data.price.MidGrade || 'N/A'}`}
-                        <br/>
-                        {`Premium: $${data.price.Premium || 'N/A'} Diesel: $${data.price.Diesel || 'N/A'}`}
+                        {`Regular: $${data.price.Regular || 'N/A'}  | MidGrade: $${data.price.MidGrade || 'N/A'}`}
+                        <br/> 
+                        {`Premium: $${data.price.Premium || 'N/A'}  | Diesel: $${data.price.Diesel || 'N/A'}`}
                     </Grid>
                 </Grid>
             </CardContent>

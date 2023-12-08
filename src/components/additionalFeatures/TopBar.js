@@ -12,6 +12,8 @@ import { useUserContext } from '../../hooks/useUserContext';
 import Avatar from '@mui/material/Avatar';
 import { Link } from '@mui/material'; // Import Link component
 import { pageOptions } from '../userProfile/SideBar';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
 
 function TopBar(props) {
   const { user, logout } = useUserContext();
@@ -19,7 +21,7 @@ function TopBar(props) {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const profile_picture = user ? user.profile_picture : "/static/images/avatar/2.jpg";
-  const {handleLock, locked} = props;
+  const { handleLock, locked } = props;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -51,6 +53,19 @@ function TopBar(props) {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {user ? (
               <div>
+                <>
+                  {locked ? (
+                    <Button variant="contained" startIcon={<LockOpenIcon />}>
+                      Unlock
+                    </Button>
+                  ) : (
+
+                    <Button variant="contained" startIcon={<LockIcon />}>
+                      Lock
+                    </Button>
+                  )}
+                </>
+
                 <Button
                   id="basic-button"
                   aria-controls={anchorEl ? 'basic-menu' : undefined}
