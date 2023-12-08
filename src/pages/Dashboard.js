@@ -86,6 +86,16 @@ export default function Dashboard() {
         window.location.reload();
     }
 
+    const handleLock = async (lock) => {
+        if (lock) {
+            //await axios.post(`/api/trip/lockUnlock/${tripid}/1`)
+            setLocked(true);
+        } else {
+            //await axios.post(`/api/trip/lockUnlock/${tripid}/0`)
+            setLocked(false);
+        }
+    }
+
     useEffect(() => {
       // Check if the pathname has changed
     }, [location]);
@@ -116,19 +126,13 @@ export default function Dashboard() {
                 } else {
                     access = true;
                 }
-                // if (access) {
-                //     if (!res.data.locked) {
-                //         axios.post(`/api/trip/lockUnlock/${tripid}/1`);
-                //     } else {
-                //         setViewOnly(true);
-                //         setLocked(true);
-                //     }
-                // }
                 if (!access) {
                     setTripDetails(null);
                     navigate('/');
                 }
                 setTripDetails(res.data);
+                setLocked(res.data.locked);
+                setViewOnly(res.data.locked);
             })
             .catch((err) => {
                 console.log(err);
@@ -190,7 +194,7 @@ export default function Dashboard() {
 
       return (
         <div style={{ backgroundColor: '#F3F3F5'}}>
-            <TopBar locked={locked}/>
+            {tempid ? <TopBar/> : <TopBar locked={locked} handleLock={handleLock} showLock={true}/>}
             <Container sx={{ marginTop: '75px' }}>
                 <CreateTripContainer>
                     <CreateTrip/>
