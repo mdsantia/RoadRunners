@@ -132,8 +132,8 @@ export default function PreferencesForm(props) {
     }
 
     const handleAddingKeywords = () => {
-        setAttractionSelection([...attractionSelection, keyword]);
-        setAttractionKeywords(prevKeywords => [...prevKeywords, keyword]);
+        setAttractionSelection([...attractionSelection, keyword.trim()]);
+        setAttractionKeywords(prevKeywords => [...prevKeywords, keyword.trim()]);
         setKeyword('');
     }
 
@@ -150,6 +150,13 @@ export default function PreferencesForm(props) {
             setExpandedKeywords([...expandedKeywords, clickedKeyword]);
         }
     };
+
+    const handleShowAddButton = () => {
+        if (!keyword || (/^\s*$/.test(keyword)) || attractionSelection.includes(keyword.trim())) {
+            return false;
+        }
+        return true;
+    }
 
     const checkBudgetFormat = (input) => {
         const budgetRegex = /^\d+(\.\d{2})?$/;
@@ -440,21 +447,23 @@ export default function PreferencesForm(props) {
                                 </TextField>
                             </Grid>
                             <Grid item xs={2} sm={2} md={2} alignItems="center" style={{ display: 'flex' }}>
-                                <Button
-                                    sx={{
-                                        borderRadius: '10px',
-                                        border: '1px solid #ccc',
-                                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-                                        backgroundColor: 'darkblue',
-                                        color: 'white',
-                                        '&:hover': {
-                                            backgroundColor: '#6495ed',
-                                        },
-                                    }}
-                                    onClick={handleAddingKeywords}
-                                >
-                                    Add
-                                </Button>
+                                {handleShowAddButton() && (
+                                    <Button
+                                        sx={{
+                                            borderRadius: '10px',
+                                            border: '1px solid #ccc',
+                                            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                                            backgroundColor: 'darkblue',
+                                            color: 'white',
+                                            '&:hover': {
+                                                backgroundColor: '#6495ed',
+                                            },
+                                        }}
+                                        onClick={handleAddingKeywords}
+                                    >
+                                        Add
+                                    </Button>
+                                )}
                             </Grid>
                         </Grid>
                         <br></br>
