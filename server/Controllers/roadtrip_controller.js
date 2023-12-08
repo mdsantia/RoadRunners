@@ -202,7 +202,8 @@ const getGasStations = async (req, res) => {
 }
 
 const newRoadTrip = async (req, res) => {
-  let { startLocation, endLocation, startDate, endDate, mpg, foodPref} = req.query;
+  let { startLocation, endLocation, startDate, endDate, mpg, foodPref, attractionPref} = req.query;
+  console.log(attractionPref);
   mpg = mpg===undefined||mpg<=0?10:mpg;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
   
@@ -238,18 +239,19 @@ const getLiveEvents = async(req, res) => {
   const {startLocation, endLocation, startDate, endDate} = req.query;
 
   const events = await roadtrip_apis.callTicketmasterService(startLocation, endLocation, startDate, endDate);
-  events.forEach(event => {
-    event.location = {lat: parseFloat(event._embedded.venues[0].location.latitude), lng: parseFloat(event._embedded.venues[0].location.longitude)};
-    event.locationString = `${event._embedded.venues[0].location.latitude},${event._embedded.venues[0].location.longitude}`;
-    delete event._embedded;
-    delete event._links;
-  });
-  // if (attractions.message) {
-  //   console.log("Ticket Master Error\n");
-  //   res.status(401).json(attractions.message);
-  // }
+  if (!events.message) {
+    events.forEach(event => {
+      event.location = {lat: parseFloat(event._embedded.venues[0].location.latitude), lng: parseFloat(event._embedded.venues[0].location.longitude)};
+      event.locationString = `${event._embedded.venues[0].location.latitude},${event._embedded.venues[0].location.longitude}`;
+      delete event._embedded;
+      delete event._links;
+    });
+    res.status(201).json(events);
+    return;
+  }
+  console.log(`Ticket Master Error: ${events.message}\n`.red.bold);
+  res.status(401).json(events.message);
 
-  res.status(201).json(events);
 }
 
 async function addStopInto (newStop, into, stops) {
@@ -406,7 +408,6 @@ const rearrangeStops = async (req, res) => {
     }
   }
 
-  console.log(stops)
   res.status(201).json(stops);
 }
   

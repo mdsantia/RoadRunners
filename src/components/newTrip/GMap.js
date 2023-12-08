@@ -65,7 +65,7 @@ const GMap = (props) => {
             gasStations.forEach((stop, index) => {
                 const markerIcon = {
                     path: faGasPump.icon[4],
-                    fillColor: "#df0707",
+                    fillColor: "#333333",
                     fillOpacity: 1,
                     anchor: new window.google.maps.Point(
                         faGasPump.icon[0] / 2, // width
@@ -73,7 +73,7 @@ const GMap = (props) => {
                     ),
                     strokeWeight: 1,
                     strokeColor: "#ffffff",
-                    scale: 0.06,
+                    scale: 0.04,
                 };
             
                 const marker = new window.google.maps.Marker({
@@ -120,7 +120,7 @@ const GMap = (props) => {
                     ),
                     strokeWeight: 1,
                     strokeColor: "#ffffff",
-                    scale: 0.06,
+                    scale: 0.04,
                 };
             
                 const marker = new window.google.maps.Marker({
@@ -276,6 +276,14 @@ const GMap = (props) => {
         
     /** ATTEMPT TO GET USER'S LOCATION */
     useEffect(() => {
+        if (markers && polyline) {
+            markers.forEach(marker => marker.setMap(null));
+            markers.length = 0; // Clear the markers array
+
+            polyline.setMap(null);
+            markers = [];
+            polyline = null;
+        }
         if (navigator.geolocation && !userLocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -297,6 +305,7 @@ const GMap = (props) => {
                 markers.length = 0; // Clear the markers array
                 polyline.setMap(null);
             }
+            
             if (!map) {
                 console.log('Initializing map...');
                 map = new window.google.maps.Map(mapContainerRef.current, {
@@ -306,11 +315,9 @@ const GMap = (props) => {
                     mapTypeControl: false,
                     fullscreenControl: false
                 });
-            } if (map) {
+            } else {
                 if (mapContainerRef.current && mapContainerRef.current.childElementCount === 0) {
                     mapContainerRef.current.appendChild(map.getDiv());
-
-                    // console.log(mapContainerRef.current);
                 }
                 /** SUPPORT ANIMATIONS AND NOT RELOAD */
             }
@@ -326,13 +333,6 @@ const GMap = (props) => {
             return () => {
                 if (map) {
                     window.google.maps.event.clearInstanceListeners(map);
-
-                    if (markers && polyline) {
-                        markers.forEach(marker => marker.setMap(null));
-                        markers.length = 0; // Clear the markers array
-    
-                        polyline.setMap(null);
-                    }
                 }
             };
         }

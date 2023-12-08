@@ -1,14 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import { Card, Button, Typography, Stack } from '@mui/material';
+import { Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/additionalFeatures/TopBar';
 import CreateTrip from '../components/newTrip/CreateTrip'
 import {useDashboardContext} from '../hooks/useDashboardContext';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
-import Map from '../components/newTrip/Map';
 import GMap from '../components/newTrip/GMap';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
@@ -73,7 +71,6 @@ const Wrapper = styled(Card)(({ theme }) => ({
 
 export default function Dashboard() {
     const {tripid, tempid} = useParams();
-    const [nonce, setNonce] = useState('');
     const { user } = useUserContext();
     const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
@@ -175,6 +172,7 @@ export default function Dashboard() {
             endLocation: tripDetails.endLocation,
             startDate: tripDetails.startDate,
             endDate: tripDetails.endDate,
+            attractionPref: tripDetails.preferences.attractionSelection,
             foodPref: tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : null,
             mpg: tripDetails.minimumMPG,
         };
@@ -198,7 +196,6 @@ export default function Dashboard() {
                 </CreateTripContainer>
                 
                 <MapWrapper ref={mapWrapperRef}>
-                    {/* <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/> */}
                     <GMap size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
                 </MapWrapper>
                 <Wrapper>

@@ -172,7 +172,13 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       user_email: user.email,
     }).then((res) => {
       showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
-      navigate(`/dashboard/${res.data.id}`);
+      const newTripDetails = {
+        ...tripDetails,
+        preferences: newPrefs
+      };
+      setTripDetails(newTripDetails);
+      buildRoadTrip();
+      navigate(`/dashboard/${tripDetails._id}`);
     }).catch((err) => {
       console.log(err);
       showMessage('Error updating preferences', 2000, 'error');
