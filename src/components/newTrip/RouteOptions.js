@@ -11,6 +11,8 @@ import { useDashboardContext } from '../../context/DashboardContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 function RouteOptions() {
@@ -123,6 +125,7 @@ function RouteOptions() {
         return (
             <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
             Awaiting for route suggestions...
+            <LinearProgress />
             </Typography> 
         )
     }

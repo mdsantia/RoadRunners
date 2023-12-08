@@ -89,7 +89,7 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
             
             let totalDistance = 0;
             for (let j = 0; j < tripDetails.options[tripDetails.chosenRoute].length - 1; j++) {
-                totalDistance += tripDetails.options[tripDetails.chosenRoute][j].distance;
+                totalDistance += tripDetails.options[tripDetails.chosenRoute][j].distance ;
             }
             console.log(totalDistance);
               

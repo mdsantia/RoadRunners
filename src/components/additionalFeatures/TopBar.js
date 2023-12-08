@@ -21,7 +21,7 @@ function TopBar(props) {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const profile_picture = user ? user.profile_picture : "/static/images/avatar/2.jpg";
-  const { handleLock, locked } = props;
+  const { handleLock, locked } = props.locked;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
