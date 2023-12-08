@@ -366,5 +366,37 @@ const moveStop = async (req, res) => {
 
   res.status(201).json(newStops);
 }
+
+const rearrangeStops = async (req, res) => {
+  const {stops} = req.body;
+
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (stops[i].routeFromHere === null) {
+      var request =  {
+        origin: stops[i].locationString,
+        destination: stops[i + 1].locationString,
+        travelMode: 'DRIVING',
+        drivingOptions: {
+          // departureTime: startDate, // + time
+          trafficModel: 'pessimistic'
+        },
+      };
+      
+      const replacementRoute = await roadtrip_apis.callDirectionService(request)
+    
+      const decoded = polyline.decode(replacementRoute.routes[0].overview_polyline.points);
+      const path = decoded.map((point) => {
+        return { lat: point[0], lng: point[1] };
+      });
+    
+      stops[i].routeFromHere = path;
+      stops[i].distance = replacementRoute.routes[0].legs[0].distance.value;
+      stops[i].duration = replacementRoute.routes[0].legs[0].duration.value;
+    }
+  }
+
+  console.log(stops)
+  res.status(201).json(stops);
+}
   
-module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents, yelpUrl};
+module.exports = {getWarnings, newRoadTrip, addStop, removeStop, moveStop, getLiveEvents, yelpUrl, rearrangeStops};
