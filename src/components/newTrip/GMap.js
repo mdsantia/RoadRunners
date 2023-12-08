@@ -25,6 +25,7 @@ const GMap = (props) => {
     useEffect(() => {
         if (liveEvents) {
             setEvents(liveEvents);
+            addEvents();
         }
     }, [liveEvents]);
 
@@ -381,8 +382,6 @@ const GMap = (props) => {
             addStops();
 
             addRestaurants();
-            addEvents();
-
             
             return () => {
                 if (map) {
