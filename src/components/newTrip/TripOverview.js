@@ -220,8 +220,6 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
                 <br></br>
                 {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
                 <br></br>
-                {getRouteDetails("Fuel Cost of Trip ($) :", tripFuelCost)}
-                <br></br>
                 {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
                 <br></br>
                 <Divider></Divider>
@@ -234,6 +232,8 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
                         {vehicle}
                     </li>
                 ))}
+                <br></br>
+                {getRouteDetails("Fuel Cost of Trip ($):", tripFuelCost)}
                 <br></br>
                 <Divider></Divider>
                 <br></br>
