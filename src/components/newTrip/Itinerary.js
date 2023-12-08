@@ -110,7 +110,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
   const saveTrip = async (isNewTrip) => {
     await axios.post('/api/trip/saveTrip', {
-      id: isNewTrip ? null : tripDetails.id,
+      id: isNewTrip ? null : tripDetails._id,
       startLocation: tripDetails.startLocation,
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
@@ -130,7 +130,9 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       } else {
         showMessage('Trip updated!', 2000, 'success');
       }
-      updateUser(res.data.user);
+      if (isNewTrip) {
+        updateUser(res.data.user);
+      }
       const oldid = tripDetails.tempid;
       if (oldid) {
         const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};

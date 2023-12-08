@@ -82,6 +82,7 @@ export default function Dashboard() {
     const prevLocation = useRef(location);
     const [viewOnly, setViewOnly] = useState(false);
     const [sharedTrip, setSharedTrip] = useState(false);
+    const [locked, setLocked] = useState(false);
   
     if (prevLocation.current.pathname !== location.pathname) {
         window.location.reload();
@@ -117,6 +118,14 @@ export default function Dashboard() {
                 } else {
                     access = true;
                 }
+                if (access) {
+                    if (!res.data.locked) {
+                        axios.post(`/api/trip/lockUnlock/${tripid}`);
+                    } else {
+                        setViewOnly(true);
+                        setLocked(true);
+                    }
+                }
                 if (!access) {
                     setTripDetails(null);
                     navigate('/');
@@ -144,6 +153,12 @@ export default function Dashboard() {
                 navigate('/');
             }
             setTripDetails(trip);
+        }
+
+        return () => {
+            if (tripDetails && tripDetails.locked && !locked) {
+                axios.post(`/api/trip/lockUnlock/${tripid}`);
+            }
         }
     }, [tripid, tempid, user]);
 

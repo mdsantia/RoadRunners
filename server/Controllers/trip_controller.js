@@ -182,9 +182,10 @@ const getAllSharedTrips = async (req, res) => {
     for (let i = 0; i < tripIds.length; i++) {
         const trip = await Trip.findOne({_id: tripIds[i]});
         if (!trip) {
-            console.log(`ERROR in getAllSharedTrips Trip was not found`.red.bold);
-            res.status(400).json({error: 'Trip not found'});
-            return;
+            // Remove trip from user
+            user.tripsShared = user.tripsShared.filter(trip => trip != tripIds[i]);
+            user.save();
+            continue;
         }
         trips.push({
             _id: trip._id,
@@ -304,6 +305,7 @@ const saveTrip = async (req, res) => {
         trip.stops = stops;
         await trip.save();
         res.status(200).json("Trip updated");
+        return;
     }
 
     const trip = new Trip({
@@ -408,4 +410,18 @@ const clearAllTrips = async (req, res) => {
     return;
 }
 
-module.exports = {getAllTrips, getTrip, saveTrip, deleteTrip, clearAllTrips, shareTrip, getAllSharedTrips};
+const lockUnlock = async (req, res) => {
+    const {id} = req.params;
+
+    const trip = await Trip.findOne({_id: id});
+    if (!trip) {
+        res.status(400).json({message: 'Invalid trip'});
+        return;
+    }
+
+    trip.locked = !trip.locked;
+    await trip.save();
+    res.status(200).json();
+}
+
+module.exports = {getAllTrips, getTrip, saveTrip, deleteTrip, clearAllTrips, shareTrip, getAllSharedTrips, lockUnlock};
