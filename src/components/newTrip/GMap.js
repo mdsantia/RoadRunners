@@ -303,7 +303,6 @@ const GMap = (props) => {
             if (markers && polyline) {
                 markers.forEach(marker => marker.setMap(null));
                 markers.length = 0; // Clear the markers array
-
                 polyline.setMap(null);
             }
             
