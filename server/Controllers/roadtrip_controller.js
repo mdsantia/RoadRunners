@@ -240,7 +240,6 @@ const getLiveEvents = async(req, res) => {
 
   const events = await roadtrip_apis.callTicketmasterService(startLocation, endLocation, startDate, endDate);
   if (!events.message) {
-    console.log(events)
     events.forEach(event => {
       event.location = {lat: parseFloat(event._embedded.venues[0].location.latitude), lng: parseFloat(event._embedded.venues[0].location.longitude)};
       event.locationString = `${event._embedded.venues[0].location.latitude},${event._embedded.venues[0].location.longitude}`;
