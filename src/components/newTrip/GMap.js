@@ -65,7 +65,7 @@ const GMap = (props) => {
             gasStations.forEach((stop, index) => {
                 const markerIcon = {
                     path: faGasPump.icon[4],
-                    fillColor: "#df0707",
+                    fillColor: "#333333",
                     fillOpacity: 1,
                     anchor: new window.google.maps.Point(
                         faGasPump.icon[0] / 2, // width
@@ -73,7 +73,7 @@ const GMap = (props) => {
                     ),
                     strokeWeight: 1,
                     strokeColor: "#ffffff",
-                    scale: 0.06,
+                    scale: 0.04,
                 };
             
                 const marker = new window.google.maps.Marker({
@@ -120,7 +120,7 @@ const GMap = (props) => {
                     ),
                     strokeWeight: 1,
                     strokeColor: "#ffffff",
-                    scale: 0.06,
+                    scale: 0.04,
                 };
             
                 const marker = new window.google.maps.Marker({

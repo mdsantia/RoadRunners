@@ -7,8 +7,6 @@ import CreateTrip from '../components/newTrip/CreateTrip'
 import {useDashboardContext} from '../hooks/useDashboardContext';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
-import Map from '../components/newTrip/Map';
 import GMap from '../components/newTrip/GMap';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
@@ -189,7 +187,6 @@ export default function Dashboard() {
                 </CreateTripContainer>
                 
                 <MapWrapper ref={mapWrapperRef}>
-                    {/* <Map size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/> */}
                     <GMap size={mapWrapperRef.current?mapWrapperRef.current.getBoundingClientRect():null}/>
                 </MapWrapper>
                 <Wrapper>
