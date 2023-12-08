@@ -85,7 +85,10 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   let tempStops = [];
   let i = 0;
   while (numStops < 4 && i < combinedStops.length) {
-    const stop = i % 2 ? customResult[i % customResult.length] : combinedStops[i % combinedStops.length];
+    let stop = combinedStops[i];
+    if (i % 2 && customResult && customResult[i % customResult.length]) {
+      stop = customResult[i % customResult.length];
+    }
     combinedStops = [...customResult, ...combinedStops];
     if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
       allStops.push(stop);
