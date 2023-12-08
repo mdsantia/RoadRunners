@@ -13,34 +13,7 @@ export default function PreferencesForm(props) {
     const inDashboard = props.type === 'dashboard';
     const {tripDetails} = useDashboardContext();
     const viewOnly = props.viewOnly;
-
-    React.useEffect(() => {
-        if (!user) {
-          return;
-        } 
-        setBudget(user.preferences.budget ? user.preferences.budget : '');
-        setCommuteTime(user.preferences.commuteTime ? user.preferences.commuteTime : '');
-        setCarsickRating(user.preferences.carsickRating ? user.preferences.carsickRating : '');
-        setAttractionSelection(user.preferences.attractionSelection ? user.preferences.attractionSelection : [] );
-        setDiningSelection(user.preferences.diningSelection ? user.preferences.diningSelection : []);
-        setHousingSelection(user.preferences.housingSelection ? user.preferences.housingSelection : []);
-    }, [user]);
-
-    React.useEffect(() => {
-        if (!tripDetails || !inDashboard) {
-            return;
-        }
-        if (!tripDetails.preferences) {
-            return;
-        }
-        setBudget(tripDetails.preferences.budget ? tripDetails.preferences.budget : budget);
-        setCommuteTime(tripDetails.preferences.commuteTime ? tripDetails.preferences.commuteTime : commuteTime);
-        setCarsickRating(tripDetails.preferences.carsickRating ? tripDetails.preferences.carsickRating : carsickRating);
-        setAttractionSelection(tripDetails.preferences.attractionSelection ? tripDetails.preferences.attractionSelection : attractionSelection);
-        setDiningSelection(tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : diningSelection);
-        setHousingSelection(tripDetails.preferences.housingSelection ? tripDetails.preferences.housingSelection : housingSelection);
-    }, [tripDetails]);
-
+    
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const attractionOptions = [
         "Entertainment", 
@@ -77,6 +50,41 @@ export default function PreferencesForm(props) {
         // "Cabins", 
         // "Cottages"
     ];
+
+    React.useEffect(() => {
+        if (!user) {
+          return;
+        } 
+        const local = user.preferences.attractionSelection ? user.preferences.attractionSelection : [];
+        setAttractionSelection(local);
+        setBudget(user.preferences.budget ? user.preferences.budget : '');
+        setCommuteTime(user.preferences.commuteTime ? user.preferences.commuteTime : '');
+        setCarsickRating(user.preferences.carsickRating ? user.preferences.carsickRating : '');
+        setDiningSelection(user.preferences.diningSelection ? user.preferences.diningSelection : []);
+        setHousingSelection(user.preferences.housingSelection ? user.preferences.housingSelection : []);
+        const keywords = local.filter((attraction) => !attractionOptions.includes(attraction));
+        setAttractionKeywords(keywords);
+    }, [user]);
+    
+    React.useEffect(() => {
+        if (!tripDetails || !inDashboard) {
+            return;
+        }
+        if (!tripDetails.preferences) {
+            return;
+        }
+        const local = user.preferences.attractionSelection ? user.preferences.attractionSelection : [];
+        setAttractionSelection(local);
+        setBudget(tripDetails.preferences.budget ? tripDetails.preferences.budget : budget);
+        setCommuteTime(tripDetails.preferences.commuteTime ? tripDetails.preferences.commuteTime : commuteTime);
+        setCarsickRating(tripDetails.preferences.carsickRating ? tripDetails.preferences.carsickRating : carsickRating);
+        setAttractionSelection(tripDetails.preferences.attractionSelection ? tripDetails.preferences.attractionSelection : attractionSelection);
+        setDiningSelection(tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : diningSelection);
+        setHousingSelection(tripDetails.preferences.housingSelection ? tripDetails.preferences.housingSelection : housingSelection);
+        const keywords = local.filter((attraction) => !attractionOptions.includes(attraction));
+        setAttractionKeywords(keywords);
+    }, [tripDetails]);
+
     const [budget, setBudget] = React.useState('');
     const [commuteTime, setCommuteTime] = React.useState('');
     const [carsickRating, setCarsickRating] = React.useState('');
@@ -125,18 +133,13 @@ export default function PreferencesForm(props) {
     }
 
     const handleAddingKeywords = () => {
-        tripDetails.preferences.attractionSelection.push(keyword);
-        setAttractionKeywords(prevUsers => [...prevUsers, keyword]);
+        setAttractionSelection([...attractionSelection, keyword]);
+        setAttractionKeywords(prevKeywords => [...prevKeywords, keyword]);
         setKeyword('');
     }
 
     const handleDeleteKeywords = (keyword) => {
-        const indexToRemove = tripDetails.preferences.attractionSelection.indexOf(keyword);
-        if (indexToRemove !== -1) {
-            tripDetails.preferences.attractionSelection.splice(indexToRemove, 1);
-        } else {
-            console.log("Couldn't find keyword in tripDetails!");
-        }
+        setAttractionSelection(attractionSelection.filter((attraction) => attraction !== keyword));
         const updatedKeywords = attractionKeywords.filter((attractionKeyword) => attractionKeyword !== keyword);
         setAttractionKeywords(updatedKeywords);
     }

@@ -35,8 +35,7 @@ import DeckOutlinedIcon from '@mui/icons-material/DeckOutlined';
 import HotelOutlinedIcon from '@mui/icons-material/HotelOutlined';
 import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
-import PreferencesForm from '../userProfile/PreferencesForm';
-
+import KeyIcon from '@mui/icons-material/Key';
 
 export default function PreferencesInfo(props) {
     const {user, updateUser} = useUserContext();
@@ -73,10 +72,14 @@ export default function PreferencesInfo(props) {
                             {list.slice(columnIndex * numOptionsPerColumn, (columnIndex + 1) * numOptionsPerColumn).map((itemObject, index) => (
                                 <Typography component='div' key={index}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {iconList[itemObject] && (
+                                    {iconList[itemObject] ? (
                                         <div style={{ marginRight: '15px' }}>
-                                        {iconList[itemObject]}
-                                    </div>
+                                            {iconList[itemObject]}
+                                        </div>
+                                    ) : (
+                                        <div style={{ marginRight: '15px' }}>
+                                            {iconList['Keywords']}
+                                        </div>
                                     )}
                                     {itemObject}
                                 </div>
@@ -101,7 +104,8 @@ export default function PreferencesInfo(props) {
         'Shopping': <ShoppingBagOutlinedIcon></ShoppingBagOutlinedIcon>,
         'Culinary': <LocalDiningOutlinedIcon></LocalDiningOutlinedIcon>,
         'Religious': <ChurchOutlinedIcon></ChurchOutlinedIcon>,
-        'Family-Friendly': <FamilyRestroomOutlinedIcon></FamilyRestroomOutlinedIcon>
+        'Family-Friendly': <FamilyRestroomOutlinedIcon></FamilyRestroomOutlinedIcon>,
+        'Keywords' : <KeyIcon></KeyIcon>
     };
     const diningIcons = {
         'Fast Food': <LunchDiningOutlinedIcon></LunchDiningOutlinedIcon>,
@@ -198,6 +202,16 @@ export default function PreferencesInfo(props) {
                     </Grid>
                 </div>
                 <br></br>
+                {/* <Typography variant="body1" fontWeight="bold">
+                    <KeyboardArrowRightIcon style={{ marginRight: '10px' }} />
+                    <span style={{ textDecoration: 'underline' }}>Keywords</span>
+                </Typography>
+                <div style={{ paddingLeft: '50px' }}>
+                    <Grid container>
+                        {getList(attractionSelection, attractionIcons, "No Keywords Added")}
+                    </Grid>
+                </div>
+                <br></br> */}
                 <Divider></Divider>
                 <br></br>
                 <Typography variant="body1" fontWeight="bold">
