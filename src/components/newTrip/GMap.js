@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import {faMapPin, faFlag, faGasPump, faUtensils, faMasksTheater} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import CircularProgress from '@mui/material/CircularProgress';
 
 var map = null;
 var markers = [];
@@ -20,11 +21,13 @@ const GMap = (props) => {
     const [events, setEvents] = useState([]); 
     const [selectedMarker, setSelectedMarker] = useState(null);
     const iconSize = '10x10';
+    const [mapLoading, setMapLoading] = useState(true);
     var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
     useEffect(() => {
         if (liveEvents) {
             setEvents(liveEvents);
+            addEvents();
         }
     }, [liveEvents]);
 
@@ -353,6 +356,7 @@ const GMap = (props) => {
     /** MAP RERENDERER */
     useEffect(() => {
         if (tripDetails && tripDetails.polyline) {
+            setMapLoading(true);
             if (markers && polyline) {
                 markers.forEach(marker => marker.setMap(null));
                 markers.length = 0; // Clear the markers array
@@ -368,11 +372,15 @@ const GMap = (props) => {
                     mapTypeControl: false,
                     fullscreenControl: false
                 });
+                map.addListener('idle', () => {
+                    setMapLoading(false); // Set loading to false when the map rendering is complete
+                });
             } else {
                 if (mapContainerRef.current && mapContainerRef.current.childElementCount === 0) {
                     mapContainerRef.current.appendChild(map.getDiv());
                 }
                 /** SUPPORT ANIMATIONS AND NOT RELOAD */
+                setMapLoading(false);
             }
             insertPolyline();
 
@@ -381,8 +389,6 @@ const GMap = (props) => {
             addStops();
 
             addRestaurants();
-            addEvents();
-
             
             return () => {
                 if (map) {
@@ -395,9 +401,23 @@ const GMap = (props) => {
     
 
     return (
-        <div style={{ height: '100%' }}>
-            <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
-        </div>
+        <div style={{ height: '100%', position: 'relative' }}>
+        {mapLoading && (
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                }}
+            >
+               <CircularProgress size={100} thickness={3} />
+            </div>
+        )}
+        <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
+    </div>
     );
 };
 

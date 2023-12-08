@@ -189,7 +189,7 @@ export default function Dashboard() {
 
       return (
         <div style={{ backgroundColor: '#F3F3F5'}}>
-            <TopBar/>
+            <TopBar locked={locked}/>
             <Container sx={{ marginTop: '75px' }}>
                 <CreateTripContainer>
                     <CreateTrip disableNewTrip={true}/>
