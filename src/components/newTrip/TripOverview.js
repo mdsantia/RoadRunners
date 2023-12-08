@@ -14,6 +14,7 @@ import { styled } from '@mui/material/styles';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from '../additionalFeatures/StrictModeDroppable';
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -175,6 +176,7 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
         return (
             <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
                 Awaiting for route suggestions...
+                <LinearProgress></LinearProgress>
             </Typography> 
         );
     }

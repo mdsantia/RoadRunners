@@ -22,6 +22,7 @@ import GasStations from '../StopsComponents/GasStations'
 import { useEffect } from 'react';
 import StopSearch from '../StopsComponents/StopSearch';
 import {useDashboardContext} from '../../context/DashboardContext'
+import LinearProgress from '@mui/material/LinearProgress';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -379,6 +380,7 @@ export default function AttractionsList({viewOnly}) {
   return (
     <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
     Awaiting for route suggestions...
+    <LinearProgress></LinearProgress>
     </Typography> 
   );
 }

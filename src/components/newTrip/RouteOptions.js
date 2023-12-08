@@ -11,7 +11,6 @@ import { useDashboardContext } from '../../context/DashboardContext';
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Checkbox from '@mui/material/Checkbox';
-import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress from '@mui/material/LinearProgress';
 
 
