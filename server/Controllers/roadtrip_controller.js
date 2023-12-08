@@ -246,7 +246,7 @@ const newRoadTrip = async (req, res) => {
   
   const result = {options: [], allStops: []};
   let promises = [];
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 4; i++) {
     const optionNumber = i;
     promises.push(buildARoute(req, optionNumber));
   }
