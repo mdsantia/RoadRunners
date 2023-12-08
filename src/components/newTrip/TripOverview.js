@@ -98,24 +98,19 @@ export default function AttractionsList({viewOnly}) {
         newStops[from].routeFromHere = null;
         newStops[to - 1].routeFromHere = null;
 
-
         const [removed] = newStops.splice(from, 1);
         newStops.splice(to, 0, removed);
-        updateStops(newStops);
-
-    //     console.log(newStops);
-
-    //     console.log(from, `to`, to);
-    //     await axios.post('/api/roadtrip/rearrangeStops', {
-    //       stops: stops
-    //     }).then(response => {
-    //       newStops = response.data;
-    //       changeStops(newStops, 1);
-    //   }).catch(error => {
-    //       console.log(error.response.data.error);
-    //       updateVehicles(oldVehicles);
-    //       alert("There was an error saving your vehicle ranking: " + error.response.data.error + ".\nPlease try again.");
-    //   });
+        
+        await axios.post('/api/roadtrip/rearrangeStops', {
+            stops: newStops
+        }).then(response => {
+            newStops = response.data;
+            changeStops(newStops);
+            updateStops(newStops);
+        }).catch(error => {
+            console.log(error.response.data.error);
+            alert("There was an error saving your vehicle ranking: " + error.response.data.error + ".\nPlease try again.");
+        });
       }
 
     if (tripDetails && !tripDetails.stops) {
