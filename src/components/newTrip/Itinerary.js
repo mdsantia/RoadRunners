@@ -147,8 +147,15 @@ export default function Itinerary({viewOnly, sharedTrip}) {
   }
 
   const handleChangePrefs = async (newPrefs) => {
+    if (tripDetails.tempid) {
+      const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
+      tempTrips[tripDetails.tempid].preferences = newPrefs;
+      localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
+      navigate(`/dashboard/new/${tripDetails.tempid}`);
+      return;
+    }
     await axios.post('/api/trip/saveTrip', {
-      id: tripDetails.id,
+      id: tripDetails._id,
       startLocation: tripDetails.startLocation,
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
@@ -163,7 +170,6 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       stops: tripDetails.stops,
       user_email: user.email,
     }).then((res) => {
-      updateUser(res.data.user);
       showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
       navigate(`/dashboard/${res.data.id}`);
     }).catch((err) => {
