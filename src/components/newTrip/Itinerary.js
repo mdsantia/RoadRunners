@@ -152,8 +152,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
       endDate: tripDetails.endDate,
-      attractionPref: newPrefs.attractionSelection,
-      foodPref: newPrefs.diningSelection ? newPrefs.diningSelection : null,
+      preferences: newPrefs,
       mpg: newPrefs.minimumMPG ? newPrefs.minimumMPG : tripDetails.minimumMPG
     };
 

@@ -172,8 +172,7 @@ export default function Dashboard() {
             endLocation: tripDetails.endLocation,
             startDate: tripDetails.startDate,
             endDate: tripDetails.endDate,
-            attractionPref: tripDetails.preferences.attractionSelection,
-            foodPref: tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : null,
+            preferences: tripDetails.preferences,
             mpg: tripDetails.minimumMPG,
         };
 
@@ -192,7 +191,7 @@ export default function Dashboard() {
             <TopBar/>
             <Container sx={{ marginTop: '75px' }}>
                 <CreateTripContainer>
-                    <CreateTrip/>
+                    <CreateTrip disableNewTrip={true}/>
                 </CreateTripContainer>
                 
                 <MapWrapper ref={mapWrapperRef}>

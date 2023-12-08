@@ -468,8 +468,8 @@ export default function PreferencesForm(props) {
                         </Button>
                     )}
                     {inDashboard && (
-                        <Button onClick={handleDashboardSave} disabled={viewOnly} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
-                            Confirm
+                        <Button onClick={handleDashboardSave} disabled={viewOnly} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
+                            Re-Generate Trip
                         </Button>
                     )} 
                 </Container>
