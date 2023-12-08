@@ -13,12 +13,13 @@ import Avatar from '@mui/material/Avatar';
 import { Link } from '@mui/material'; // Import Link component
 import { pageOptions } from '../userProfile/SideBar';
 
-function TopBar() {
+function TopBar(props) {
   const { user, logout } = useUserContext();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const profile_picture = user ? user.profile_picture : "/static/images/avatar/2.jpg";
+  const {handleLock, locked} = props;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

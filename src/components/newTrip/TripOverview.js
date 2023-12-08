@@ -35,6 +35,7 @@ export default function AttractionsList({viewOnly}) {
 
     useEffect(() => {
         if (tripDetails && tripDetails.allStops) {
+
             // setAllAttractions(tripDetails.allStops);
             // tripDetails.stops.forEach((stop) => {
             //     if (stop.category !== 'start' && stop.category !== 'end' && !selectedStops.some(item => item.id === stop.id)) {
@@ -68,6 +69,15 @@ export default function AttractionsList({viewOnly}) {
       });
     };
 
+    function getTripFuelCost() {
+        if (tripDetails && tripDetails.totalDistance) {
+            console.log(tripDetails.totalDistance[tripDetails.chosenRoute]);
+            console.log(tripDetails.selectedVehicles);
+
+            // Calculate fuel cost based on totalDistance if needed
+        }
+    }
+
     const getRouteDetails = (infoLabel, info) => {
         return (
             <Grid container alignItems="left" textAlign="left" spacing={0}>
@@ -84,6 +94,9 @@ export default function AttractionsList({viewOnly}) {
             </Grid>
         );
     }
+
+
+   
 
     async function handleOnDragEnd (result) {
         const from = result.source.index;
@@ -226,4 +239,5 @@ export default function AttractionsList({viewOnly}) {
             </Box>
         );
     }    
+
 }
