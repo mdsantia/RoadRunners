@@ -86,14 +86,12 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
 
     function getTripFuelCost() {
         if (tripDetails && tripDetails.totalDistance) {
-            let totalDistance = tripDetails.totalDistance[tripDetails.chosenRoute];
-            /*let totalDistance = 0;
+            //let totalDistance = tripDetails.totalDistance[tripDetails.chosenRoute];
+            let totalDistance = 0;
             for (let j = 0; j < tripDetails.options[tripDetails.chosenRoute].length - 1; j++) {
-                totalDistance += tripDetails.options[j].distance;
+                totalDistance += tripDetails.options[tripDetails.chosenRoute].distance;
                 console.log(totalDistance);
               }
-              */
-            
             let averageFuelCost = getAverageFuelCost(); 
             let fuelEconomy = 20;
 
