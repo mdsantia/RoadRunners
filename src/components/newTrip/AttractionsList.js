@@ -130,14 +130,16 @@ export default function AttractionsList({viewOnly}) {
 
   useEffect(() => {
     if (tripDetails && tripDetails.allStops) {
+      const currentStops = tripDetails.stops;
       setAllAttractions(tripDetails.allStops);
-      tripDetails.stops.forEach((stop) => {
+      currentStops.forEach((stop) => {
         if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.place_id === stop.place_id)) {
           selectedAttractions.push(stop);
         }
       });
-      if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].restaurants) {
-        tripDetails.stops.forEach((stop) => {
+      let selected = [];
+      if (currentStops.some(obj => obj.gasStations)) {
+        currentStops.forEach((stop) => {
           if (stop.gasStations && stop.gasStations.length > 0) {
             // If we didn't already add this gas station to the list, add it
             for(let i = 0; i < stop.gasStations.length; i++) {
@@ -149,17 +151,29 @@ export default function AttractionsList({viewOnly}) {
             }
           }
         });
+        allGasStations.forEach((g) => {
+          if (currentStops.some((s) => s.place_id === g.place_id)) {
+            selected.push(g);
+          }
+        });
+        setSelectedGasStations(selected);
       }
-      if (tripDetails.chosenRoute == 0 && tripDetails.stops[1].restaurants) {
-        setAllRestaurants(tripDetails.stops[1].restaurants)
+      selected = [];
+      const objWithRestaurants = currentStops.find(obj => obj.restaurants);
+      if (objWithRestaurants) {
+        const allRestaurants = objWithRestaurants.restaurants;
+        setAllRestaurants(allRestaurants);
+        allRestaurants.forEach((r) => {
+          if (currentStops.some((s) => s.place_id === r.place_id)) {
+            selected.push(r);
+          }
+        });
+        setSelectedRestaurants(selected);
       }
     }
  }, [tripDetails]);
   /* stop selection functions */
   const handleStopSelection = (stop, selectedList, setSelectedList) => {
-    if (!tripDetails.allStops.some((e) => e.place_id === stop.place_id)) {
-      return;
-    }
     if (stop.routeFromHere) {
       delete stop.routeFromHere;
     }
@@ -197,14 +211,16 @@ export default function AttractionsList({viewOnly}) {
     switch (type) {
       case 'hotel':
         return selectedHotels.some((selectedHotel) => selectedHotel.name === stop.name);
-      case 'landmark':
-        return selectedLandmarks.some((selectedLandmark) => selectedLandmark.name === stop.name);
+      // case 'landmark':
+      //   return selectedLandmarks.some((selectedLandmark) => selectedLandmark.name === stop.name);
       case 'attraction':
-        return selectedAttractions.some((selectedAttraction) => selectedAttraction.name === stop.name);
+        return selectedAttractions.some((selectedAttraction) => selectedAttraction.place_id === stop.place_id);
       case 'liveEvent':
         return selectedLiveEvents.some((selectedLiveEvent) => selectedLiveEvent.name === stop.name);
-        case 'gasStations':
-          return selectedGasStations.some((selectedGasStations) => selectedGasStations.name === stop.name);
+      case 'gasStation':
+        return selectedGasStations.some((selectedGasStations) => selectedGasStations.place_id === stop.place_id);
+      case 'restaurant':
+        return selectedRestaurants.some((selectedRestaurants) => selectedRestaurants.place_id === stop.place_id);
       default:
         return false;
     }
@@ -276,11 +292,27 @@ export default function AttractionsList({viewOnly}) {
           </div> 
         </TabPanel>
         <TabPanel value={value} index={2} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
-          {allRestaurants && allRestaurants.map((restaurant, index) => (
+          {allRestaurants && allRestaurants
+            .slice()
+            .sort((attractionA, attractionB) => {
+              const isSelectedA = isStopSelected(attractionA, 'restaurant');
+              const isSelectedB = isStopSelected(attractionB, 'restaurant');
+
+              // If both attractions are selected or both are not selected, maintain their original order
+              if (isSelectedA === isSelectedB) {
+                return 0;
+              }
+
+              // If attractionA is selected, place it before attractionB
+              return isSelectedA ? -1 : 1;
+            })
+            .map((restaurant, index) => (
             <Restaurants
               key={index}
               viewOnly={viewOnly}
               data={restaurant}
+              selected={isStopSelected(restaurant, 'restaurant')}
+              onSelectionChange={() => handleStopSelection(restaurant, selectedRestaurants, setSelectedRestaurants)}
             />
           ))}
         </TabPanel>
@@ -296,12 +328,26 @@ export default function AttractionsList({viewOnly}) {
           ))}
           </TabPanel> }
         <TabPanel value={value} index={4} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
-          {allGasStations && allGasStations.map((gas, index) => (
+          {allGasStations && allGasStations
+            .slice()
+            .sort((attractionA, attractionB) => {
+              const isSelectedA = isStopSelected(attractionA, 'gasStation');
+              const isSelectedB = isStopSelected(attractionB, 'gasStation');
+
+              // If both attractions are selected or both are not selected, maintain their original order
+              if (isSelectedA === isSelectedB) {
+                return 0;
+              }
+
+              // If attractionA is selected, place it before attractionB
+              return isSelectedA ? -1 : 1;
+            })
+            .map((gas, index) => (
             <GasStations
               key={index}
               viewOnly={viewOnly}
                selected={isStopSelected(gas,'gasStation')}
-               onSelectionChange={() => handleStopSelection(gas,selectedGasStations, setAllGasStations)}
+               onSelectionChange={() => handleStopSelection(gas,selectedGasStations, setSelectedGasStations)}
               data={gas}
             />
           ))}
