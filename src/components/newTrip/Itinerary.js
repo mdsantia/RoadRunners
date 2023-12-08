@@ -189,7 +189,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       return;
     }
     await axios.post('/api/trip/saveTrip', {
-      id: newTrip._id,
+      id: tripDetails._id,
       startLocation: tripDetails.startLocation,
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,

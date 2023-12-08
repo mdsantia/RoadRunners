@@ -112,7 +112,7 @@ async function getRestaurants(route, foodPreferences) {
   for(let i = 1; i < route.length; i++) {
     const distance = calculateDistance(current.lat, current.lng, route[i].lat, route[i].lng);
     if (currentDistance + distance > maxDistance) {
-      const currRestaurants = await getStops(current, null, foodPreferences ? foodPreferences : ['food'], 'distance');
+      const currRestaurants = await getStops(current, null, foodPreferences ? foodPreferences : null, 'food', 'distance');
       // Push the first 3 restaurants
       restaurants.push(...currRestaurants.slice(0, 3));
       currentDistance = 0; 
@@ -133,7 +133,7 @@ async function gasStationsForStop(stop, mpg, fuelCapacity, distancePassed, fuelT
   for(let i = 1; i < route.length; i++) {
     const distance = calculateDistance(current.lat, current.lng, route[i].lat, route[i].lng);
     if (currentDistance + distance > maxDistance) {
-      const currGasStations = await getStops(current, null, ['gas_station'], 'distance');
+      const currGasStations = await getStops(current, null, null, 'gas_station', 'distance');
       // Push the first 3 gas stations
       gasStations.push(...currGasStations.slice(0, 3));
       gasStations.forEach(async (station) => {
@@ -221,9 +221,9 @@ async function callTicketmasterService(startLocation, endLocation, startDate, en
 //   }
 // }
 
-async function getStops(location, radius, preferences, rankby) {
+async function getStops(location, radius, preferences, type, rankby) {
   try {
-    let type;
+    let keywords;
     const locationString = `${location.lat},${location.lng}`;
     endpoint = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
     params = {
@@ -235,9 +235,11 @@ async function getStops(location, radius, preferences, rankby) {
     };
     if (preferences && preferences.length > 0) {
       const lowercasedArray = preferences.map(str => str.toLowerCase().replace(' ', '_'));
-      type = lowercasedArray.join(',');
-      params.keyword = type;
+      keywords = lowercasedArray.join(',');
+      params.keyword = keywords;
     }
+    if (type)
+      params.type = type;
     if (radius)
       params.radius = radius;
     if (rankby)
