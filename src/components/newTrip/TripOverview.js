@@ -230,5 +230,5 @@ export default function AttractionsList({viewOnly}) {
             </Container>
             </Box>
         );
-    } 
+    }    
 }
