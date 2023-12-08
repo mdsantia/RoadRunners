@@ -87,7 +87,7 @@ export const DashboardContextProvider = ({ children }) => {
   }
 
 
-  const directionsCallback = (response) => {
+  const directionsCallback = (response, prefs) => {
     if (response !== null) {
         const newTripDetails = {
           ...tripDetails,
@@ -98,6 +98,9 @@ export const DashboardContextProvider = ({ children }) => {
           totalDistance: calculateTotalDistance(response.options),
           totalDuration: calculateTotalDuration(response.options),
           polyline: buildPolyline(response.options[0]),
+        }
+        if (prefs) {
+          newTripDetails.preferences = prefs;
         }
         setTripDetails(newTripDetails);
         if (tripDetails.tempid) {

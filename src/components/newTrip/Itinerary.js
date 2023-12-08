@@ -76,7 +76,6 @@ export default function Itinerary({viewOnly, sharedTrip}) {
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
   const {tripDetails, setTripDetails, directionsCallback, buildPolyline} = useDashboardContext();
-  const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -104,7 +103,6 @@ export default function Itinerary({viewOnly, sharedTrip}) {
     if (tripDetails) {
       setNumVehicles(parseInt(tripDetails.numVehicles));
       setSelectedVehicles(tripDetails.selectedVehicles);
-      setTemporaryPrefs(tripDetails.preferences);
       setMinimumMPG(tripDetails.minimumMPG);
       console.log("minimum",minimumMPG);
     }
@@ -118,7 +116,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
       endDate: tripDetails.endDate,
-      preferences: temporaryPrefs,
+      preferences: tripDetails.preferences,
       numVehicles: numVehicles,
       selectedVehicles: selectedVehicles,
       allStops: tripDetails.allStops,
@@ -172,7 +170,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
     if (tripDetails.tempid) {
       const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
-      const newTempTrip = {
+      const asdqwe = {
         ...tripDetails,
         preferences: newPrefs,
         numVehicles: numVehicles,
@@ -183,9 +181,9 @@ export default function Itinerary({viewOnly, sharedTrip}) {
         polyline: buildPolyline(newTrip.options[0]),
         stops: newTrip.options[0],
       }
-      tempTrips[tripDetails.tempid] = newTrip;
+      tempTrips[tripDetails.tempid] = asdqwe;
       localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
-      directionsCallback(newTrip, tripDetails.tempid);
+      directionsCallback(newTrip, newPrefs);
       return;
     }
     await axios.post('/api/trip/saveTrip', {
@@ -204,7 +202,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       stops: newTrip.options[0],
       user_email: user.email,
     }).then((res) => {
-      directionsCallback(newTrip, null);
+      directionsCallback(newTrip, newPrefs);
     }).catch((err) => {
       console.log(err);
       showMessage('Error updating preferences', 2000, 'error');
