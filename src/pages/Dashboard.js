@@ -10,6 +10,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import GMap from '../components/newTrip/GMap';
 import Itinerary from '../components/newTrip/Itinerary';
 import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
 const { useUserContext } = require('../hooks/useUserContext');
 
 const Container = styled('div')(({ theme }) => ({

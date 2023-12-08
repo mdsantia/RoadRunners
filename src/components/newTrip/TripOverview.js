@@ -23,7 +23,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function AttractionsList({viewOnly}) {
+export default function AttractionsList({viewOnly, minimumMPG}) {
     const [value, setValue] = React.useState(0);
     const [stops, updateStops] = useState([]);
     const { tripDetails, changeStops } = useDashboardContext();
@@ -53,10 +53,10 @@ export default function AttractionsList({viewOnly}) {
                       continue;
                     }
                     allGasStations.push(stop.gasStations[i]);
+                    getTripFuelCost();
                   }
                 }
               });
-            getTripFuelCost();
             updateStops(tripDetails.stops);
         }
     }, [tripDetails, tripDetails && tripDetails.stops]);
@@ -85,13 +85,20 @@ export default function AttractionsList({viewOnly}) {
     };
 
     function getTripFuelCost() {
-        if (tripDetails && tripDetails.totalDistance) {
-            let totalDistance = tripDetails.totalDistance[tripDetails.chosenRoute];
+        if (tripDetails && tripDetails.options[tripDetails.chosenRoute]) {
+            
+            let totalDistance = 0;
+            for (let j = 0; j < tripDetails.options[tripDetails.chosenRoute].length - 1; j++) {
+                totalDistance += tripDetails.options[tripDetails.chosenRoute][j].distance;
+            }
+            console.log(totalDistance);
+              
             let averageFuelCost = getAverageFuelCost(); 
             let fuelEconomy = 20;
 
             let totalFuelCost = totalDistance * ( averageFuelCost * (1/fuelEconomy));
             totalFuelCost = parseFloat(totalFuelCost.toFixed(2));
+            console.log("Total fuel cost", totalFuelCost)
             setTripFuelCost(totalFuelCost);
         }
     }
@@ -100,9 +107,7 @@ export default function AttractionsList({viewOnly}) {
         if (allGasStations.length === 0) {
             return 0; 
         }
-
         let totalCost = 0;
-
         allGasStations.forEach((gasStation) => {
             const { Regular, Premium } = gasStation.price;
 

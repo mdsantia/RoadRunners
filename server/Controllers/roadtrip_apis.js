@@ -183,15 +183,13 @@ async function callTicketmasterService(startLocation, endLocation, startDate, en
 
   const start = new Date(startDate).toISOString().split('T')[0] + 'T00:00:00Z';
   const end = new Date(endDate).toISOString().split('T')[0] + 'T23:59:59Z';
-
   const params = {
     startDateTime: start,
     endDateTime: end,
     size: 10,
-    radius: 50,
+    radius: 100,
     sort: 'relevance,asc',
     latlong: `${startLocation.lat},${startLocation.lng}`,
-    segmentName: "music,%20sports",
   }
 
   // Add params to url
@@ -201,7 +199,6 @@ async function callTicketmasterService(startLocation, endLocation, startDate, en
 
   try {
     const response = await axios.get(url);
-
     return response.data._embedded.events;
   } catch (error) {
     console.error(`Error getting Ticketmaster attractions: ${error.message}`);

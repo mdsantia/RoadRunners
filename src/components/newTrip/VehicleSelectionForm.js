@@ -44,7 +44,8 @@ function VehicleSelectionForm({ vehicleList, numVehicles, selectedVehicles, setN
       const selectedValues = event.target.value;
       const selectedMPGValues = selectedValues.map((selectedValue) => {
       const selectedVehicle = vehicleList.find((vehicle) => vehicle.name === selectedValue);
-        return selectedVehicle ? parseInt(selectedVehicle.mpg) : 0; // Set a default value as needed
+      console.log("mpg", selectedVehicle.mpg) 
+      return selectedVehicle ? parseInt(selectedVehicle.mpg) : 0; // Set a default value as needed
       });
       setSelectedVehicles(selectedValues);
       setSelectedVehiclesMPG(selectedMPGValues);

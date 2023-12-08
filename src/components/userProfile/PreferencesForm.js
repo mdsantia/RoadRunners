@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Typography, TextField, FormGroup, FormControlLabel, Checkbox, Container } from '@mui/material';
-import { Button, Select, MenuItem, Grid, Divider, Snackbar } from '@mui/material';
+import { Button, Select, MenuItem, Grid, Divider, Snackbar, Paper } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Logo from '../../assets/rr-logo.png';
 import { useUserContext } from '../../hooks/useUserContext';
 import axois from 'axios';
@@ -84,6 +85,9 @@ export default function PreferencesForm(props) {
     const [housingSelection, setHousingSelection] = React.useState([]);
     const [budgetStatus, setBudgetStatus] = React.useState([]); 
     const [commuteTimeStatus, setCommuteTimeStatus] = React.useState([]);
+    const [attractionKeywords, setAttractionKeywords] = React.useState([]);
+    const [keyword, setKeyword] = React.useState('');
+    const [expandedKeywords, setExpandedKeywords] = React.useState([]);
     
     const numOptionsPerColumn = 3;
     const findTotalColumns = (optionsList) => {
@@ -119,6 +123,31 @@ export default function PreferencesForm(props) {
             setHousingSelection([...housingSelection, event.target.value]);
         }
     }
+
+    const handleAddingKeywords = () => {
+        tripDetails.preferences.attractionSelection.push(keyword);
+        setAttractionKeywords(prevUsers => [...prevUsers, keyword]);
+        setKeyword('');
+    }
+
+    const handleDeleteKeywords = (keyword) => {
+        const indexToRemove = tripDetails.preferences.attractionSelection.indexOf(keyword);
+        if (indexToRemove !== -1) {
+            tripDetails.preferences.attractionSelection.splice(indexToRemove, 1);
+        } else {
+            console.log("Couldn't find keyword in tripDetails!");
+        }
+        const updatedKeywords = attractionKeywords.filter((attractionKeyword) => attractionKeyword !== keyword);
+        setAttractionKeywords(updatedKeywords);
+    }
+
+    const handleKeywordExpand = (clickedKeyword) => {
+        if (expandedKeywords.includes(clickedKeyword)) {
+            setExpandedKeywords(expandedKeywords.filter((keyword) => keyword !== clickedKeyword));
+        } else {
+            setExpandedKeywords([...expandedKeywords, clickedKeyword]);
+        }
+    };
 
     const checkBudgetFormat = (input) => {
         const budgetRegex = /^\d+(\.\d{2})?$/;
@@ -390,6 +419,88 @@ export default function PreferencesForm(props) {
                                 ))}
                             </Grid>
                         </FormGroup>
+                        <br></br>
+                        <br></br>
+                        <Typography variant="body1" fontWeight="bold">
+                            Please specify any keywords for attractions you would like to add along your route:
+                        </Typography>
+                        <br></br>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item xs={10} sm={10} md={10}>
+                                <TextField
+                                    placeholder="Enter keywords for attractions"
+                                    variant="outlined"
+                                    value={keyword}
+                                    fullWidth
+                                    inputProps={{ style: { height: '5px' } }}
+                                    onChange={(event) => setKeyword(event.target.value)}
+                                >
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={2} sm={2} md={2} alignItems="center" style={{ display: 'flex' }}>
+                                <Button
+                                    sx={{
+                                        borderRadius: '10px',
+                                        border: '1px solid #ccc',
+                                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+                                        backgroundColor: 'darkblue',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: '#6495ed',
+                                        },
+                                    }}
+                                    onClick={handleAddingKeywords}
+                                >
+                                    Add
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <br></br>
+                        <Typography variant="body1" fontWeight="bold">
+                            Keywords Added:
+                        </Typography>
+                        {attractionKeywords.length ? (
+                            <Grid container spacing={2}>
+                                {attractionKeywords.map((keyword, index) => (
+                                    <Grid item key={index} xs={3} sm={3} md={3} style={{ maxWidth: '25%', flexBasis: '25%' }}>
+                                        <Paper 
+                                            style={{
+                                                padding: '2%',
+                                                textAlign: 'center',
+                                                minWidth: '80px',
+                                                maxWidth: '100%',
+                                                cursor: 'pointer',
+                                                position: 'relative',
+                                                wordWrap: 'break-word',
+                                                height: 'auto',
+                                            }}
+                                            onClick={() => handleKeywordExpand(keyword)}
+                                        >
+                                            <Grid container spacing={0} alignItems="center">
+                                                <Grid item xs={9} sm={9} md={9} 
+                                                    style={{ 
+                                                        paddingLeft: '5px', 
+                                                        overflow: expandedKeywords.includes(keyword) ? '' : 'hidden', 
+                                                        textOverflow: expandedKeywords.includes(keyword) ? '' : 'ellipsis', 
+                                                        overflowWrap: expandedKeywords.includes(keyword) ? '' : 'break-word',
+                                                        wordWrap: expandedKeywords.includes(keyword) ? '' : 'break-word',
+                                                        whiteSpace: expandedKeywords.includes(keyword) ? 'normal' : 'nowrap', 
+                                                    }}
+                                                >
+                                                    {keyword}
+                                                </Grid>
+                                                <Grid item xs={3} sm={3} md={3}>
+                                                    <HighlightOffIcon 
+                                                        style={{ paddingRight: '5px', marginLeft: '5px', verticalAlign: 'middle', fontSize: '18px', cursor: "pointer" }} 
+                                                        onClick={() => handleDeleteKeywords(keyword)}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        </Paper>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        ) : ( <i>No Keywords Specified</i> )}
                         <br></br>
                         <Divider></Divider>
                         <br></br>

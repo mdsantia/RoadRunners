@@ -241,13 +241,13 @@ const getLiveEvents = async(req, res) => {
       event.locationString = `${event._embedded.venues[0].location.latitude},${event._embedded.venues[0].location.longitude}`;
       delete event._embedded;
       delete event._links;
+      return event;
     });
     res.status(201).json(events);
     return;
   }
   console.log(`Ticket Master Error: ${events.message}\n`.red.bold);
   res.status(401).json(events.message);
-
 }
 
 async function addStopInto (newStop, into, stops) {

@@ -20,6 +20,7 @@ export const directionReducer = (state, action) => {
 export const DashboardContextProvider = ({ children }) => {
   const [center, setCenter] = useState(null);
   const [tripDetails, setTripDetails] = useState(null);
+  const [liveEvents, setLiveEvents] = useState([]);
 
   function calculateTotalDistance(options) {
     const distanceArray = [];
@@ -117,7 +118,9 @@ export const DashboardContextProvider = ({ children }) => {
         buildPolyline,
         setTripDetails,
         updateChosenRoute,
-        changeStops
+        changeStops,
+        liveEvents,
+        setLiveEvents,
       }}
     >
       {children}
