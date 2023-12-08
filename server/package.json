@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm update && nodemon server.js",
-    "start": "node server.js"
+    "start": "pm2 start server.js --name server",
+    "stop": "pm2 stop server",
+    "logs": "pm2 logs server"
   },
   "keywords": [],
   "author": "",

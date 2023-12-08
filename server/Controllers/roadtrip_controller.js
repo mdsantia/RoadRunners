@@ -27,7 +27,7 @@ function decodePath(route) {
   return path;
 }
 
-async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius, optionNumber) {
+async function computeStops(left, right, selectedStops, allStops, idx, startDate, radius, optionNumber, attractionPref) {
   var request =  {
     origin: left,
     destination: right,
@@ -38,22 +38,43 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     },
   };
   const route = await roadtrip_apis.callDirectionService(request);
+  if (route.message) {
+    selectedStops.pop();
+    return;
+  }
   const midpoint = calculateMidpoint(decodePath(route));
+  const ifSTMT = attractionPref && attractionPref.length > 0;
+  const attractionOptions = [
+    "Entertainment", 
+    "Nature", 
+    // "Cultural", 
+    "Adventure", 
+    // "Water", 
+    // "Educational", 
+    "Shopping", 
+    // "Culinary", 
+    // "Religious", 
+    // "Family-Friendly"
+];
+  const keywords = ifSTMT ? attractionPref.filter((attraction) => !attractionOptions.includes(attraction)) : null;
+  const original = ifSTMT ? attractionPref.filter((attraction) => attractionOptions.includes(attraction)) : null;
   const [
     // amusement_parksResults, 
     museumsResult, 
+    customResult,
     // bowlingAlleyResult, 
-    touristAttractionResult, 
+    // touristAttractionResult, 
     // stadiumResult
   ] = await Promise.all([
-    roadtrip_apis.getStops(midpoint, radius, null, null, 'tourist_attraction'),
+    roadtrip_apis.getStops(midpoint, radius, ifSTMT ? original : null, !ifSTMT ? 'tourist_attraction' : null, null),
+    roadtrip_apis.getStops(midpoint, radius, keywords, null, null),
   ]);
 
-  const combinedStops = [].concat(
+  let combinedStops = [].concat(
     // amusement_parksResults,
     museumsResult, 
     // bowlingAlleyResult, 
-    touristAttractionResult, 
+    // touristAttractionResult, 
     // stadiumResult
     );
   combinedStops.sort((a, b) => {
@@ -64,7 +85,10 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   let tempStops = [];
   let i = 0;
   while (numStops < 4 && i < combinedStops.length) {
-    const stop = combinedStops[i];
+    let stop = combinedStops[i];
+    if (i % 2 && customResult && customResult[i % customResult.length]) {
+      stop = customResult[i % customResult.length];
+    }
     if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
       allStops.push(stop);
       numStops++;
@@ -72,19 +96,20 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     }
     i++;
   }
+  combinedStops = [...customResult, ...combinedStops];
   const selectedStop = tempStops[optionNumber % tempStops.length];
   selectedStops.push(selectedStop);
   if (idx < 1) {
     const mid = selectedStop.locationString;
     await Promise.all([
-      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius, optionNumber),
-      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius, optionNumber)
+      computeStops(left, mid, selectedStops, allStops, idx + 1, startDate, radius, optionNumber, attractionPref),
+      computeStops(mid, right, selectedStops, allStops, idx + 1, startDate, radius, optionNumber, attractionPref)
     ]); 
   }
 }
 
 async function buildARoute(req, optionNumber) {
-  const { startLocation, endLocation, startDate } = req.query;
+  const { startLocation, endLocation, startDate, preferences } = req.query;
   const stops = [];
   const radius = 50000; // 50 km
   const allStops = [];
@@ -119,7 +144,7 @@ async function buildARoute(req, optionNumber) {
   endObj.locationString = right;
   
   await Promise.all([
-    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber),
+    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber, preferences ? preferences.attractionSelection : null),
   ]);
 
   const sortedStops = [startObj];
@@ -173,6 +198,9 @@ async function getGasStationsAlongRoute(stops, mpg, tankSize, fuelType) {
 }
 
 async function getRestaurantsAlongRoute(stops, foodPref) {
+  if(!foodPref || foodPref.length <= 0) {
+    foodPref = ['fastfood'];
+  }
   var poly = [];
   poly = [];
   for (let i = 0; i < stops.length - 1; i++) {
@@ -202,14 +230,13 @@ const getGasStations = async (req, res) => {
 }
 
 const newRoadTrip = async (req, res) => {
-  let { startLocation, endLocation, startDate, endDate, mpg, foodPref, attractionPref} = req.query;
-  console.log(attractionPref);
+  let { startLocation, endLocation, startDate, endDate, mpg, preferences} = req.query;
   mpg = mpg===undefined||mpg<=0?10:mpg;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
   
   const result = {options: [], allStops: []};
   let promises = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 2; i++) {
     const optionNumber = i;
     promises.push(buildARoute(req, optionNumber));
   }
@@ -223,15 +250,9 @@ const newRoadTrip = async (req, res) => {
     });
   })
   await getGasStationsAlongRoute(result.options[0], mpg, 14, 'Regular');
-  let chosenFood = 'Fast Food';
-  if(foodPref && !foodPref.includes(chosenFood)) {
-    if(foodPref.includes('Family Restaurants')) {
-      chosenFood = 'Family';
-    } else if (foodPref.includes('Cafés/Coffee Shops')) {
-      chosenFood = 'Coffee';
-    }
-  }
-  await getRestaurantsAlongRoute(result.options[0], 'Fast Food');
+
+  await getRestaurantsAlongRoute(result.options[0], preferences ? preferences.diningSelection : null);
+
   res.status(201).json(result);
 };
 

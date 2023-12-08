@@ -17,7 +17,7 @@ export default function PreferencesForm(props) {
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const attractionOptions = [
         "Entertainment", 
-        "Outdoor/Nature", 
+        "Nature", 
         // "Cultural", 
         "Adventure", 
         // "Water", 
@@ -31,7 +31,7 @@ export default function PreferencesForm(props) {
         "Fast Food", 
         // "Fine Dining", 
         // "Casual Dining", 
-        "Cafés/Coffee Shops", 
+        "Coffee Shops", 
         // "Buffets", 
         // "Food Trucks", 
         "Family Restaurants", 
@@ -590,8 +590,8 @@ export default function PreferencesForm(props) {
                         </Button>
                     )}
                     {inDashboard && (
-                        <Button onClick={handleDashboardSave} disabled={viewOnly} variant="contained" sx={{ width: '120px', backgroundColor: 'darkblue', color: 'white' }}>
-                            Confirm
+                        <Button onClick={handleDashboardSave} disabled={viewOnly} variant="contained" sx={{ width: '180px', backgroundColor: 'darkblue', color: 'white' }}>
+                            Re-Generate Trip
                         </Button>
                     )} 
                 </Container>

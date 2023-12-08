@@ -35,7 +35,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   
 }));
 
-export default function CreateTrip() {
+export default function CreateTrip({disableNewTrip}) {
   const navigate = useNavigate();
   const {user} = useUserContext();
   const {tripDetails} = useDashboardContext();
@@ -104,7 +104,7 @@ export default function CreateTrip() {
         <DatePicker label="End Date" value={endDate} onChange={(value) => setEndDate(value.format())} />
         </LocalizationProvider>
         <AddressSearch label="End Location" onInputChange={(value) => setEndLocation(value)}></AddressSearch>
-        <Fab aria-label="delete" style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white' }} onClick={handleSubmit}>
+        <Fab aria-label="delete" style={{ display: disableNewTrip ? 'none' : '', marginLeft: '20px', backgroundColor: 'red', color: 'white' }} onClick={handleSubmit}>
           <SearchIcon />
         </Fab>
       </Stack>

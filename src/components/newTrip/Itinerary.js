@@ -75,8 +75,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
-  const {tripDetails, setTripDetails, directionsCallback} = useDashboardContext();
-  const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
+  const {tripDetails, setTripDetails, directionsCallback, buildPolyline} = useDashboardContext();
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -104,7 +103,6 @@ export default function Itinerary({viewOnly, sharedTrip}) {
     if (tripDetails) {
       setNumVehicles(parseInt(tripDetails.numVehicles));
       setSelectedVehicles(tripDetails.selectedVehicles);
-      setTemporaryPrefs(tripDetails.preferences);
       setMinimumMPG(tripDetails.minimumMPG);
       console.log("minimum",minimumMPG);
     }
@@ -118,7 +116,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
       endDate: tripDetails.endDate,
-      preferences: temporaryPrefs,
+      preferences: tripDetails.preferences,
       numVehicles: numVehicles,
       selectedVehicles: selectedVehicles,
       allStops: tripDetails.allStops,
@@ -155,16 +153,16 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
       endDate: tripDetails.endDate,
-      attractionPref: newPrefs.attractionSelection,
-      foodPref: newPrefs.diningSelection ? newPrefs.diningSelection : null,
+      preferences: newPrefs,
       mpg: newPrefs.minimumMPG ? newPrefs.minimumMPG : tripDetails.minimumMPG
     };
 
+    let newTrip;
     await axios
     .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
     .then((res) => {
         showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
-        directionsCallback(res.data, tripDetails.tempid);
+        newTrip = res.data;
     })  
     .catch((err) => {
         console.log(err);
@@ -172,9 +170,20 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
     if (tripDetails.tempid) {
       const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
-      tempTrips[tripDetails.tempid].preferences = newPrefs;
+      const asdqwe = {
+        ...tripDetails,
+        preferences: newPrefs,
+        numVehicles: numVehicles,
+        selectedVehicles: selectedVehicles,
+        allStops: newTrip.allStops,
+        options: newTrip.options,
+        chosenRoute: 0,
+        polyline: buildPolyline(newTrip.options[0]),
+        stops: newTrip.options[0],
+      }
+      tempTrips[tripDetails.tempid] = asdqwe;
       localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
-      setTripDetails(tempTrips[tripDetails.tempid]);
+      directionsCallback(newTrip, newPrefs);
       return;
     }
     await axios.post('/api/trip/saveTrip', {
@@ -186,18 +195,14 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       preferences: newPrefs,
       numVehicles: numVehicles,
       selectedVehicles: selectedVehicles,
-      allStops: tripDetails.allStops,
-      options: tripDetails.options,
-      chosenRoute: tripDetails.chosenRoute,
-      polyline: tripDetails.polyline,
-      stops: tripDetails.stops,
+      allStops: newTrip.allStops,
+      options: newTrip.options,
+      chosenRoute: 0,
+      polyline: buildPolyline(newTrip.options[0]),
+      stops: newTrip.options[0],
       user_email: user.email,
     }).then((res) => {
-      const newTripDetails = {
-        ...tripDetails,
-        preferences: newPrefs
-      };
-      setTripDetails(newTripDetails);
+      directionsCallback(newTrip, newPrefs);
     }).catch((err) => {
       console.log(err);
       showMessage('Error updating preferences', 2000, 'error');
