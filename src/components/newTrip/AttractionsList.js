@@ -96,6 +96,7 @@ export default function AttractionsList({viewOnly}) {
   const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
   const [allAttractions, setAllAttractions] = useState([]);
+  const [unselectedAttraction, setUnselectedAttraction] = useState([]);
   const [allRestaurants, setAllRestaurants] = useState([]);
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [allGasStations, setAllGasStations] = useState([]);
@@ -132,6 +133,7 @@ export default function AttractionsList({viewOnly}) {
     if (tripDetails && tripDetails.allStops) {
       const currentStops = tripDetails.stops;
       setAllAttractions(tripDetails.allStops);
+      const attractionsCopy = [...tripDetails.allStops];
       currentStops.forEach((stop) => {
         if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.place_id === stop.place_id)) {
           selectedAttractions.push(stop);
@@ -169,6 +171,12 @@ export default function AttractionsList({viewOnly}) {
           }
         });
         setSelectedRestaurants(selected);
+
+        // Filter out selected attractions from allAttractions to get unselectedAttractions
+    const unselectedAttractions = attractionsCopy.filter(
+      (attraction) => !selectedAttractions.some((selected) => selected.place_id === attraction.place_id)
+    );
+    setUnselectedAttraction(unselectedAttractions);
       }
     }
  }, [tripDetails]);
@@ -207,6 +215,19 @@ export default function AttractionsList({viewOnly}) {
     }
   };
 
+  const handleSelectedAttractionsChange = (newlySelectedAttractions) => {
+    // Append newly selected attractions to the existing selectedAttractions list
+    console.log("newly selected", newlySelectedAttractions)
+    setSelectedAttractions((prevSelectedAttractions) => [
+      ...prevSelectedAttractions,
+      ...newlySelectedAttractions.filter(
+        (attraction) => !prevSelectedAttractions.some((selected) => selected.place_id === attraction.place_id)
+      ),
+    ]);
+
+    // Do other operations or set state as needed
+  };
+  
   const isStopSelected = (stop, type) => {
     switch (type) {
       case 'hotel':
@@ -262,7 +283,7 @@ export default function AttractionsList({viewOnly}) {
           ))}
         </TabPanel>
         <TabPanel value={value} index={1} style={{ width: '70%' }}>
-        <StopSearch data={allAttractions}/>
+        <StopSearch data={unselectedAttraction} onSelectedAttractionsChange={handleSelectedAttractionsChange} />
           <div style={{ maxHeight: '350px', overflowY: 'auto' }}> 
             {
               allAttractions
