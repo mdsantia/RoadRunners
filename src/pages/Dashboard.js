@@ -117,6 +117,13 @@ export default function Dashboard() {
                 } else {
                     access = true;
                 }
+                if (access) {
+                    if (!res.data.locked) {
+                        axios.post(`/api/trip/lockUnlock/${tripid}`);
+                    } else {
+                        setViewOnly(true);
+                    }
+                }
                 if (!access) {
                     setTripDetails(null);
                     navigate('/');
