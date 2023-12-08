@@ -6,6 +6,7 @@ import axios from 'axios';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { createTheme, ThemeProvider } from '@mui/material';
+import { useUserContext } from './hooks/useUserContext';
 
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
@@ -30,6 +31,10 @@ const theme = createTheme({
 });
 
 function App() {
+  const { user } = useUserContext();
+  if (!user) {
+    return <LoginPage />;
+  }
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
