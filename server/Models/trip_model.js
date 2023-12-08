@@ -82,6 +82,10 @@ const Trip = new Schema({
         profile_picture: String,
         permission: Number
     },
+    locked: {
+        type: Boolean,
+        default: false,
+    },
     users_shared: {
         type: [{
             email: String,

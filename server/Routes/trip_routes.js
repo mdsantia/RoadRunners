@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {getAllTrips, getTrip, saveTrip, deleteTrip, clearAllTrips, shareTrip, getAllSharedTrips} = require('../Controllers/trip_controller');
+const {getAllTrips, getTrip, saveTrip, deleteTrip, clearAllTrips, shareTrip, getAllSharedTrips, lockUnlock} = require('../Controllers/trip_controller');
 
 // Get requests
 router.get('/getTrips/:email', getAllTrips);
@@ -13,5 +13,6 @@ router.post('/saveTrip', saveTrip);
 router.post('/deleteTrip/:email/:id', deleteTrip);
 router.post('/clearTrips/:email', clearAllTrips);
 router.post('/shareTrip', shareTrip);
+router.post('/lockUnlock/:id', lockUnlock);
 
 module.exports = router;
