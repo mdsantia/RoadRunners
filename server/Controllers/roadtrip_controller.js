@@ -119,7 +119,7 @@ async function buildARoute(req, optionNumber) {
   endObj.locationString = right;
   
   await Promise.all([
-    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber, preferences ? preferences.attractionPref : null),
+    computeStops(left, right, stops, allStops, 0, startDate, radius, optionNumber, preferences ? preferences.attractionSelection : null),
   ]);
 
   const sortedStops = [startObj];
