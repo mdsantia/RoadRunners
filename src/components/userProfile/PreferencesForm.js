@@ -488,7 +488,7 @@ export default function PreferencesForm(props) {
                                             onClick={() => handleKeywordExpand(keyword)}
                                         >
                                             <Grid container spacing={0} alignItems="center">
-                                                <Grid item xs={9} sm={9} md={9} 
+                                                <Grid item xs={10} sm={10} md={10} 
                                                     style={{ 
                                                         paddingLeft: '5px', 
                                                         overflow: expandedKeywords.includes(keyword) ? '' : 'hidden', 
@@ -500,9 +500,9 @@ export default function PreferencesForm(props) {
                                                 >
                                                     {keyword}
                                                 </Grid>
-                                                <Grid item xs={3} sm={3} md={3}>
+                                                <Grid item xs={2} sm={2} md={2}>
                                                     <HighlightOffIcon 
-                                                        style={{ paddingRight: '5px', marginLeft: '5px', verticalAlign: 'middle', fontSize: '18px', cursor: "pointer" }} 
+                                                        style={{ paddingRight: '5px', verticalAlign: 'middle', fontSize: '20px', cursor: "pointer" }} 
                                                         onClick={() => handleDeleteKeywords(keyword)}
                                                     />
                                                 </Grid>
