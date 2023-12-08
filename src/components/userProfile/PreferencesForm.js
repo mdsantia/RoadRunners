@@ -73,12 +73,11 @@ export default function PreferencesForm(props) {
         if (!tripDetails.preferences) {
             return;
         }
-        const local = user.preferences.attractionSelection ? user.preferences.attractionSelection : [];
+        const local = tripDetails.preferences.attractionSelection ? tripDetails.preferences.attractionSelection : attractionSelection;
         setAttractionSelection(local);
         setBudget(tripDetails.preferences.budget ? tripDetails.preferences.budget : budget);
         setCommuteTime(tripDetails.preferences.commuteTime ? tripDetails.preferences.commuteTime : commuteTime);
         setCarsickRating(tripDetails.preferences.carsickRating ? tripDetails.preferences.carsickRating : carsickRating);
-        setAttractionSelection(tripDetails.preferences.attractionSelection ? tripDetails.preferences.attractionSelection : attractionSelection);
         setDiningSelection(tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : diningSelection);
         setHousingSelection(tripDetails.preferences.housingSelection ? tripDetails.preferences.housingSelection : housingSelection);
         const keywords = local.filter((attraction) => !attractionOptions.includes(attraction));
