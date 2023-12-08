@@ -216,17 +216,31 @@ export default function AttractionsList({viewOnly}) {
   };
 
   const handleSelectedAttractionsChange = (newlySelectedAttractions) => {
-    // Append newly selected attractions to the existing selectedAttractions list
-    console.log("newly selected", newlySelectedAttractions)
-    setSelectedAttractions((prevSelectedAttractions) => [
-      ...prevSelectedAttractions,
+    const updatedSelectedAttractions = [
+      ...selectedAttractions,
       ...newlySelectedAttractions.filter(
-        (attraction) => !prevSelectedAttractions.some((selected) => selected.place_id === attraction.place_id)
+        (attraction) => !selectedAttractions.some((selected) => selected.place_id === attraction.place_id)
       ),
-    ]);
-
+    ];
+  
+    // Update the state with the new selected attractions
+    setSelectedAttractions(updatedSelectedAttractions);
+  
+    // Additional logic to add these new attractions as stops to the route
+    const stopsToAdd = newlySelectedAttractions.filter(
+      (attraction) => !selectedAttractions.some((selected) => selected.place_id === attraction.place_id)
+    );
+  
+    // Logic to add stops to the route using the handleStopSelection function
+    stopsToAdd.forEach((attraction) => {
+      handleStopSelection(attraction, selectedAttractions, setSelectedAttractions);
+      // Depending on your implementation, you might need to adjust the arguments passed
+      // to the handleStopSelection function to match the expected parameters.
+    });
+  
     // Do other operations or set state as needed
   };
+  
   
   const isStopSelected = (stop, type) => {
     switch (type) {
