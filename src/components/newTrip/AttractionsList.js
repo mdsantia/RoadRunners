@@ -149,19 +149,15 @@ export default function AttractionsList({viewOnly}) {
     if (stop.routeFromHere) {
       delete stop.routeFromHere;
     }
+    const newStops = [...tripDetails.stops]
     const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
-    const newStops = tripDetails.stops.map(stop => {
-      const stopCopy = { ...stop };
-      delete stopCopy.routeFromHere;
-      return stopCopy;
-    }); 
     
     if (index === -1) {
       // Add Stop from route
       axios
       .post('/api/roadtrip/addStop', { newStop: stop, stops: newStops })
       .then((res) => {
-        changeStops(res.data, 1);
+        changeStops(res.data);
         setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
       })  
       .catch((err) => {
@@ -172,7 +168,7 @@ export default function AttractionsList({viewOnly}) {
       axios
       .post('/api/roadtrip/removeStop', { indexToRemove: index, stops: newStops})
       .then((res) => {
-        changeStops(res.data, -1);
+        changeStops(res.data);
         setSelectedList((prevSelectedList) =>
         prevSelectedList.filter((s) => s.place_id !== stop.place_id)
       );

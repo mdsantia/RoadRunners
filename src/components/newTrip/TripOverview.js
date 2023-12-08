@@ -25,49 +25,23 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function AttractionsList({viewOnly}) {
     const [value, setValue] = React.useState(0);
-    const [selectedHotels, setSelectedHotels] = useState([]);
-    const [selectedLandmarks, setSelectedLandmarks] = useState([]);
-    const [selectedAttractions, setSelectedAttractions] = useState([]);
-    const [allAttractions, setAllAttractions] = useState([]);
-    const [selectedRestaurants, setSelectedRestaurants] = useState([]);
-    const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
-    const [selectedGasStations, setSelectedGasStations] = useState([]);
+    const [stops, updateStops] = useState([]);
     const { tripDetails, changeStops } = useDashboardContext();
     const [expandedCard, setExpandedCard] = useState(null);
-    const [stops, updateStops] = useState([]);
 
     const handleExpandCard = (index) => {
         setExpandedCard(index === expandedCard ? null : index);
     };
 
-    // useEffect(() => {
-    //     if (tripDetails && tripDetails.stops) {
-    //         const newStops = [...tripDetails.stops];
-    //         newStops.forEach((stop) => {
-    //                 const newStop = {...stop};
-    //                 delete newStop.routeFromHere});
-    //         console.log(tripDetails.stops);
-    //         axios.get('/api/roadtrip/yelpUrl', { params: {stops: tripDetails.stops} })
-    //         .then((res) => {
-    //         // changeStops(res.data, 1);
-    //         // setSelectedList((prevSelectedList) => [...prevSelectedList, stop]);
-    //             console.log(res.data);
-    //         })  
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    //     }
-    // }, [tripDetails.stops]);
-
     useEffect(() => {
         if (tripDetails && tripDetails.allStops) {
-            setAllAttractions(tripDetails.allStops);
-            tripDetails.stops.forEach((stop) => {
-                if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
-                selectedAttractions.push(stop);
-                }
-            });
-            updateStops(tripDetails.stops.slice(1, -1));
+            // setAllAttractions(tripDetails.allStops);
+            // tripDetails.stops.forEach((stop) => {
+            //     if (stop.category !== 'start' && stop.category !== 'end' && !selectedStops.some(item => item.id === stop.id)) {
+            //     selectedStops.push(stop);
+            //     }
+            // });
+            updateStops(tripDetails.stops);
         }
     }, [tripDetails, tripDetails && tripDetails.stops]);
 
@@ -77,7 +51,6 @@ export default function AttractionsList({viewOnly}) {
       const index = tripDetails.stops.findIndex((selectedStop) => selectedStop.place_id === stop.place_id);
       const newStops = tripDetails.stops.map(stop => {
       const stopCopy = { ...stop };
-    //   delete stopCopy.routeFromHere;
       return stopCopy;
       }); 
       
@@ -113,38 +86,31 @@ export default function AttractionsList({viewOnly}) {
     }
 
     async function handleOnDragEnd (result) {
-        if (!result.destination) return;
+        const from = result.source.index;
+        const to = result.destination.index;
+        if (!result.destination || from === to) return;
+        const old = [...stops];
+        console.log(old);
 
-        const oldStops = tripDetails.stops;
-        const newStops = Array.from(stops);
-        const [reorderedStop] = newStops.splice(result.source.index, 1);
-        newStops.splice(result.destination.index, 0, reorderedStop);
+        let newStops = Array.from([...stops]);
+
+        newStops[from - 1].routeFromHere = null;
+        newStops[from].routeFromHere = null;
+        newStops[to - 1].routeFromHere = null;
+
+
+        const [removed] = newStops.splice(from, 1);
+        newStops.splice(to, 0, removed);
         updateStops(newStops);
-        
-        // const oldItems = vehicles;
-        // const items = Array.from(vehicles);
-        // const [reorderedItem] = items.splice(result.source.index, 1);
-        // items.splice(result.destination.index, 0, reorderedItem);
-    
-        // const newVehicles = items.map((vehicle, index) => {
-        //   return {
-        //     _id: vehicle._id,
-        //     mpg: vehicle.mpg,
-        //     year: vehicle.year,
-        //     make: vehicle.make,
-        //     model: vehicle.model,
-        //     color: vehicle.color,
-        //     ranking: index,
-        //     fuelGrade: vehicle.fuelGrade,
-        // }});
-    
-    //     updateVehicles(items);
-    //     await axios.post('/api/user/vehicleRanking', {
-    //       email: user.email,
-    //       vehicles: newVehicles
+
+    //     console.log(newStops);
+
+    //     console.log(from, `to`, to);
+    //     await axios.post('/api/roadtrip/rearrangeStops', {
+    //       stops: stops
     //     }).then(response => {
-    //       const newUser = response.data;
-    //       updateUser(newUser);
+    //       newStops = response.data;
+    //       changeStops(newStops, 1);
     //   }).catch(error => {
     //       console.log(error.response.data.error);
     //       updateVehicles(oldVehicles);
@@ -160,106 +126,109 @@ export default function AttractionsList({viewOnly}) {
         );
     }
 
-    return (
-        <Box
-        sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
-        >
-        <Container value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto', textAlign: 'left', alignItems: 'left'}}>
-            {getRouteDetails("Starting Location:", tripDetails.stops[0].name)}
-            {getRouteDetails("Destination:", tripDetails.stops[tripDetails.stops.length - 1].name)}
-            <br></br>
-            {getRouteDetails("Start Date:", new Date(tripDetails.startDate).toLocaleDateString())}
-            {getRouteDetails("End Date:", new Date(tripDetails.endDate).toLocaleDateString())}
-            <br></br>
-            {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
-            <br></br>
-            <Divider></Divider>
-            <br></br>
-            {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
-            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-                Your Selected Vehicle(s) for This Trip:
-            </Typography>
-            {tripDetails.selectedVehicles.map((vehicle, index) => (
-                <li variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
-                    {vehicle}
-                </li>
-            ))}
-            <br></br>
-            <Divider></Divider>
-            <br></br>
-            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-                Stops Along Your Route:
-            </Typography>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-                <StrictModeDroppable droppableId="stops" direction="vertical">
-                    {(provided) => (
-                        <div ref={provided.innerRef} {...provided.droppableProps}>
-                            {stops.map((stop, index) => {
-                                return (
-                                    <Draggable key={index} draggableId={`stop-${index}`} index={index}>
-                                        {(provided, snapshot) => (
-                                            <Item
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    margin: '0 auto',
-                                                    marginTop: '3%',
-                                                    marginBottom: '3%',
-                                                    cursor: 'pointer',
-                                                    transition: 'height 0.3s',
-                                                    height: '60px',
-                                                    width: '100%',
-                                                    backgroundColor: '#f5f5f5',
-                                                    boxShadow: snapshot.isDragging ? '0 4px 8px rgba(0, 0, 0, 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.2)',
-                                                    cursor: snapshot.isDragging ? 'grabbing' : 'pointer',
-                                                    ...provided.draggableProps.style,
-                                                }}
-                                                // onClick={() => handleExpandCard(index)}
-                                            >
-                                                <CardContent sx={{ flex: '1' }}>
-                                                    <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                                                        <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
-                                                            <a
-                                                                href={stop.link}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                style={{ textDecoration: 'none', color: 'black' }}
-                                                                // onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                                                                // onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
-                                                            >
-                                                                {stop.name}
-                                                            </a>
-                                                        </Grid>
-                                                    </Grid>
-                                                </CardContent>
-                                                <CardActions 
-                                                    sx={{ justifyContent: 'center', flex: '0 0 5%' }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); // Stop the click event from propagating to the parent element
-                                                    }}
-                                                >
-                                                    <Checkbox
-                                                        icon={<AddLocationAltOutlinedIcon />}
-                                                        checkedIcon={<AddLocationAltIcon />}
-                                                        checked={true}
-                                                        disabled={viewOnly}
-                                                        onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)}
-                                                    />
-                                                </CardActions>
-                                            </Item>
-                                        )}
-                                    </Draggable>
-                                );
-                            })}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </StrictModeDroppable>
-            </DragDropContext>
-        </Container>
-        </Box>
-    );
+    if (tripDetails && tripDetails.stops) {
+        return (
+            <Box
+            sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
+            >
+            <Container value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto', textAlign: 'left', alignItems: 'left'}}>
+                {getRouteDetails("Starting Location:", tripDetails.stops[0].name)}
+                <br></br>
+                {getRouteDetails("Destination:", tripDetails.stops[tripDetails.stops.length - 1].name)}
+                <br></br>
+                {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
+                <br></br>
+                {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
+                <br></br>
+                <Divider></Divider>
+                <br></br>
+                <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+                    Your Selected Vehicle(s) for This Trip:
+                </Typography>
+                {tripDetails.selectedVehicles.map((vehicle, index) => (
+                    <li variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
+                        {vehicle}
+                    </li>
+                ))}
+                <br></br>
+                <Divider></Divider>
+                <br></br>
+                <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
+                    Stops Along Your Route:
+                </Typography>
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                    <StrictModeDroppable droppableId="stops" direction="vertical">
+                        {(provided) => (
+                            <div ref={provided.innerRef} {...provided.droppableProps}>
+                                {stops.map((stop, index) => {
+                                    if (stop.category !== "start" && stop.category !== "end") {
+                                        return (
+                                            <Draggable key={index} draggableId={`stop-${index}`} index={index}>
+                                                {(provided, snapshot) => (
+                                                    <Item
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            margin: '0 auto',
+                                                            marginTop: '3%',
+                                                            marginBottom: '3%',
+                                                            cursor: 'pointer',
+                                                            transition: 'height 0.3s',
+                                                            height: '60px',
+                                                            width: '100%',
+                                                            backgroundColor: '#f5f5f5',
+                                                            boxShadow: snapshot.isDragging ? '0 4px 8px rgba(0, 0, 0, 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.2)',
+                                                            cursor: snapshot.isDragging ? 'grabbing' : 'pointer',
+                                                            ...provided.draggableProps.style,
+                                                        }}
+                                                        // onClick={() => handleExpandCard(index)}
+                                                    >
+                                                        <CardContent sx={{ flex: '1' }}>
+                                                            <Grid container spacing={0.5} justifyContent="center" alignItems="center">
+                                                                <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                                                                    <a
+                                                                        href={stop.link}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        style={{ textDecoration: 'none', color: 'black' }}
+                                                                        // onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                                                                        // onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                                                                    >
+                                                                        {stop.name}
+                                                                    </a>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </CardContent>
+                                                        <CardActions 
+                                                            sx={{ justifyContent: 'center', flex: '0 0 5%' }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation(); // Stop the click event from propagating to the parent element
+                                                            }}
+                                                        >
+                                                            <Checkbox
+                                                                icon={<AddLocationAltOutlinedIcon />}
+                                                                checkedIcon={<AddLocationAltIcon />}
+                                                                checked={true}
+                                                                disabled={viewOnly}
+                                                                onChange={() => handleStopSelection(stop, stops, updateStops)}
+                                                            />
+                                                        </CardActions>
+                                                    </Item>
+                                                )}
+                                            </Draggable>
+                                        );
+                                    }
+                                })}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </StrictModeDroppable>
+                </DragDropContext>
+            </Container>
+            </Box>
+        );
+    }    
 }
