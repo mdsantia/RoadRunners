@@ -151,7 +151,8 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
       tempTrips[tripDetails.tempid].preferences = newPrefs;
       localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
-      navigate(`/dashboard/new/${tripDetails.tempid}`);
+      showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
+      setTripDetails(tempTrips[tripDetails.tempid]);
       return;
     }
     await axios.post('/api/trip/saveTrip', {
