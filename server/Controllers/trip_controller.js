@@ -185,6 +185,7 @@ const getAllSharedTrips = async (req, res) => {
             // Remove trip from user
             user.tripsShared = user.tripsShared.filter(trip => trip != tripIds[i]);
             user.save();
+            continue;
         }
         trips.push({
             _id: trip._id,
