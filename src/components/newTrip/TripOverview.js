@@ -28,6 +28,8 @@ export default function AttractionsList({viewOnly}) {
     const [stops, updateStops] = useState([]);
     const { tripDetails, changeStops } = useDashboardContext();
     const [expandedCard, setExpandedCard] = useState(null);
+    const [tripFuelCost, setTripFuelCost] = useState(0);
+    const [allGasStations, setAllGasStations] = useState([]);
 
     const handleExpandCard = (index) => {
         setExpandedCard(index === expandedCard ? null : index);
@@ -35,13 +37,26 @@ export default function AttractionsList({viewOnly}) {
 
     useEffect(() => {
         if (tripDetails && tripDetails.allStops) {
-
+            
             // setAllAttractions(tripDetails.allStops);
             // tripDetails.stops.forEach((stop) => {
             //     if (stop.category !== 'start' && stop.category !== 'end' && !selectedStops.some(item => item.id === stop.id)) {
             //     selectedStops.push(stop);
             //     }
             // });
+            tripDetails.stops.forEach((stop) => {
+                if (stop.gasStations && stop.gasStations.length > 0) {
+                  // If we didn't already add this gas station to the list, add it
+                  for(let i = 0; i < stop.gasStations.length; i++) {
+                    // If it already exists, don't add it
+                    if (allGasStations.find(gas => gas.place_id === stop.gasStations[i].place_id)) {
+                      continue;
+                    }
+                    allGasStations.push(stop.gasStations[i]);
+                  }
+                }
+              });
+            getTripFuelCost();
             updateStops(tripDetails.stops);
         }
     }, [tripDetails, tripDetails && tripDetails.stops]);
@@ -71,12 +86,37 @@ export default function AttractionsList({viewOnly}) {
 
     function getTripFuelCost() {
         if (tripDetails && tripDetails.totalDistance) {
-            console.log(tripDetails.totalDistance[tripDetails.chosenRoute]);
-            console.log(tripDetails.selectedVehicles);
+            let totalDistance = tripDetails.totalDistance[tripDetails.chosenRoute];
+            let averageFuelCost = getAverageFuelCost(); 
+            let fuelEconomy = 20;
 
-            // Calculate fuel cost based on totalDistance if needed
+            let totalFuelCost = totalDistance * ( averageFuelCost * (1/fuelEconomy));
+            totalFuelCost = parseFloat(totalFuelCost.toFixed(2));
+            setTripFuelCost(totalFuelCost);
         }
     }
+
+    function getAverageFuelCost() {
+        if (allGasStations.length === 0) {
+            return 0; 
+        }
+
+        let totalCost = 0;
+
+        allGasStations.forEach((gasStation) => {
+            const { Regular, Premium } = gasStation.price;
+
+            if (Regular && Premium) {
+                totalCost += Regular + Premium;
+            }
+        });
+
+        // Calculate the average cost
+        const averageCost = totalCost / (allGasStations.length * 2); // Multiplying by 2 as there are two types of fuel prices (Regular and Premium)
+        return averageCost;
+    }
+
+
 
     const getRouteDetails = (infoLabel, info) => {
         return (
@@ -145,6 +185,8 @@ export default function AttractionsList({viewOnly}) {
                 {getRouteDetails("Destination:", tripDetails.stops[tripDetails.stops.length - 1].name)}
                 <br></br>
                 {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
+                <br></br>
+                {getRouteDetails("Fuel Cost of Trip ($) :", tripFuelCost)}
                 <br></br>
                 {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
                 <br></br>
