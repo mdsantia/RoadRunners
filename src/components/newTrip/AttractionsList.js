@@ -22,7 +22,6 @@ import GasStations from '../StopsComponents/GasStations'
 import { useEffect } from 'react';
 import StopSearch from '../StopsComponents/StopSearch';
 import {useDashboardContext} from '../../context/DashboardContext'
-import { Stop } from '@mui/icons-material';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -102,7 +101,7 @@ export default function AttractionsList({viewOnly}) {
   const [selectedGasStations, setSelectedGasStations] = useState([]);
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [liveEventsData, setLiveEventsData] = useState([]);
-  const { tripDetails, changeStops } = useDashboardContext();
+  const { tripDetails, changeStops, liveEvents, setLiveEvents} = useDashboardContext();
   
   useEffect(() => {
     const fetchEvents = async () => {
@@ -117,7 +116,7 @@ export default function AttractionsList({viewOnly}) {
         })
         .then((response) => {
           setLiveEventsData(response.data);
-          console.log(response.data);
+          setLiveEvents(response.data);
         })
         .catch((err) => {
           // setError(err.message);

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
-import {faMapPin, faFlag, faGasPump, faUtensils} from '@fortawesome/free-solid-svg-icons';
+import {faMapPin, faFlag, faGasPump, faUtensils, faMasksTheater} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 var map = null;
@@ -13,13 +13,20 @@ const GMap = (props) => {
     const [allStops, setAllStops] = useState(null);
     const [stops, setStops] = useState(null);
     const [zoom, setZoom] = useState(5);
-    const { tripDetails } = useDashboardContext();
+    const { tripDetails, liveEvents } = useDashboardContext();
     const [gasStations, setGasStations] = useState([]);
     const [chosenRoute, setChosenRoute] = useState(0);
     const [restaurants, setRestaurants] = useState([]);
+    const [events, setEvents] = useState([]); 
     const [selectedMarker, setSelectedMarker] = useState(null);
     const iconSize = '10x10';
     var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+
+    useEffect(() => {
+        if (liveEvents) {
+            setEvents(liveEvents);
+        }
+    }, [liveEvents]);
 
     function calculateCenter(polyline) {
         const midIdx = Math.floor(polyline.length / 2);
@@ -59,6 +66,52 @@ const GMap = (props) => {
         const zoom = Math.min(zoomLat, zoomLon, ZOOM_MAX);
         setZoom(Math.ceil(zoom));
     };
+
+    const addEvents = () => {
+        if (events) {
+            events.forEach((event, index) => {
+                const markerIcon = {
+                    path: faMasksTheater.icon[4],
+                    fillColor: "#04122a",
+                    fillOpacity: 1,
+                    anchor: new window.google.maps.Point(
+                        faMasksTheater.icon[0] / 2, // width
+                        faMasksTheater.icon[1], // height
+                    ),
+                    strokeWeight: 1,
+                    strokeColor: "#ffffff",
+                    scale: 0.04,
+                };
+
+                const marker = new window.google.maps.Marker({
+                    position: event.location,
+                    map: map,
+                    icon: markerIcon,
+                    animation: window.google.maps.Animation.DROP,
+                    title: `Event`,
+                });
+
+                markers.push(marker);
+
+                // If marker is clicked, can't be clicked again for 2 seconds
+                marker.addListener('click', () => {
+                    if (marker.getAnimation() !== null) {
+                        return;
+                    }
+                    const infoWindow = new window.google.maps.InfoWindow({
+                        content: `Event: ${event.name}`, // Customize the content as needed
+                    });
+                    marker.setAnimation(window.google.maps.Animation.BOUNCE);
+                    infoWindow.open(map, marker);
+
+                    setTimeout(() => {
+                        marker.setAnimation(null);
+                        infoWindow.close();
+                    }, 2000);
+                });
+            });
+        }
+    }
 
     const addGasStations = () => {
         if (gasStations) {
@@ -328,6 +381,7 @@ const GMap = (props) => {
             addStops();
 
             addRestaurants();
+            addEvents();
 
             
             return () => {
