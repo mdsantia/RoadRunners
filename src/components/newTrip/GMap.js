@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
-import {faMapPin, faFlag, faGasPump, faUtensils, faMasksTheater} from '@fortawesome/free-solid-svg-icons';
+import {faMapPin, faFlag, faGasPump, faUtensils, faMasksTheater, faBed} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -14,7 +14,7 @@ const GMap = (props) => {
     const [allStops, setAllStops] = useState(null);
     const [stops, setStops] = useState(null);
     const [zoom, setZoom] = useState(5);
-    const { tripDetails, liveEvents } = useDashboardContext();
+    const { tripDetails, liveEvents, hotels, setHotels } = useDashboardContext();
     const [gasStations, setGasStations] = useState([]);
     const [chosenRoute, setChosenRoute] = useState(0);
     const [restaurants, setRestaurants] = useState([]);
@@ -30,6 +30,30 @@ const GMap = (props) => {
             addEvents();
         }
     }, [liveEvents]);
+
+    useEffect(() => {
+        if (hotels.length > 0)  
+            return;
+        const fetchHotels = async () => {
+          await axios
+            .get('/api/roadtrip/getHotels', {
+              params: {
+                endLocation: tripDetails.stops[tripDetails.stops.length - 1].location,
+                preferences: tripDetails.preferences.housingSelection,
+              }
+            })
+            .then((response) => {
+                setHotels(response.data);
+                addHotels(response.data);
+            })
+            .catch((err) => {
+              // setError(err.message);
+            });
+          }
+        if (tripDetails && tripDetails.stops) {
+          fetchHotels();
+        }
+      }, [tripDetails]);
 
     function calculateCenter(polyline) {
         const midIdx = Math.floor(polyline.length / 2);
@@ -69,6 +93,53 @@ const GMap = (props) => {
         const zoom = Math.min(zoomLat, zoomLon, ZOOM_MAX);
         setZoom(Math.ceil(zoom));
     };
+
+    const addHotels = (hotels) => {
+        if (hotels) {
+            hotels.forEach((stop, index) => {
+                const markerIcon = {
+                    path: faBed.icon[4],
+                    fillColor: "#000000",
+                    fillOpacity: 1,
+                    anchor: new window.google.maps.Point(
+                        faBed.icon[0] / 2, // width
+                        faBed.icon[1], // height
+                    ),
+                    strokeWeight: 1,
+                    strokeColor: "#ffffff",
+                    scale: 0.04,
+                };
+
+                const marker = new window.google.maps.Marker({
+                    position: stop.location,
+                    map: map,
+                    icon: markerIcon,
+                    animation: window.google.maps.Animation.DROP,
+                    title: `Hotel`,
+                });
+
+                markers.push(marker);
+
+                // If marker is clicked, can't be clicked again for 2 seconds
+                marker.addListener('click', () => {
+                    if (marker.getAnimation() !== null) {
+                        return;
+                    }
+                    const infoWindow = new window.google.maps.InfoWindow({
+                        content: `Hotel: <span style="font-size:larger;"><strong>${stop.name}</strong></span>`, // Customize the content as needed
+                    });
+                    
+                    marker.setAnimation(window.google.maps.Animation.BOUNCE);
+                    infoWindow.open(map, marker);
+                    
+                    setTimeout(() => {
+                        marker.setAnimation(null);
+                        infoWindow.close();
+                    }, 2000);
+                });
+            });
+        }
+    }
 
     const addEvents = () => {
         if (events) {

@@ -53,9 +53,6 @@ export default function HotelCard({ data, selected, onSelectionChange, viewOnly 
                     <Grid item xs={12} sx={{ color: 'grey' }}>
                         {data.rating} <StarRateIcon sx={{ verticalAlign: 'text-bottom', color: 'gold' }}></StarRateIcon> ({data.reviews})
                     </Grid>
-                    <Grid item xs={12} sx={{ fontWeight: 'bold' }}>
-                        ${data.price}/night
-                    </Grid>
                 </Grid>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center', flex: '0 0 5%' }}>

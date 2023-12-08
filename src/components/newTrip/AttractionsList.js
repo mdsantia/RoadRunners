@@ -92,8 +92,8 @@ const HotelData = [
 
 export default function AttractionsList({viewOnly}) {
   const [value, setValue] = React.useState(2);
+  const [allHotels, setAllHotels] = useState([]);
   const [selectedHotels, setSelectedHotels] = useState([]);
-  const [selectedLandmarks, setSelectedLandmarks] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
   const [allAttractions, setAllAttractions] = useState([]);
   const [unselectedAttraction, setUnselectedAttraction] = useState([]);
@@ -103,8 +103,8 @@ export default function AttractionsList({viewOnly}) {
   const [selectedGasStations, setSelectedGasStations] = useState([]);
   const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [liveEventsData, setLiveEventsData] = useState([]);
-  const { tripDetails, changeStops, liveEvents, setLiveEvents} = useDashboardContext();
-  
+  const { tripDetails, changeStops, liveEvents, setLiveEvents, hotels} = useDashboardContext();
+
   useEffect(() => {
     const fetchEvents = async () => {
       await axios
@@ -215,6 +215,12 @@ export default function AttractionsList({viewOnly}) {
     }
   };
 
+  useEffect(() => {
+    if(hotels) {
+      setAllHotels(hotels);
+    }
+  }, [hotels]);
+
   const handleSelectedAttractionsChange = (newlySelectedAttractions) => {
     const updatedSelectedAttractions = [
       ...selectedAttractions,
@@ -286,7 +292,7 @@ export default function AttractionsList({viewOnly}) {
           <Tab icon={<LocalGasStationIcon />} iconPosition="start" label="Gas Stations" {...a11yProps(5)} />
         </Tabs>
         <TabPanel value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto', width: '60%'}}>
-          {HotelData.map((hotel, index) => (
+          {allHotels.map((hotel, index) => (
             <HotelCard
               key={index}
               data={hotel}
