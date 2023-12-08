@@ -110,7 +110,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
   const saveTrip = async (isNewTrip) => {
     await axios.post('/api/trip/saveTrip', {
-      id: isNewTrip ? null : tripDetails.id,
+      id: isNewTrip ? null : tripDetails._id,
       startLocation: tripDetails.startLocation,
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,

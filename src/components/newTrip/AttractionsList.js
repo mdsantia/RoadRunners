@@ -56,6 +56,39 @@ function a11yProps(index) {
     'aria-controls': `vertical-tabpanel-${index}`,
   };
 }
+//Hotel Dummy Data
+const HotelData = [
+  {
+    name: 'Holiday Inn Vancouver',
+    location: 'Vancouver,British Columbia',
+    price: '200',
+    rating: '2.0',
+    reviews: '500',
+    link: 'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
+  },
+  {
+    name: 'Fairmont Hotel Vancouver',
+    location: 'Vancouver,British Columbia',
+    price: '400',
+    rating: '3.0',
+    reviews: '1000',
+    link: 'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
+  },
+  {
+    name: 'Shangri-La False Creek',
+    location: 'Vancouver,British Columbia',
+    price: '600',
+    rating: '4.0',
+    reviews: '400'
+  },
+  {
+    name: 'The Met Coal Harbor',
+    location: 'Vancouver,British Columbia',
+    price: '600',
+    rating: '4.0',
+    reviews: '600'
+  }
+];
 
 export default function AttractionsList({viewOnly}) {
   const [value, setValue] = React.useState(2);
@@ -67,27 +100,9 @@ export default function AttractionsList({viewOnly}) {
   const [selectedLiveEvents, setSelectedLiveEvents] = useState([]);
   const [allGasStations, setAllGasStations] = useState([]);
   const [selectedGasStations, setSelectedGasStations] = useState([]);
+  const [selectedRestaurants, setSelectedRestaurants] = useState([]);
   const [liveEventsData, setLiveEventsData] = useState([]);
   const { tripDetails, changeStops } = useDashboardContext();
-
-  useEffect(() => {
-      const getGas = async (stops) => {
-          await axios.post('/api/roadtrip/getGasStations', {
-                  stops: stops,
-                  mpg: 10,
-                  tankSize: 15,
-          })
-          .then((res) => {
-              console.log(res.data);
-          })
-          .catch((err) => {
-              console.log(err);
-          });
-      }
-      if (tripDetails && tripDetails.options && value == 4) {
-          //getGas(tripDetails.options[0]);
-      }
-  }, [tripDetails, value]);
   
   useEffect(() => {
     const fetchEvents = async () => {
@@ -108,7 +123,6 @@ export default function AttractionsList({viewOnly}) {
           // setError(err.message);
         });
       }
-
     if (tripDetails && tripDetails.stops && value == 3) {
       fetchEvents();
     }
@@ -196,69 +210,9 @@ export default function AttractionsList({viewOnly}) {
     }
   };
 
-  //Hotel Dummy Data
-  const HotelData = [
-    {
-      name: 'Holiday Inn Vancouver',
-      location: 'Vancouver,British Columbia',
-      price: '200',
-      rating: '2.0',
-      reviews: '500',
-      link: 'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
-    },
-    {
-      name: 'Fairmont Hotel Vancouver',
-      location: 'Vancouver,British Columbia',
-      price: '400',
-      rating: '3.0',
-      reviews: '1000',
-      link: 'https://www.google.com/travel/search?q=holiday%20inn%20vancouver&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4597339%2C4757164%2C4814050%2C4874190%2C4893075%2C4924070%2C4965990%2C4990494%2C10207535%2C72298667%2C72302247%2C72317059%2C72379816%2C72385362%2C72406588%2C72412687%2C72412688&hl=en-US&gl=us&cs=1&ssta=1&ts=CAESCAoCCAMKAggDGhwSGhIUCgcI5w8QCxgCEgcI5w8QCxgDGAEyAhAAKg8KDToDVVNEQgYIERICQDg&qs=CAEyFENnc0kxUHJOdF9yR25hcU5BUkFCOAtCCQlUffOmN3ZUjUIJCTC8yfFSz-duQgkJADcwjAAs3J4&ap=aAG6AQhvdmVydmlldw&ictx=1&sa=X&sqi=2&ved=0CAAQ5JsGahcKEwjQuay3t6GCAxUAAAAAHQAAAAAQBQ'
-    },
-    {
-      name: 'Shangri-La False Creek',
-      location: 'Vancouver,British Columbia',
-      price: '600',
-      rating: '4.0',
-      reviews: '400'
-    },
-    {
-      name: 'The Met Coal Harbor',
-      location: 'Vancouver,British Columbia',
-      price: '600',
-      rating: '4.0',
-      reviews: '600'
-    }
-  ];
-
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-
-  //LandMark Dummy Data
-  const LandmarkData = [
-    {
-      name: 'Niagara Falls',
-      price: '10.00',
-      rating: '4.00',
-      reviews: '400',
-      link: 'https://www.niagarafallsstatepark.com/'
-    },
-    {
-      name: 'Six Flags Canada',
-      price: '50.00',
-      rating: '4.00',
-      reviews: '500',
-    },
-    {
-      name: 'Lake Ontario',
-      price: '5.00',
-      rating: '4.00',
-      reviews: '200',
-    },
-
-  ];
 
   if (tripDetails && tripDetails.stops) {
     return (
@@ -291,17 +245,6 @@ export default function AttractionsList({viewOnly}) {
             />
           ))}
         </TabPanel>
-        {/* <TabPanel value={value} index={1} style={{ maxHeight: '400px', overflowY: 'auto', width: '70%' }}>
-          {LandmarkData.map((landmark, index) => (
-            <Landmarks
-              key={index}
-              data={landmark}
-              viewOnly={viewOnly}
-              selected={isStopSelected(landmark, 'landmark')}
-              onSelectionChange={() => handleStopSelection(landmark, selectedLandmarks, setSelectedLandmarks)}
-            />
-          ))}
-        </TabPanel> */}
         <TabPanel value={value} index={1} style={{ width: '70%' }}>
         <StopSearch data={allAttractions}/>
           <div style={{ maxHeight: '350px', overflowY: 'auto' }}> 
