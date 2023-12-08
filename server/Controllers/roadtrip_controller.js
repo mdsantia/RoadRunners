@@ -228,15 +228,6 @@ const newRoadTrip = async (req, res) => {
 
   await getRestaurantsAlongRoute(result.options[0], preferences ? preferences.diningSelection : null);
 
-  const jsonString = JSON.stringify(result.options[0], (key, value) => {
-    // Exclude the 'routeFromHere' attribute from serialization
-    if (key === 'routeFromHere') {
-      return undefined;
-    }
-    return value;
-  });
-  
-  console.log(jsonString);
   res.status(201).json(result);
 };
 

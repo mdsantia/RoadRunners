@@ -239,7 +239,6 @@ async function getStops(location, radius, preferences, rankby) {
     if (preferences && preferences.length > 0) {
       const lowercasedArray = preferences.map(str => str.toLowerCase().replace(' ', '_'));
       type = lowercasedArray.join(',');
-      console.log(type, preferences);
       params.keyword = type;
     }
     if (radius)
