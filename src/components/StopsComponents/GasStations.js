@@ -45,7 +45,7 @@ export default function GasStations({data, selected, onSelectionChange, viewOnly
           
             <CardContent sx={{ flex: '1' }}>
                 <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1rem'}}>
+                <Grid item xs={12} sx={{fontWeight:'bold', fontSize:'1.2rem'}}>
                 <a
                             href="#"
                             onClick={() => handleClick(data.name)}

@@ -57,9 +57,6 @@ export default function Attractions({data, selected, onSelectionChange, viewOnly
                         </a>
                     </Grid>
                     <Grid item xs={12} sx={{color:'grey'}}>
-                       {data.name}
-                    </Grid>
-                    <Grid item xs={12} sx={{color:'grey'}}>
                         <StarRateIcon sx={{verticalAlign:'text-bottom', color:'gold'}}></StarRateIcon>{data.rating}
                         {/* {data.rating}   ({data.reviews}) */}
                     </Grid>
