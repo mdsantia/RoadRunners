@@ -62,6 +62,7 @@ export default function AttractionsList({viewOnly}) {
     useEffect(() => {
         if (tripDetails && tripDetails.allStops) {
             setAllAttractions(tripDetails.allStops);
+            getTripFuelCost();
             tripDetails.stops.forEach((stop) => {
                 if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
                 selectedAttractions.push(stop);
@@ -95,6 +96,15 @@ export default function AttractionsList({viewOnly}) {
       });
     };
 
+    function getTripFuelCost() {
+        if (tripDetails && tripDetails.totalDistance) {
+            console.log(tripDetails.totalDistance[tripDetails.chosenRoute]);
+            console.log(tripDetails.selectedVehicles);
+
+            // Calculate fuel cost based on totalDistance if needed
+        }
+    }
+
     const getRouteDetails = (infoLabel, info) => {
         return (
             <Grid container alignItems="left" textAlign="left" spacing={0}>
@@ -111,6 +121,9 @@ export default function AttractionsList({viewOnly}) {
             </Grid>
         );
     }
+
+
+   
 
     async function handleOnDragEnd (result) {
         if (!result.destination) return;
@@ -172,6 +185,8 @@ export default function AttractionsList({viewOnly}) {
             {getRouteDetails("End Date:", new Date(tripDetails.endDate).toLocaleDateString())}
             <br></br>
             {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
+            <br></br>
+            {getRouteDetails("Total Fuel Cost of Trip:", tripDetails.stops.length - 2)}
             <br></br>
             <Divider></Divider>
             <br></br>
