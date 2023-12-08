@@ -17,6 +17,7 @@ import StrictModeDroppable from '../additionalFeatures/StrictModeDroppable';
 import LinearProgress from '@mui/material/LinearProgress';
 
 
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -174,10 +175,36 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
 
     if (tripDetails && !tripDetails.stops) {
         return (
-            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-                Awaiting for route suggestions...
-                <LinearProgress/>
-            </Typography> 
+            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold'}}>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            </Typography>
         );
     }
 
@@ -193,8 +220,6 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
                 <br></br>
                 {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
                 <br></br>
-                {getRouteDetails("Fuel Cost of Trip ($) :", tripFuelCost)}
-                <br></br>
                 {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
                 <br></br>
                 <Divider></Divider>
@@ -207,6 +232,8 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
                         {vehicle}
                     </li>
                 ))}
+                <br></br>
+                {getRouteDetails("Fuel Cost of Trip ($):", tripFuelCost)}
                 <br></br>
                 <Divider></Divider>
                 <br></br>

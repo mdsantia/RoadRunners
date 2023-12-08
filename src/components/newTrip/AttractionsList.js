@@ -392,9 +392,35 @@ export default function AttractionsList({viewOnly}) {
     );
   } 
   return (
-    <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-    Awaiting for route suggestions...
-    <LinearProgress></LinearProgress>
-    </Typography> 
+    <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold'}}>
+ <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+            <LinearProgress color="inherit" />
+            <br></br>
+    </Typography>
   );
 }

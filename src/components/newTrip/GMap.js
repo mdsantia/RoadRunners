@@ -413,7 +413,7 @@ const GMap = (props) => {
                     fontWeight: 'bold',
                 }}
             >
-               <CircularProgress size={100} thickness={3} color="secondary"  />
+              <CircularProgress size={100} thickness={3} color="inherit" />
             </div>
         )}
         <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
