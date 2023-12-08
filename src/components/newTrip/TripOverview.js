@@ -35,16 +35,7 @@ export default function AttractionsList({viewOnly}) {
 
     useEffect(() => {
         if (tripDetails && tripDetails.allStops) {
-<<<<<<< HEAD
-            setAllAttractions(tripDetails.allStops);
-            getTripFuelCost();
-            tripDetails.stops.forEach((stop) => {
-                if (stop.category !== 'start' && stop.category !== 'end' && !selectedAttractions.some(item => item.id === stop.id)) {
-                selectedAttractions.push(stop);
-                }
-            });
-            updateStops(tripDetails.stops.slice(1, -1));
-=======
+
             // setAllAttractions(tripDetails.allStops);
             // tripDetails.stops.forEach((stop) => {
             //     if (stop.category !== 'start' && stop.category !== 'end' && !selectedStops.some(item => item.id === stop.id)) {
@@ -52,7 +43,6 @@ export default function AttractionsList({viewOnly}) {
             //     }
             // });
             updateStops(tripDetails.stops);
->>>>>>> def7b113f5039cdecd84d0f38471944251b0b52c
         }
     }, [tripDetails, tripDetails && tripDetails.stops]);
 
@@ -144,112 +134,6 @@ export default function AttractionsList({viewOnly}) {
         );
     }
 
-<<<<<<< HEAD
-    return (
-        <Box
-        sx={{ flexGrow: 2, bgcolor: 'background.paper', display: 'flex', height: '100%', alignContent: 'center', alignItems: 'start', padding: '0', width: '100%' }}
-        >
-        <Container value={value} index={0} style={{ maxHeight: '400px', overflowY: 'auto', textAlign: 'left', alignItems: 'left'}}>
-            {getRouteDetails("Starting Location:", tripDetails.stops[0].name)}
-            {getRouteDetails("Destination:", tripDetails.stops[tripDetails.stops.length - 1].name)}
-            <br></br>
-            {getRouteDetails("Start Date:", new Date(tripDetails.startDate).toLocaleDateString())}
-            {getRouteDetails("End Date:", new Date(tripDetails.endDate).toLocaleDateString())}
-            <br></br>
-            {getRouteDetails("Total Number of Stops:", tripDetails.stops.length - 2)}
-            <br></br>
-            {getRouteDetails("Total Fuel Cost of Trip:", tripDetails.stops.length - 2)}
-            <br></br>
-            <Divider></Divider>
-            <br></br>
-            {getRouteDetails("Number of Vehicles:", tripDetails.numVehicles)}
-            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-                Your Selected Vehicle(s) for This Trip:
-            </Typography>
-            {tripDetails.selectedVehicles.map((vehicle, index) => (
-                <li variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontStyle: 'italic', color: '#555'}}>
-                    {vehicle}
-                </li>
-            ))}
-            <br></br>
-            <Divider></Divider>
-            <br></br>
-            <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
-                Stops Along Your Route:
-            </Typography>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-                <StrictModeDroppable droppableId="stops" direction="vertical">
-                    {(provided) => (
-                        <div ref={provided.innerRef} {...provided.droppableProps}>
-                            {stops.map((stop, index) => {
-                                return (
-                                    <Draggable key={index} draggableId={`stop-${index}`} index={index}>
-                                        {(provided, snapshot) => (
-                                            <Item
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    margin: '0 auto',
-                                                    marginTop: '3%',
-                                                    marginBottom: '3%',
-                                                    cursor: 'pointer',
-                                                    transition: 'height 0.3s',
-                                                    height: '60px',
-                                                    width: '100%',
-                                                    backgroundColor: '#f5f5f5',
-                                                    boxShadow: snapshot.isDragging ? '0 4px 8px rgba(0, 0, 0, 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.2)',
-                                                    cursor: snapshot.isDragging ? 'grabbing' : 'pointer',
-                                                    ...provided.draggableProps.style,
-                                                }}
-                                                // onClick={() => handleExpandCard(index)}
-                                            >
-                                                <CardContent sx={{ flex: '1' }}>
-                                                    <Grid container spacing={0.5} justifyContent="center" alignItems="center">
-                                                        <Grid item md={12} sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
-                                                            <a
-                                                                href={stop.link}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                style={{ textDecoration: 'none', color: 'black' }}
-                                                                // onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                                                                // onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
-                                                            >
-                                                                {stop.name}
-                                                            </a>
-                                                        </Grid>
-                                                    </Grid>
-                                                </CardContent>
-                                                <CardActions 
-                                                    sx={{ justifyContent: 'center', flex: '0 0 5%' }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); // Stop the click event from propagating to the parent element
-                                                    }}
-                                                >
-                                                    <Checkbox
-                                                        icon={<AddLocationAltOutlinedIcon />}
-                                                        checkedIcon={<AddLocationAltIcon />}
-                                                        checked={true}
-                                                        disabled={viewOnly}
-                                                        onChange={() => handleStopSelection(stop, selectedAttractions, setSelectedAttractions)}
-                                                    />
-                                                </CardActions>
-                                            </Item>
-                                        )}
-                                    </Draggable>
-                                );
-                            })}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </StrictModeDroppable>
-            </DragDropContext>
-        </Container>
-        </Box>
-    );
-=======
     if (tripDetails && tripDetails.stops) {
         return (
             <Box
@@ -355,5 +239,5 @@ export default function AttractionsList({viewOnly}) {
             </Box>
         );
     }    
->>>>>>> def7b113f5039cdecd84d0f38471944251b0b52c
+
 }
