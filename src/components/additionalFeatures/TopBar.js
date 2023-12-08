@@ -21,7 +21,7 @@ function TopBar(props) {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const profile_picture = user ? user.profile_picture : "/static/images/avatar/2.jpg";
-  const { handleLock, locked } = React.useState();
+  const { handleLock, locked } = React.useState()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,18 +53,7 @@ function TopBar(props) {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {user ? (
               <div>
-                <>
-                  {locked ? (
-                    <Button variant="contained" startIcon={<LockOpenIcon />}>
-                      Unlock
-                    </Button>
-                  ) : (
-
-                    <Button variant="contained" startIcon={<LockIcon />}>
-                      Lock
-                    </Button>
-                  )}
-                </>
+               
 
                 <Button
                   id="basic-button"

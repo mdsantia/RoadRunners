@@ -176,7 +176,7 @@ export default function AttractionsList({viewOnly, minimumMPG}) {
         return (
             <Typography variant="body1" style={{ fontSize: '1rem', textTransform: 'none', fontWeight: 'bold' }}>
                 Awaiting for route suggestions...
-                <LinearProgress></LinearProgress>
+                <LinearProgress/>
             </Typography> 
         );
     }

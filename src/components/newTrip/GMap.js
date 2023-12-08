@@ -102,7 +102,7 @@ const GMap = (props) => {
                         return;
                     }
                     const infoWindow = new window.google.maps.InfoWindow({
-                        content: `Event: ${event.name}`, // Customize the content as needed
+                        content: `Event: <span style="font-size:larger;"><strong>${event.name}</strong></span>`, // Customize the content as needed
                     });
                     marker.setAnimation(window.google.maps.Animation.BOUNCE);
                     infoWindow.open(map, marker);
@@ -148,7 +148,7 @@ const GMap = (props) => {
                         return;
                     }
                     const infoWindow = new window.google.maps.InfoWindow({
-                    content: `Gas Station: ${stop.name}\nPrices:`, // Customize the content as needed
+                        content: `<span style="font-size:larger;"><strong>${stop.name}</strong></span><br>Regular: <strong>$${stop.price.Regular}</strong><br>Premium: <strong>$${stop.price.Premium}</strong><br>Diesel: <strong>$${stop.price.Diesel}</strong>`, // Customize the content as needed
                     });
 
                     marker.setAnimation(window.google.maps.Animation.BOUNCE);
@@ -413,7 +413,7 @@ const GMap = (props) => {
                     fontWeight: 'bold',
                 }}
             >
-               <CircularProgress size={100} thickness={3} />
+               <CircularProgress size={100} thickness={3} color="secondary"  />
             </div>
         )}
         <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
