@@ -222,6 +222,9 @@ async function callTicketmasterService(startLocation, endLocation, startDate, en
 // }
 
 async function getStops(location, radius, preferences, type, rankby) {
+  if (!preferences && !type) {
+    return [];
+  }
   try {
     let keywords;
     const locationString = `${location.lat},${location.lng}`;

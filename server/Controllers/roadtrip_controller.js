@@ -43,21 +43,38 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     return;
   }
   const midpoint = calculateMidpoint(decodePath(route));
+  const ifSTMT = attractionPref && attractionPref.length > 0;
+  const attractionOptions = [
+    "Entertainment", 
+    "Nature", 
+    // "Cultural", 
+    "Adventure", 
+    // "Water", 
+    // "Educational", 
+    "Shopping", 
+    // "Culinary", 
+    // "Religious", 
+    // "Family-Friendly"
+];
+  const keywords = ifSTMT ? attractionPref.filter((attraction) => !attractionOptions.includes(attraction)) : null;
+  const original = ifSTMT ? attractionPref.filter((attraction) => attractionOptions.includes(attraction)) : null;
   const [
     // amusement_parksResults, 
     museumsResult, 
+    customResult,
     // bowlingAlleyResult, 
-    touristAttractionResult, 
+    // touristAttractionResult, 
     // stadiumResult
   ] = await Promise.all([
-    roadtrip_apis.getStops(midpoint, radius, attractionPref && attractionPref.length > 0 ? attractionPref : null, 'tourist_attraction', null),
+    roadtrip_apis.getStops(midpoint, radius, ifSTMT ? original : null, !ifSTMT ? 'tourist_attraction' : null, null),
+    roadtrip_apis.getStops(midpoint, radius, keywords, null, null),
   ]);
 
-  const combinedStops = [].concat(
+  let combinedStops = [].concat(
     // amusement_parksResults,
     museumsResult, 
     // bowlingAlleyResult, 
-    touristAttractionResult, 
+    // touristAttractionResult, 
     // stadiumResult
     );
   combinedStops.sort((a, b) => {
@@ -68,7 +85,8 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
   let tempStops = [];
   let i = 0;
   while (numStops < 4 && i < combinedStops.length) {
-    const stop = combinedStops[i];
+    const stop = i % 2 ? customResult[i % customResult.length] : combinedStops[i % combinedStops.length];
+    combinedStops = [...customResult, ...combinedStops];
     if (!allStops.some(existingStop => existingStop.place_id === stop.place_id)) {
       allStops.push(stop);
       numStops++;
