@@ -38,6 +38,10 @@ async function computeStops(left, right, selectedStops, allStops, idx, startDate
     },
   };
   const route = await roadtrip_apis.callDirectionService(request);
+  if (route.message) {
+    selectedStops.pop();
+    return;
+  }
   const midpoint = calculateMidpoint(decodePath(route));
   const [
     // amusement_parksResults, 
