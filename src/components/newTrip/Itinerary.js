@@ -105,7 +105,9 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       setSelectedVehicles(tripDetails.selectedVehicles);
       setTemporaryPrefs(tripDetails.preferences);
       setMinimumMPG(tripDetails.minimumMPG);
+      console.log("minimum",minimumMPG);
     }
+
   }, [tripDetails]);
 
   const saveTrip = async (isNewTrip) => {
@@ -240,7 +242,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Box sx={{ overflowY: 'auto', maxHeight: '450px'}}>
-          <TripOverview viewOnly={viewOnly}></TripOverview>
+          <TripOverview viewOnly={viewOnly} minMPG={minimumMPG}></TripOverview>
           <br></br>
           <Divider></Divider>
           <br></br>
