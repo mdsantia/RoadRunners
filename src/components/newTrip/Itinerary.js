@@ -74,7 +74,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
-  const {tripDetails, setTripDetails} = useDashboardContext();
+  const {tripDetails, setTripDetails, directionsCallback} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
@@ -147,11 +147,30 @@ export default function Itinerary({viewOnly, sharedTrip}) {
   }
 
   const handleChangePrefs = async (newPrefs) => {
+    const roadtripParams = {
+      startLocation: tripDetails.startLocation,
+      endLocation: tripDetails.endLocation,
+      startDate: tripDetails.startDate,
+      endDate: tripDetails.endDate,
+      attractionPref: newPrefs.attractionSelection,
+      foodPref: newPrefs.diningSelection ? newPrefs.diningSelection : null,
+      mpg: newPrefs.minimumMPG ? newPrefs.minimumMPG : tripDetails.minimumMPG
+    };
+
+    await axios
+    .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
+    .then((res) => {
+        showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
+        directionsCallback(res.data, tripDetails.tempid);
+    })  
+    .catch((err) => {
+        console.log(err);
+    }); 
+
     if (tripDetails.tempid) {
       const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
       tempTrips[tripDetails.tempid].preferences = newPrefs;
       localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
-      showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
       setTripDetails(tempTrips[tripDetails.tempid]);
       return;
     }
@@ -171,14 +190,11 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       stops: tripDetails.stops,
       user_email: user.email,
     }).then((res) => {
-      showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
       const newTripDetails = {
         ...tripDetails,
         preferences: newPrefs
       };
       setTripDetails(newTripDetails);
-      buildRoadTrip();
-      navigate(`/dashboard/${tripDetails._id}`);
     }).catch((err) => {
       console.log(err);
       showMessage('Error updating preferences', 2000, 'error');

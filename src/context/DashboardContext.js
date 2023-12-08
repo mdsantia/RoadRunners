@@ -102,7 +102,6 @@ export const DashboardContextProvider = ({ children }) => {
         if (tripDetails.tempid) {
           const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
           tempTrips[tripDetails.tempid] = newTripDetails;
-          console.log(tempTrips);
           localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
         }
     }
