@@ -130,7 +130,9 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       } else {
         showMessage('Trip updated!', 2000, 'success');
       }
-      updateUser(res.data.user);
+      if (isNewTrip) {
+        updateUser(res.data.user);
+      }
       const oldid = tripDetails.tempid;
       if (oldid) {
         const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
