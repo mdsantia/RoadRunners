@@ -406,7 +406,6 @@ const rearrangeStops = async (req, res) => {
     }
   }
 
-  console.log(stops)
   res.status(201).json(stops);
 }
   
