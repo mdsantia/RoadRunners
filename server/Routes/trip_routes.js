@@ -13,6 +13,6 @@ router.post('/saveTrip', saveTrip);
 router.post('/deleteTrip/:email/:id', deleteTrip);
 router.post('/clearTrips/:email', clearAllTrips);
 router.post('/shareTrip', shareTrip);
-router.post('/lockUnlock/:id', lockUnlock);
+router.post('/lockUnlock/:id/:state', lockUnlock);
 
 module.exports = router;

@@ -32,7 +32,7 @@ const theme = createTheme({
 
 function App() {
   const { user } = useUserContext();
-  if (!user) {
+  if (!user) {    
     return <LoginPage />;
   }
   return (

@@ -411,7 +411,7 @@ const clearAllTrips = async (req, res) => {
 }
 
 const lockUnlock = async (req, res) => {
-    const {id} = req.params;
+    const {id, state} = req.params;
 
     const trip = await Trip.findOne({_id: id});
     if (!trip) {
@@ -419,7 +419,12 @@ const lockUnlock = async (req, res) => {
         return;
     }
 
-    trip.locked = !trip.locked;
+    if (state == 1) {
+        trip.locked = true;
+    }
+    else {
+        trip.locked = false;
+    }
     await trip.save();
     res.status(200).json();
 }
