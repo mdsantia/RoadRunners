@@ -9,6 +9,7 @@ router.get('/yelpUrl', yelpUrl);
 router.get('/getWarnings', getWarnings);
 
 /* Post Requests */
+router.post('/getGasStations', getGasStations);
 router.post('/addStop', addStop);
 router.post('/removeStop', removeStop);
 router.post('/moveStop', moveStop);

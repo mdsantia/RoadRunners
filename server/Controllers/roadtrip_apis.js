@@ -137,8 +137,9 @@ async function gasStationsForStop(stop, mpg, fuelCapacity, distancePassed, fuelT
       const currGasStations = await getStops(current, null, null, null, 'gas_station', 'distance');
       // Push the first 3 gas stations
       gasStations.push(...currGasStations.slice(0, 3));
-      gasStations.forEach((station) => {
-          station.price = getGasStationPrices(station.location, fuelType);
+      gasStations.forEach(async (station) => {
+          station.price = await getGasStationPrices(station.location, fuelType);
+          console.log(station.price);
       });
       currentDistance = 0;
     }
@@ -628,9 +629,9 @@ async function getGasStationPrices(geocode, fuelType) {
     },
   };
 
-  if (gasPrices[state][fuelType]) {
-    return gasPrices[state][fuelType];
-  } else {
+  if (gasPrices[state]) {
+    return gasPrices[state];
+  } else {  
     throw new Error(`Gas price for ${state} not found.`);
   }
 }

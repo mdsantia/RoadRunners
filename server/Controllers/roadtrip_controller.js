@@ -195,6 +195,12 @@ const yelpUrl = async (req, res) => {
   res.status(201).json(urls);
 }
 
+const getGasStations = async (req, res) => {
+  const {stops, mpg, tankSize} = req.body;
+  await getGasStationsAlongRoute(stops, mpg, tankSize, 'Regular');
+  res.status(201).json(stops);
+}
+
 const newRoadTrip = async (req, res) => {
   let { startLocation, endLocation, startDate, endDate, mpg, foodPref} = req.query;
   mpg = mpg===undefined||mpg<=0?10:mpg;
@@ -215,7 +221,7 @@ const newRoadTrip = async (req, res) => {
       }
     });
   })
-  await getGasStationsAlongRoute(result.options[0], mpg, 10, 'Regular');
+  await getGasStationsAlongRoute(result.options[0], mpg, 14, 'Regular');
   let chosenFood = 'Fast Food';
   if(foodPref && !foodPref.includes(chosenFood)) {
     if(foodPref.includes('Family Restaurants')) {
@@ -231,14 +237,19 @@ const newRoadTrip = async (req, res) => {
 const getLiveEvents = async(req, res) => {
   const {startLocation, endLocation, startDate, endDate} = req.query;
 
-  const attractions = await roadtrip_apis.callTicketmasterService(startLocation, endLocation, startDate, endDate);
-
+  const events = await roadtrip_apis.callTicketmasterService(startLocation, endLocation, startDate, endDate);
+  events.forEach(event => {
+    event.location = {lat: parseFloat(event._embedded.venues[0].location.latitude), lng: parseFloat(event._embedded.venues[0].location.longitude)};
+    event.locationString = `${event._embedded.venues[0].location.latitude},${event._embedded.venues[0].location.longitude}`;
+    delete event._embedded;
+    delete event._links;
+  });
   // if (attractions.message) {
   //   console.log("Ticket Master Error\n");
   //   res.status(401).json(attractions.message);
   // }
 
-  res.status(201).json(attractions);
+  res.status(201).json(events);
 }
 
 async function addStopInto (newStop, into, stops) {

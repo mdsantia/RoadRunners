@@ -44,7 +44,7 @@ export default function GasStations({data, selected, onSelectionChange, viewOnly
         <Item sx={{ display: 'flex', alignItems: 'center', maxWidth: '100%', margin: '0 auto', marginTop: '3%' }}>
             <CardMedia
                 sx={{ height: 140 , flex: '0 0 40%'  }}
-                image={data.photo || LandMarkImage}
+                image={LandMarkImage}
                 title="LandMarkImage"
             />
             <CardContent sx={{ flex: '1' }}>
@@ -65,7 +65,14 @@ export default function GasStations({data, selected, onSelectionChange, viewOnly
                         {/* {data.rating}   ({data.reviews}) */}
                     </Grid>
                     <Grid item xs={12} sx={{fontWeight:'bold'}}>
-                      {data.price ? convertPrice(data.price) : ''}
+                        Address: {data.vicinity}
+                    </Grid>
+                    <Grid item xs={12} sx={{fontWeight:'bold'}}>
+                        {`Prices: `}
+                        <br />
+                        {`Regular: $${data.price.Regular || 'N/A'} MidGrade: $${data.price.MidGrade || 'N/A'}`}
+                        <br/>
+                        {`Premium: $${data.price.Premium || 'N/A'} Diesel: $${data.price.Diesel || 'N/A'}`}
                     </Grid>
                 </Grid>
             </CardContent>
