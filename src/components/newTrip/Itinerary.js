@@ -21,6 +21,7 @@ import AttractionsList from '../newTrip/AttractionsList';
 import {useDashboardContext} from '../../context/DashboardContext';
 import TripOverview from '../newTrip/TripOverview';
 import ShareTrip from '../additionalFeatures/ShareTrip';
+import { LocalConvenienceStoreOutlined } from '@mui/icons-material';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
