@@ -114,6 +114,7 @@ export const DashboardContextProvider = ({ children }) => {
         setCenter,
         directionsCallback,
         tripDetails, 
+        buildPolyline,
         setTripDetails,
         updateChosenRoute,
         changeStops

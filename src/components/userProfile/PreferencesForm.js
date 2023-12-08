@@ -43,7 +43,7 @@ export default function PreferencesForm(props) {
     const ratingOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const attractionOptions = [
         "Entertainment", 
-        "Outdoor/Nature", 
+        "Nature", 
         // "Cultural", 
         "Adventure", 
         // "Water", 
@@ -57,7 +57,7 @@ export default function PreferencesForm(props) {
         "Fast Food", 
         // "Fine Dining", 
         // "Casual Dining", 
-        "Cafés/Coffee Shops", 
+        "Coffee Shops", 
         // "Buffets", 
         // "Food Trucks", 
         "Family Restaurants", 

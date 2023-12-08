@@ -226,7 +226,7 @@ async function callTicketmasterService(startLocation, endLocation, startDate, en
 
 async function getStops(location, radius, preferences, rankby) {
   try {
-    let type = preferences;
+    let type;
     const locationString = `${location.lat},${location.lng}`;
     endpoint = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
     params = {
@@ -237,12 +237,10 @@ async function getStops(location, radius, preferences, rankby) {
       key: GoogleApiKey
     };
     if (preferences && preferences.length > 0) {
-      const min = 0;
-      const max = preferences.length - 1; 
-      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-      type = preferences[randomNumber].toLowerCase();
-      params.type = type;
+      const lowercasedArray = preferences.map(str => str.toLowerCase().replace(' ', '_'));
+      type = lowercasedArray.join(',');
       console.log(type, preferences);
+      params.keyword = type;
     }
     if (radius)
       params.radius = radius;

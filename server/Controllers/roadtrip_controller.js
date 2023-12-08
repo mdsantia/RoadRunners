@@ -174,7 +174,7 @@ async function getGasStationsAlongRoute(stops, mpg, tankSize, fuelType) {
 
 async function getRestaurantsAlongRoute(stops, foodPref) {
   if(!foodPref || foodPref.length <= 0) {
-    foodPref = ['Fast Food', 'Family Restaurants'];
+    foodPref = ['fastfood'];
   }
   var poly = [];
   poly = [];

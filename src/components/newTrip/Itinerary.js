@@ -74,7 +74,7 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
   const {user, updateUser} = useUserContext();
   const navigate = useNavigate();
-  const {tripDetails, setTripDetails, directionsCallback} = useDashboardContext();
+  const {tripDetails, setTripDetails, directionsCallback, buildPolyline} = useDashboardContext();
   const [temporaryPrefs, setTemporaryPrefs] = React.useState({});
   const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
@@ -156,11 +156,12 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       mpg: newPrefs.minimumMPG ? newPrefs.minimumMPG : tripDetails.minimumMPG
     };
 
+    let newTrip;
     await axios
     .get('/api/roadtrip/newRoadTrip', { params: roadtripParams })
     .then((res) => {
         showMessage('Preferences updated! Regenerating Trip!', 2000, 'success');
-        directionsCallback(res.data, tripDetails.tempid);
+        newTrip = res.data;
     })  
     .catch((err) => {
         console.log(err);
@@ -168,13 +169,24 @@ export default function Itinerary({viewOnly, sharedTrip}) {
 
     if (tripDetails.tempid) {
       const tempTrips = JSON.parse(localStorage.getItem('tempTrips')) || {};
-      tempTrips[tripDetails.tempid].preferences = newPrefs;
+      const newTempTrip = {
+        ...tripDetails,
+        preferences: newPrefs,
+        numVehicles: numVehicles,
+        selectedVehicles: selectedVehicles,
+        allStops: newTrip.allStops,
+        options: newTrip.options,
+        chosenRoute: 0,
+        polyline: buildPolyline(newTrip.options[0]),
+        stops: newTrip.options[0],
+      }
+      tempTrips[tripDetails.tempid] = newTrip;
       localStorage.setItem('tempTrips', JSON.stringify(tempTrips));
-      setTripDetails(tempTrips[tripDetails.tempid]);
+      directionsCallback(newTrip, tripDetails.tempid);
       return;
     }
     await axios.post('/api/trip/saveTrip', {
-      id: tripDetails._id,
+      id: newTrip._id,
       startLocation: tripDetails.startLocation,
       endLocation: tripDetails.endLocation,
       startDate: tripDetails.startDate,
@@ -182,18 +194,14 @@ export default function Itinerary({viewOnly, sharedTrip}) {
       preferences: newPrefs,
       numVehicles: numVehicles,
       selectedVehicles: selectedVehicles,
-      allStops: tripDetails.allStops,
-      options: tripDetails.options,
-      chosenRoute: tripDetails.chosenRoute,
-      polyline: tripDetails.polyline,
-      stops: tripDetails.stops,
+      allStops: newTrip.allStops,
+      options: newTrip.options,
+      chosenRoute: 0,
+      polyline: buildPolyline(newTrip.options[0]),
+      stops: newTrip.options[0],
       user_email: user.email,
     }).then((res) => {
-      const newTripDetails = {
-        ...tripDetails,
-        preferences: newPrefs
-      };
-      setTripDetails(newTripDetails);
+      directionsCallback(newTrip, null);
     }).catch((err) => {
       console.log(err);
       showMessage('Error updating preferences', 2000, 'error');
