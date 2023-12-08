@@ -88,7 +88,7 @@ export default function AttractionsList({viewOnly}) {
     async function handleOnDragEnd (result) {
         const from = result.source.index;
         const to = result.destination.index;
-        if (!result.destination || from === to) return;
+        if (!result.destination || from === to || viewOnly) return;
         const old = [...stops];
         console.log(old);
 
