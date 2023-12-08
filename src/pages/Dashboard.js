@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Card, Button, Typography, Stack } from '@mui/material';
+import { Card } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import TopBar from '../components/additionalFeatures/TopBar';
 import CreateTrip from '../components/newTrip/CreateTrip'
@@ -71,7 +71,6 @@ const Wrapper = styled(Card)(({ theme }) => ({
 
 export default function Dashboard() {
     const {tripid, tempid} = useParams();
-    const [nonce, setNonce] = useState('');
     const { user } = useUserContext();
     const navigate = useNavigate();
     const mapWrapperRef = useRef(null);
@@ -173,6 +172,7 @@ export default function Dashboard() {
             endLocation: tripDetails.endLocation,
             startDate: tripDetails.startDate,
             endDate: tripDetails.endDate,
+            attractionPref: tripDetails.preferences.attractionSelection,
             foodPref: tripDetails.preferences.diningSelection ? tripDetails.preferences.diningSelection : null,
             mpg: tripDetails.minimumMPG,
         };

@@ -276,6 +276,14 @@ const GMap = (props) => {
         
     /** ATTEMPT TO GET USER'S LOCATION */
     useEffect(() => {
+        if (markers && polyline) {
+            markers.forEach(marker => marker.setMap(null));
+            markers.length = 0; // Clear the markers array
+
+            polyline.setMap(null);
+            markers = [];
+            polyline = null;
+        }
         if (navigator.geolocation && !userLocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -298,6 +306,7 @@ const GMap = (props) => {
 
                 polyline.setMap(null);
             }
+            
             if (!map) {
                 console.log('Initializing map...');
                 map = new window.google.maps.Map(mapContainerRef.current, {
@@ -307,11 +316,9 @@ const GMap = (props) => {
                     mapTypeControl: false,
                     fullscreenControl: false
                 });
-            } if (map) {
+            } else {
                 if (mapContainerRef.current && mapContainerRef.current.childElementCount === 0) {
                     mapContainerRef.current.appendChild(map.getDiv());
-
-                    // console.log(mapContainerRef.current);
                 }
                 /** SUPPORT ANIMATIONS AND NOT RELOAD */
             }
@@ -327,13 +334,6 @@ const GMap = (props) => {
             return () => {
                 if (map) {
                     window.google.maps.event.clearInstanceListeners(map);
-
-                    if (markers && polyline) {
-                        markers.forEach(marker => marker.setMap(null));
-                        markers.length = 0; // Clear the markers array
-    
-                        polyline.setMap(null);
-                    }
                 }
             };
         }

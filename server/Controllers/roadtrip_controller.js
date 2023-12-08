@@ -202,7 +202,8 @@ const getGasStations = async (req, res) => {
 }
 
 const newRoadTrip = async (req, res) => {
-  let { startLocation, endLocation, startDate, endDate, mpg, foodPref} = req.query;
+  let { startLocation, endLocation, startDate, endDate, mpg, foodPref, attractionPref} = req.query;
+  console.log(attractionPref);
   mpg = mpg===undefined||mpg<=0?10:mpg;
   console.log(`Creating new road trip, from ${startLocation} to ${endLocation}. Dates are ${startDate}-${endDate}`);
   
