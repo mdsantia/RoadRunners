@@ -41,7 +41,6 @@ function RouteOptions() {
             setFilteredRoutes(tripDetails.options);
         }
     }, [tripDetails, tripDetails && tripDetails.options, tripDetails && tripDetails.chosenRoute]);
-
     
     const getShortestRoutes = (totalDistance) => {
         if (totalDistance && tripDetails.options) {
